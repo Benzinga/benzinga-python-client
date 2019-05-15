@@ -2,7 +2,7 @@ import requests, json
 import datetime as dt
 import benzinga_errors
 
-class Benzinga:
+class Benzinga: 
 
     def __init__(self, api_token):
 
@@ -23,14 +23,20 @@ class Benzinga:
 
         return url_string
 
-    def instruments(self, company_ticker = "", start_date = "", end_date = ""): #testing right now
-        if not end_date:
-            end_date = dt.date.today().strftime('%Y-%m-%d')
+    def instruments(self, fields = "", query = "", start_date = "", to = "", asOf = "", sortfield = "", sortdir = ""):
+        params_passed_in = locals()
         params = {}
+        for key, value in params_passed_in.items():
+            if key == "self":
+                continue
+            if key == "start_date":
+                key = "from"
+            if value != "":
+                params[key] = value
         instrumentsUrl = self.__url_call__("Instruments")
         instruments = requests.get(instrumentsUrl, headers=self.headers, params=params)
+        print(instruments.url)
         return instruments.json()
-
 
     "Calendar Oriented Data"
 
@@ -39,12 +45,10 @@ class Benzinga:
             end_date = dt.date.today().strftime('%Y-%m-%d')
         params = {'token': self.token, 'parameters[date_from]': start_date, 'parameters[date_to]': end_date,
                   'parameters[tickers]': company_ticker}
+    
+        dividendsUrl = self.__url_call__("Calendar / Fundamentals", "calendar", "dividends")
+        dividends = requests.get(dividendsUrl, headers=self.headers, params=params)
 
-            dividendsUrl = self.__url_call__("Calendaer / Fundamentals", "calendar", "dividends")
-
-            dividends = requests.get(dividendsUrl, headers=self.headers, params=params)
-
-        raise benzinga_errors.API_Endpoint_Error("")
         return dividends.json()
 
     def earnings(self, company_ticker, start_date, end_date = ""):
@@ -168,7 +172,8 @@ if __name__ == '__main__':
     start_date = "2018-01-01"
     sample_run = Benzinga(token)
     sample_run.dividends(company_ticker, start_date)
-
+    print(json.dumps(sample_run.instruments(fields="symbol,marketcap,close,previousClose", query="marketcap_gt_100b;close_gt_100", 
+    start_date = "2019-01-01"), indent=4))
 
 
 
