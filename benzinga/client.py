@@ -3,7 +3,7 @@ import datetime as dt
 from benzinga_errors import (TokenAuthenticationError, RequestAPIEndpointError, IncorrectParameterEntry,
                              URLIncorrectlyFormattedError )
 
-class Benzinga:
+class Benzinga: 
 
     def __init__(self, api_token):
 
@@ -41,20 +41,27 @@ class Benzinga:
             raise URLIncorrectlyFormattedError
         return url_string
 
-    def instruments(self, company_ticker = "", start_date = "", end_date = ""): #testing right now
-        if not end_date:
-            end_date = dt.date.today().strftime('%Y-%m-%d')
+    def instruments(self, fields = "", query = "", start_date = "", to = "", asOf = "", sortfield = "", sortdir = ""):
+        params_passed_in = locals()
         params = {}
+        for key, value in params_passed_in.items():
+            if key == "self":
+                continue
+            if key == "start_date":
+                key = "from"
+            if value != "":
+                params[key] = value
         instrumentsUrl = self.__url_call__("Instruments")
         instruments = requests.get(instrumentsUrl, headers=self.headers, params=params)
+        print(instruments.url)
         return instruments.json()
-
 
     "Calendar Oriented Data"
 
     def dividends(self, company_ticker = None, start_date = None, end_date = None):
         if not end_date:
             end_date = dt.date.today().strftime('%Y-%m-%d')
+<<<<<<< HEAD
         params = {'token': self.token}
         try:
             dividendsUrl = self.__url_call__("Calendar / Fundamentals", "calendar", "dividends")
@@ -62,6 +69,14 @@ class Benzinga:
             print(dividends.url)
         except requests.exceptions.RequestException as request_denied:
             print(request_denied)
+=======
+        params = {'token': self.token, 'parameters[date_from]': start_date, 'parameters[date_to]': end_date,
+                  'parameters[tickers]': company_ticker}
+    
+        dividendsUrl = self.__url_call__("Calendar / Fundamentals", "calendar", "dividends")
+        dividends = requests.get(dividendsUrl, headers=self.headers, params=params)
+
+>>>>>>> 59c79273d12d370ae96c09cf55fe98ebee8d534a
         return dividends.json()
 
     def earnings(self, company_ticker, start_date, end_date = ""):
@@ -230,10 +245,16 @@ if __name__ == '__main__':
     company_ticker = "AAPlL"
     start_date = "2018-01-01"
     sample_run = Benzinga(token)
+<<<<<<< HEAD
     div = sample_run.dividends()
     sample_run.JSON(div)
 
 
+=======
+    sample_run.dividends(company_ticker, start_date)
+    print(json.dumps(sample_run.instruments(fields="symbol,marketcap,close,previousClose", query="marketcap_gt_100b;close_gt_100", 
+    start_date = "2019-01-01"), indent=4))
+>>>>>>> 59c79273d12d370ae96c09cf55fe98ebee8d534a
 
 
 
