@@ -33,7 +33,7 @@ class Benzinga:
     def __url_call__(self, type , part_one = "", part_two = ""):  # Private Method to modify requests calls
         if type == "Calendar / Fundamentals":
             url_string = self.endpoint_type[type] + str("%s/%s"%(part_one, part_two))
-        elif type == "Charts":
+        elif type == "Chart":
             url_string = self.endpoint_type[type] + "chart"
         elif type == "Instruments":
             url_string = self.endpoint_type[type] + "instruments"
@@ -58,119 +58,121 @@ class Benzinga:
 
     "Calendar Oriented Data"
 
-    def dividends(self, company_ticker = None, start_date = None, end_date = None):
-        if not end_date:
-            end_date = dt.date.today().strftime('%Y-%m-%d')
-<<<<<<< HEAD
-        params = {'token': self.token}
+    def dividends(self, page=None, pagesize=None, base_date=None, date_from=None, date_to=None,
+                  company_tickers=None, importance=None, date_sort=None, updated_params=None,
+                  div_yield_operation=None, div_yield = None):
+        params = {'token': self.token, "page": page, "pagesize": pagesize, "parameters[date]": base_date,
+                  "parameters[date_from]": date_from, "parameters[date_to]": date_to, "parameters[tickers]"
+                  :company_tickers, "parameters[importance]": importance, "parameters[date_sort]": date_sort,
+                  "parameters[updated]": updated_params, "paramaters[dividend_yield_operation]": div_yield_operation,
+                  "parameters[dividend_yield]": div_yield}
         try:
-            dividendsUrl = self.__url_call__("Calendar / Fundamentals", "calendar", "dividends")
-            dividends = requests.get(dividendsUrl, headers=self.headers, params=params)
-            print(dividends.url)
+            dividends_url = self.__url_call__("Calendar / Fundamentals", "calendar", "dividends")
+            dividends = requests.get(dividends_url, headers=self.headers, params=params)
         except requests.exceptions.RequestException as request_denied:
             print(request_denied)
-=======
-        params = {'token': self.token, 'parameters[date_from]': start_date, 'parameters[date_to]': end_date,
-                  'parameters[tickers]': company_ticker}
-    
-        dividendsUrl = self.__url_call__("Calendar / Fundamentals", "calendar", "dividends")
-        dividends = requests.get(dividendsUrl, headers=self.headers, params=params)
-
->>>>>>> 59c79273d12d370ae96c09cf55fe98ebee8d534a
         return dividends.json()
 
-    def earnings(self, company_ticker, start_date, end_date = ""):
-        if not end_date:
-            end_date = dt.date.today().strftime('%Y-%m-%d')
-        params = {'token': self.token, 'parameters[date_from]': start_date, 'parameters[date_to]': end_date,
-                  'parameters[tickers]': company_ticker}
+    def earnings(self, page=None, pagesize=None, base_date=None, date_from=None, date_to=None,
+                  company_tickers=None, importance=None, date_sort=None, updated_params=None):
+        params = {'token': self.token, "page": page, "pagesize": pagesize, "parameters[date]": base_date,
+                  "parameters[date_from]": date_from, "parameters[date_to]": date_to, "parameters[tickers]"
+                  :company_tickers, "parameters[importance]": importance, "parameters[date_sort]": date_sort,
+                  "parameters[updated]": updated_params}
         try:
-            earningsUrl = self.__url_call__("Calendar / Fundamentals", "calendar", "earnings")
-            earnings = requests.get(earningsUrl, headers = self.headers, params= params)
+            earnings_url = self.__url_call__("Calendar / Fundamentals", "calendar", "earnings")
+            earnings = requests.get(earnings_url, headers=self.headers, params=params)
         except requests.exceptions.RequestException as request_denied:
             print(request_denied)
         return earnings.json()
 
-    def splits(self, company_ticker, start_date, end_date = ""):
-        if not end_date:
-            end_date = dt.date.today().strftime('%Y-%m-%d')
-        params = {'token': self.token, 'parameters[date_from]': start_date, 'parameters[date_to]': end_date,
-                  'parameters[tickers]': company_ticker}
+    def splits(self, page=None, pagesize=None, base_date=None, date_from=None, date_to=None,
+                  company_tickers=None, importance=None, date_sort=None, updated_params=None):
+        params = {'token': self.token, "page": page, "pagesize": pagesize, "parameters[date]": base_date,
+                  "parameters[date_from]": date_from, "parameters[date_to]": date_to, "parameters[tickers]"
+                  :company_tickers, "parameters[importance]": importance, "parameters[date_sort]": date_sort,
+                  "parameters[updated]": updated_params}
         try:
-            splitsUrl = self.__url_call__("Calendar / Fundamentals", "calendar", "splits")
-            splits = requests.get(splitsUrl, headers = self.headers, params= params)
+            splits_url = self.__url_call__("Calendar / Fundamentals", "calendar", "splits")
+            splits = requests.get(splits_url, headers=self.headers, params=params)
         except requests.exceptions.RequestException as request_denied:
             print(request_denied)
         return splits.json()
 
-    def econonomics(self, company_ticker, start_date, end_date = ""):
-        if not end_date:
-            end_date = dt.date.today().strftime('%Y-%m-%d')
-        params = {'token': self.token, 'parameters[date_from]': start_date, 'parameters[date_to]': end_date,
-                  'parameters[tickers]': company_ticker}
+    def economics(self, page=None, pagesize=None, base_date=None, date_from=None, date_to=None,
+                    company_tickers=None, importance=None, date_sort=None, updated_params=None, country=None):
+        params = {'token': self.token, "page": page, "pagesize": pagesize, "parameters[date]": base_date,
+                  "parameters[date_from]": date_from, "parameters[date_to]": date_to, "parameters[tickers]"
+                  : company_tickers, "parameters[importance]": importance, "parameters[date_sort]": date_sort,
+                  "parameters[updated]": updated_params, "country": country}
         try:
-            economicsUrl = self.__url_call__("Calendar / Fundamentals", "calendar", "economics")
-            economics = requests.get(economicsUrl, headers = self.headers, params= params)
+            economics_url = self.__url_call__("Calendar / Fundamentals", "calendar", "economics")
+            economics = requests.get(economics_url, headers= self.headers, params=params)
         except requests.exceptions.RequestException as request_denied:
             print(request_denied)
         return economics.json()
 
-    def guidance(self, company_ticker, start_date, end_date = ""):
-        if not end_date:
-            end_date = dt.date.today().strftime('%Y-%m-%d')
-        params = {'token': self.token, 'parameters[date_from]': start_date, 'parameters[date_to]': end_date,
-                  'parameters[tickers]': company_ticker}
+    def guidance(self, page=None, pagesize=None, base_date=None, date_from=None, date_to=None,
+                    company_tickers=None, importance=None, date_sort=None, updated_params=None, country=None):
+        params = {'token': self.token, "page": page, "pagesize": pagesize, "parameters[date]": base_date,
+                  "parameters[date_from]": date_from, "parameters[date_to]": date_to, "parameters[tickers]"
+                  : company_tickers, "parameters[importance]": importance, "parameters[date_sort]": date_sort,
+                  "parameters[updated]": updated_params, "country": country}
         try:
-            guidanceUrl = self.__url_call__("Calendar / Fundamentals", "calendar", "dividends")
-            guidance = requests.get(guidanceUrl, headers = self.headers, params= params)
+            guidance_url = self.__url_call__("Calendar / Fundamentals", "calendar", "economics")
+            guidance = requests.get(guidance_url, headers=self.headers, params=params)
         except requests.exceptions.RequestException as request_denied:
             print(request_denied)
         return guidance.json()
 
-    def ipo(self, company_ticker, start_date, end_date = ""):
-        if not end_date:
-            end_date = dt.date.today().strftime('%Y-%m-%d')
-        params = {'token': self.token, 'parameters[date_from]': start_date, 'parameters[date_to]': end_date,
-                  'parameters[tickers]': company_ticker}
+    def ipo(self, page=None, pagesize=None, base_date=None, date_from=None, date_to=None,
+                  company_tickers=None, importance=None, date_sort=None, updated_params=None):
+        params = {'token': self.token, "page": page, "pagesize": pagesize, "parameters[date]": base_date,
+                  "parameters[date_from]": date_from, "parameters[date_to]": date_to, "parameters[tickers]"
+                  :company_tickers, "parameters[importance]": importance, "parameters[date_sort]": date_sort,
+                  "parameters[updated]": updated_params}
         try:
-            ipoUrl = self.__url_call__("Calendar / Fundamentals", "calendar", "ipos")
-            ipo = requests.get(ipoUrl, headers = self.headers, params= params)
+            ipo_url = self.__url_call__("Calendar / Fundamentals", "calendar", "ipos")
+            ipo = requests.get(ipo_url, headers=self.headers, params=params)
         except requests.exceptions.RequestException as request_denied:
             print(request_denied)
         return ipo.json()
 
-    def retail(self, company_ticker, start_date, end_date = ""):
-        if not end_date:
-            end_date = dt.date.today().strftime('%Y-%m-%d')
-        params = {'token': self.token, 'parameters[date_from]': start_date, 'parameters[date_to]': end_date,
-                  'parameters[tickers]': company_ticker}
+    def retail(self, page=None, pagesize=None, base_date=None, date_from=None, date_to=None,
+                  company_tickers=None, importance=None, date_sort=None, updated_params=None):
+        params = {'token': self.token, "page": page, "pagesize": pagesize, "parameters[date]": base_date,
+                  "parameters[date_from]": date_from, "parameters[date_to]": date_to, "parameters[tickers]"
+                  :company_tickers, "parameters[importance]": importance, "parameters[date_sort]": date_sort,
+                  "parameters[updated]": updated_params}
         try:
-            retailUrl = self.__url_call__("Calendar / Fundamentals", "calendar", "retail")
-            retail = requests.get(retailUrl, headers = self.headers, params= params)
+            retail_url = self.__url_call__("Calendar / Fundamentals", "calendar", "retail")
+            retail = requests.get(retail_url, headers=self.headers, params=params)
         except requests.exceptions.RequestException as request_denied:
             print(request_denied)
         return retail.json()
 
-    def ratings(self, company_ticker, start_date, end_date = ""):
-        if not end_date:
-            end_date = dt.date.today().strftime('%Y-%m-%d')
-        params = {'token': self.token, 'parameters[date_from]': start_date, 'parameters[date_to]': end_date,
-                  'parameters[tickers]': company_ticker}
+    def ratings(self, page=None, pagesize=None, base_date=None, date_from=None, date_to=None,
+                  company_tickers=None, importance=None, date_sort=None, updated_params=None, action=None):
+        params = {'token': self.token, "page": page, "pagesize": pagesize, "parameters[date]": base_date,
+                  "parameters[date_from]": date_from, "parameters[date_to]": date_to, "parameters[tickers]"
+                  :company_tickers, "parameters[importance]": importance, "parameters[date_sort]": date_sort,
+                  "parameters[updated]": updated_params, "parameters[action]": action}
         try:
-            ratingsUrl = self.__url_call__("Calendar / Fundamentals", "calendar", "dividends")
-            ratings = requests.get(ratingsUrl, headers= self.headers, params=params)
+            ratings_url = self.__url_call__("Calendar / Fundamentals", "calendar", "ratings")
+            ratings = requests.get(ratings_url, headers=self.headers, params=params)
         except requests.exceptions.RequestException as request_denied:
             print(request_denied)
         return ratings.json()
 
-    def conference_call(self, company_ticker, start_date, end_date = ""):
-        if not end_date:
-            end_date = dt.date.today().strftime('%Y-%m-%d')
-        params = {'token': self.token, 'parameters[date_from]': start_date, 'parameters[date_to]': end_date,
-                  'parameters[tickers]': company_ticker}
+    def conference_calls(self, page=None, pagesize=None, base_date=None, date_from=None, date_to=None,
+                  company_tickers=None, importance=None, date_sort=None, updated_params=None):
+        params = {'token': self.token, "page": page, "pagesize": pagesize, "parameters[date]": base_date,
+                  "parameters[date_from]": date_from, "parameters[date_to]": date_to, "parameters[tickers]"
+                  :company_tickers, "parameters[importance]": importance, "parameters[date_sort]": date_sort,
+                  "parameters[updated]": updated_params}
         try:
-            conferenceUrl = self.__url_call__("Calendar / Fundamentals", "calendar", "conference_call")
-            conference = requests.get(conferenceUrl, headers = self.headers, params= params)
+            conference_url = self.__url_call__("Calendar / Fundamentals", "calendar", "conference_call")
+            conference = requests.get(conference_url, headers=self.headers, params=params)
         except requests.exceptions.RequestException as request_denied:
             print(request_denied)
         return conference.json()
@@ -178,12 +180,11 @@ class Benzinga:
     """Financial Fundamentals"""
     
 
-    def financials(self, company_ticker, asof):
-        params = {'token': self.token, "symbols": company_ticker,
-                  "asOf": asof}
+    def financials(self, company_ticker=None, isin=None, cik=None, date_asof=None)
+        params = {'token': self.token, "symbols": company_ticker, "isin": isin, "cik": cik, "asOf": date_asof}
         try:
-            financialsUrl = self.__url_call__("Calendar / Fundamentals", "fundamentals", "financials")
-            financials = requests.get(financialsUrl, headers = 0, params= params)
+            financials_url = self.__url_call__("Calendar / Fundamentals", "fundamentals", "financials")
+            financials = requests.get(financials_url, headers=self.headers, params= params)
         except requests.exceptions.RequestException as request_denied:
             print(request_denied)
         return financials.json()
@@ -215,6 +216,8 @@ class Benzinga:
             print(request_denied)
         return operations.json()
 
+    """Chart"""
+
     def chart(self, ticker, date_range, interval):
         params = {'symbol': ticker.upper(), 'from': date_range, 'interval': interval}
         url = self.__url_call__("Chart")
@@ -245,16 +248,10 @@ if __name__ == '__main__':
     company_ticker = "AAPlL"
     start_date = "2018-01-01"
     sample_run = Benzinga(token)
-<<<<<<< HEAD
     div = sample_run.dividends()
     sample_run.JSON(div)
 
 
-=======
-    sample_run.dividends(company_ticker, start_date)
-    print(json.dumps(sample_run.instruments(fields="symbol,marketcap,close,previousClose", query="marketcap_gt_100b;close_gt_100", 
-    start_date = "2019-01-01"), indent=4))
->>>>>>> 59c79273d12d370ae96c09cf55fe98ebee8d534a
 
 
 
