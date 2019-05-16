@@ -1,0 +1,44 @@
+from benzinga_errors import (TokenAuthenticationError, RequestAPIEndpointError, IncorrectParameterEntry,
+                             URLIncorrectlyFormattedError)
+class Param_Check:
+
+    def __init__(self):
+        self.stri = "str"
+        self.inte = "int"
+        self.nonetype = "NoneType"
+
+    def __para_type_matching__(self, param_metadata, para_dict):
+        for param, value in para_dict.items():
+            try:
+                if (type(value).__name__ != param_metadata[param]) and (type(value).__name__ != self.nonetype) :
+                    raise IncorrectParameterEntry("Parameter Type for %s doesn't match: Correct Type: %s. "\
+                                                  "You entered %s" %
+                                                  (param, param_metadata[param], type(value).__name__ ))
+            except IncorrectParameterEntry as e:
+                print(e)
+
+    def calendar_check(self, dict):
+        param_type = {'token': self.stri, "page": self.inte , "pagesize": self.inte, "parameters[date]": self.stri,
+                  "parameters[date_from]": self.stri, "parameters[date_to]": self.stri, "parameters[tickers]"
+                  :self.stri, "parameters[importance]": self.inte, "parameters[date_sort]": self.stri,
+                  "parameters[updated]": self.inte, "paramaters[dividend_yield_operation]": self.stri,
+                  "parameters[dividend_yield]": self.stri, "parameters[action]": self.stri, "country": self.stri,
+                    "parameters[eps_surprise_percent]": self.stri, "parameters[revenue_surprise_percent]": self.stri}
+        self.__para_type_matching__(param_type, dict)
+
+    def fundamentals_check(self, dict):
+        param_type = {'token': self.stri, "symbols": self.inte, "isin": self.stri, "cik": self.stri, "asOf": self.stri,
+                  "period": self.stri, "reportType": self.stri}
+        self.__para_type_matching__(param_type, dict)
+
+
+    def delayed_quote_check(self, dict):
+        param_type = {'token': self.stri, "symbols": self.stri, "isin": self.stri, "cik": self.stri}
+        self.__para_type_matching__(param_type, dict)
+
+
+
+
+
+
+
