@@ -42,16 +42,10 @@ class Benzinga:
             raise URLIncorrectlyFormattedError
         return url_string
 
-    def instruments(self, fields = "", query = "", start_date = "", to = "", asOf = "", sortfield = "", sortdir = ""):
-        params_passed_in = locals()
-        params = {}
-        for key, value in params_passed_in.items():
-            if key == "self":
-                continue
-            if key == "start_date":
-                key = "from"
-            if value != "":
-                params[key] = value
+    def instruments(self, fields = None, query = None, date_from=None, date_to =None, date_asof=None,
+                    sortfield=None, sortdir=None):
+        params = {"token": self.token, "fields": fields, "query":query, "start_date": start_date, "date_from":date_from,
+                  "date_to":date_to, "date_asof": date_asof, "sortfield":sortfield, "sortdir":sortdir}
         instrumentsUrl = self.__url_call__("Instruments")
         instruments = requests.get(instrumentsUrl, headers=self.headers, params=params)
         print(instruments.url)
@@ -266,7 +260,8 @@ if __name__ == '__main__':
     company_ticker = "AAPL"
     start_date = "2018-01-01"
     sample_run = Benzinga(token)
-    sample_run.dividends
+    sample_run.dividends()
+    sample_run.instruments(fields="symbol,marketcap,close,previousClose")
 
 
 
