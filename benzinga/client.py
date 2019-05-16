@@ -252,6 +252,13 @@ class Benzinga:
         print(result)
         return result
 
+    def result(self, func_output):
+        for object in func_output:
+            print("You have the following options to display: ")
+            for o in func_output[object][0]:
+                print(o)
+
+
 
 
 if __name__ == '__main__':
@@ -260,8 +267,9 @@ if __name__ == '__main__':
     company_ticker = "AAPL"
     start_date = "2018-01-01"
     sample_run = Benzinga(token)
-    sample_run.dividends()
-    sample_run.instruments(fields="symbol,marketcap,close,previousClose")
+    test = sample_run
+    sample_run.result(test)
+
 
 
 
