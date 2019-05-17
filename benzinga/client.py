@@ -10,10 +10,12 @@ class Benzinga:
 
         self.token = api_token
         self.headers = {'accept': 'application/json'}
-        self.url_dict = {"API v1": "https://api.benzinga.com/api/v1/" ,"API v2": "https://api.benzinga.com/api/v2/",
-                         "Data v3": "http://data-api.zingbot.bz/rest/v3/","Data v2": "https://data.benzinga.com/rest/v2/"}
+        self.url_dict = {"API v1": "https://api.benzinga.com/api/v1/" , "API v1.v1": "https://api.benzinga.com/api/v1.1/",
+                         "API v2": "https://api.benzinga.com/api/v2/", "Data v3": "http://data-api.zingbot.bz/rest/v3/",
+                         "Data v2": "https://data.benzinga.com/rest/v2/"}
         self.endpoint_type = {"Calendar / Fundamentals": self.url_dict["API v2"], "Chart": self.url_dict["Data v2"],
-                              "Instruments": self.url_dict["Data v3"], "quoteDelayed": self.url_dict["API v1"]}
+                              "Instruments": self.url_dict["Data v3"], "quoteDelayed": self.url_dict["API v1"],
+                              "logos": self.url_dict["API v1.v1"]}
         self.param_initiate = param_check.Param_Check()
         self.__token_check__(self.token)
 
@@ -40,6 +42,8 @@ class Benzinga:
             url_string = self.endpoint_type[type] + "instruments"
         elif type == "quoteDelayed":
             url_string = self.endpoint_type[type] + "quoteDelayed"
+        elif type == "logos":
+            url_string = self.endpoint_type[type] + "logos"
         else:
             raise URLIncorrectlyFormattedError
         return url_string
@@ -247,6 +251,17 @@ class Benzinga:
         chart = requests.get(url, headers=self.headers, params=params)
         return chart.json()
 
+    def logos(self, company_tickers = None, filters = None):
+        params = {"token": self.token, "symbols": company_tickers, "filters": filters}
+        self.param_initiate.logos_check(params)
+        try:
+            logos_url = self.__url_call__("logos")
+            logos = requests.get(logos_url, headers = self.headers, params=params)
+        except requests.exceptions.RequestException as request_denied:
+            print(request_denied)
+        return logos.json()
+
+
     """Output"""
 
     def JSON(self, func_output):
@@ -267,7 +282,8 @@ if __name__ == '__main__':
     start_date = "2018-01-01"
     sample_run = Benzinga(token)
     test = sample_run.delayed_quote(company_tickers=company_tickers)
-    sample_run.JSON(test)
+    test1= sample_run.logos(company_tickers)
+    sample_run.JSON(test1)
 
 
 

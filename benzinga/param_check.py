@@ -36,6 +36,11 @@ class Param_Check:
         param_type = {'token': self.stri, "symbols": self.stri, "isin": self.stri, "cik": self.stri}
         self.__para_type_matching__(param_type, dict)
 
+    def logos_check(self, dict):
+        param_type = {'token': self.stri, "symbols": self.stri, "filters": self.stri}
+        self.__para_type_matching__(param_type, dict)
+
+
 
 
 
