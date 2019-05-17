@@ -27,7 +27,7 @@ class Param_Check:
         self.__para_type_matching__(param_type, dict)
 
     def fundamentals_check(self, dict):
-        param_type = {'token': self.stri, "symbols": self.stri, "isin": self.stri, "cik": self.stri, "asOf": self.stri,
+        param_type = {'token': self.stri, "symbols": self.stri, "symbol": self.stri, "isin": self.stri, "cik": self.stri, "asOf": self.stri,
                   "period": self.stri, "reportType": self.stri}
         self.__para_type_matching__(param_type, dict)
 
@@ -39,6 +39,24 @@ class Param_Check:
     def logos_check(self, dict):
         param_type = {'token': self.stri, "symbols": self.stri, "filters": self.stri}
         self.__para_type_matching__(param_type, dict)
+
+    def instruments_check(self, dict):
+        param_type = {"token": self.stri, "fields": self.stri, "query": self.stri, "start_date": self.stri,
+                  "date_from": self.stri, "date_to": self.stri, "date_asof": self.stri, "sortfield": self.stri,
+                  "sortdir": self.stri}
+        self.__para_type_matching__(param_type, dict)
+
+    def security_check(self, dict):
+        param_type = {"token": self.stri, "symbols": self.stri, "cusip": self.stri}
+        self.__para_type_matching__(param_type, dict)
+
+    def autocomplete_check(self, dict):
+        param_type = {"token": self.stri, "query": self.stri, "limit": self.inte, "searchMethod": self.stri,
+                      "exchanges": self.stri, "types": self.stri}
+        self.__para_type_matching__(param_type, dict)
+
+
+
 
 
 

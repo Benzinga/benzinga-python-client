@@ -12,10 +12,7 @@ class Benzinga:
         self.headers = {'accept': 'application/json'}
         self.url_dict = {"API v1": "https://api.benzinga.com/api/v1/" , "API v1.v1": "https://api.benzinga.com/api/v1.1/",
                          "API v2": "https://api.benzinga.com/api/v2/", "Data v3": "http://data-api.zingbot.bz/rest/v3/",
-                         "Data v2": "https://data.benzinga.com/rest/v2/"}
-        self.endpoint_type = {"Calendar / Fundamentals": self.url_dict["API v2"], "Chart": self.url_dict["Data v2"],
-                              "Instruments": self.url_dict["Data v3"], "quoteDelayed": self.url_dict["API v1"],
-                              "logos": self.url_dict["API v1.v1"]}
+                         "Data v2": "https://data.benzinga.com/rest/v2/", "V3": "http://data-api.zingbot.bz/rest/v3/"}
         self.param_initiate = param_check.Param_Check()
         self.__token_check__(self.token)
 
@@ -25,7 +22,7 @@ class Benzinga:
         params = {'token': api_token, 'parameters[date_to]': end_date,
                   'parameters[tickers]': company_ticker}
         try:
-            ratingsUrl = self.__url_call__("Calendar / Fundamentals", "calendar", "dividends")
+            ratingsUrl = self.__url_call__("calendar", "dividends")
             ratings = requests.get(ratingsUrl, headers= self.headers, params=params)
             if ratings.status_code == 401:
                 raise TokenAuthenticationError
@@ -33,28 +30,83 @@ class Benzinga:
             print("%sYour token is not valid. Please try again" % (t))
 
 
-    def __url_call__(self, type , part_one = "", part_two = ""):  # Private Method to modify requests calls
-        if type == "Calendar / Fundamentals":
-            url_string = self.endpoint_type[type] + str("%s/%s"%(part_one, part_two))
-        elif type == "Chart":
-            url_string = self.endpoint_type[type] + "chart"
-        elif type == "Instruments":
-            url_string = self.endpoint_type[type] + "instruments"
-        elif type == "quoteDelayed":
-            url_string = self.endpoint_type[type] + "quoteDelayed"
-        elif type == "logos":
-            url_string = self.endpoint_type[type] + "logos"
-        else:
+    def __url_call__(self, resource, sub_resource = ""):  # Private Method to modify requests calls
+        endpoint_type = {"calendar": "%s%s/%s" % (self.url_dict["API v2"], resource, sub_resource),
+                         "chart": "%s%s" % (self.url_dict["API v2"], resource),
+                         "quote": "%s%s" % (self.url_dict["Data v2"], resource),
+                         "batchhistory": "%s%s" % (self.url_dict["Data v2"], resource),
+                         "autocomplete": "%s%s" % (self.url_dict["Data v2"], resource),
+                         "instruments": "%s%s" % (self.url_dict["Data v3"], resource),
+                         "quoteDelayed": "%s%s" % (self.url_dict["API v1"], resource),
+                         "logos": "%s%s" % (self.url_dict["API v1.v1"], resource),
+                         "fundamentals": "%s%s/%s" % (self.url_dict["V3"], resource, sub_resource),
+                         "ownership": "%s%s/%s" % (self.url_dict["V3"], resource, sub_resource)}
+        if resource not in endpoint_type:
             raise URLIncorrectlyFormattedError
+        url_string = endpoint_type[resource]
         return url_string
 
+    """Batch Request"""
+
+    def batch_history(self, company_tickers = None):
+        params = {"token": self.token, "symbol": company_tickers}
+        self.param_initiate.fundamentals_check(params)
+        try:
+            batchhistory_url = self.__url_call__("batchhistory")
+            batchhistory = requests.get(batchhistory_url, headers=self.headers, params=params)
+        except requests.exceptions.RequestException as request_denied:
+            print(request_denied)
+        return batchhistory.json()
+
+    """Autocomplete"""
+
+    def auto_complete(self, query = None, limit = None, search_method = None, exchanges = None, types = None):
+        params = {"token": self.token, "query": query, "limit": limit, "searchMethod": search_method,
+                  "exchanges": exchanges, "types": types}
+        self.param_initiate.autocomplete_check(params)
+        try:
+            autocomplete_url = self.__url_call__("autocomplete")
+            autocomplete = requests.get(autocomplete_url, headers=self.headers, params=params)
+        except requests.exceptions.RequestException as request_denied:
+            print(request_denied)
+        return autocomplete.json()
+
+    """Security"""
+
+    def security(self, company_tickers = None, cusip = None):
+        params = {"token": self.token, "symbol": company_tickers, "cusip": cusip}
+        self.param_initiate.security_check(params)
+        try:
+            security_url = self.__url_call__("quote")
+            security = requests.get(security_url, headers=self.headers, params=params)
+        except requests.exceptions.RequestException as request_denied:
+            print(request_denied)
+        return security.json()
+
+    """Quote"""
+
+    def quote(self, company_tickers = None):
+        params = {"token": self.token, "symbols": company_tickers}
+        self.param_initiate.fundamentals_check(params)
+        try:
+            quote_url = self.__url_call__("quote")
+            quote = requests.get(quote_url, headers=self.headers, params=params)
+        except requests.exceptions.RequestException as request_denied:
+            print(request_denied)
+        return quote.json()
+
+    """Instruments"""
+
     def instruments(self, fields = None, query = None, date_from=None, date_to =None, date_asof=None,
-                    sortfield=None, sortdir=None):
+                    sort_field=None, sort_dir=None):
         params = {"token": self.token, "fields": fields, "query":query, "start_date": start_date, "date_from":date_from,
-                  "date_to":date_to, "date_asof": date_asof, "sortfield":sortfield, "sortdir":sortdir}
-        instrumentsUrl = self.__url_call__("Instruments")
-        instruments = requests.get(instrumentsUrl, headers=self.headers, params=params)
-        print(instruments.url)
+                  "date_to":date_to, "date_asof": date_asof, "sortfield":sort_field, "sortdir":sort_dir}
+        self.param_initiate.instruments_check(params)
+        try:
+            instruments_url = self.__url_call__("instruments")
+            instruments = requests.get(instruments_url, headers=self.headers, params=params)
+        except requests.exceptions.RequestException as request_denied:
+            print(request_denied)
         return instruments.json()
 
     "Calendar Oriented Data"
@@ -63,13 +115,14 @@ class Benzinga:
                   company_tickers=None, importance=None, date_sort=None, updated_params=None,
                   div_yield_operation=None, div_yield = None):
         params = {'token': self.token, "page": page, "pagesize": pagesize, "parameters[date]": base_date,
-                  "parameters[date_from]": date_from, "parameters[date_to]": date_to, "parameters[tickers]":company_tickers,
-                  "parameters[importance]": importance, "parameters[date_sort]": date_sort,
-                  "parameters[updated]": updated_params, "paramaters[dividend_yield_operation]": div_yield_operation,
+                  "parameters[date_from]": date_from, "parameters[date_to]": date_to,
+                  "parameters[tickers]":company_tickers,"parameters[importance]": importance,
+                  "parameters[date_sort]": date_sort, "parameters[updated]": updated_params,
+                  "paramaters[dividend_yield_operation]": div_yield_operation,
                   "parameters[dividend_yield]": div_yield}
         self.param_initiate.calendar_check(params)
         try:
-            dividends_url = self.__url_call__("Calendar / Fundamentals", "calendar", "dividends")
+            dividends_url = self.__url_call__("calendar", "dividends")
             dividends = requests.get(dividends_url, headers=self.headers, params=params)
         except requests.exceptions.RequestException as request_denied:
             print(request_denied)
@@ -83,7 +136,7 @@ class Benzinga:
                   "parameters[updated]": updated_params}
         self.param_initiate.calendar_check(params)
         try:
-            earnings_url = self.__url_call__("Calendar / Fundamentals", "calendar", "earnings")
+            earnings_url = self.__url_call__("calendar", "earnings")
             earnings = requests.get(earnings_url, headers=self.headers, params=params)
         except requests.exceptions.RequestException as request_denied:
             print(request_denied)
@@ -97,7 +150,7 @@ class Benzinga:
                   "parameters[updated]": updated_params}
         self.param_initiate.calendar_check(params)
         try:
-            splits_url = self.__url_call__("Calendar / Fundamentals", "calendar", "splits")
+            splits_url = self.__url_call__("calendar", "splits")
             splits = requests.get(splits_url, headers=self.headers, params=params)
         except requests.exceptions.RequestException as request_denied:
             print(request_denied)
@@ -111,7 +164,7 @@ class Benzinga:
                   "parameters[updated]": updated_params, "country": country}
         self.param_initiate.calendar_check(params)
         try:
-            economics_url = self.__url_call__("Calendar / Fundamentals", "calendar", "economics")
+            economics_url = self.__url_call__("calendar", "economics")
             economics = requests.get(economics_url, headers= self.headers, params=params)
         except requests.exceptions.RequestException as request_denied:
             print(request_denied)
@@ -125,7 +178,7 @@ class Benzinga:
                   "parameters[updated]": updated_params, "country": country}
         self.param_initiate.calendar_check(params)
         try:
-            guidance_url = self.__url_call__("Calendar / Fundamentals", "calendar", "guidance")
+            guidance_url = self.__url_call__("calendar", "guidance")
             guidance = requests.get(guidance_url, headers=self.headers, params=params)
         except requests.exceptions.RequestException as request_denied:
             print(request_denied)
@@ -139,7 +192,7 @@ class Benzinga:
                   "parameters[updated]": updated_params}
         self.param_initiate.calendar_check(params)
         try:
-            ipo_url = self.__url_call__("Calendar / Fundamentals", "calendar", "ipos")
+            ipo_url = self.__url_call__("calendar", "ipos")
             ipo = requests.get(ipo_url, headers=self.headers, params=params)
         except requests.exceptions.RequestException as request_denied:
             print(request_denied)
@@ -153,7 +206,7 @@ class Benzinga:
                   "parameters[updated]": updated_params}
         self.param_initiate.calendar_check(params)
         try:
-            retail_url = self.__url_call__("Calendar / Fundamentals", "calendar", "retail")
+            retail_url = self.__url_call__("calendar", "retail")
             retail = requests.get(retail_url, headers=self.headers, params=params)
         except requests.exceptions.RequestException as request_denied:
             print(request_denied)
@@ -167,7 +220,7 @@ class Benzinga:
                   "parameters[updated]": updated_params, "parameters[action]": action}
         self.param_initiate.calendar_check(params)
         try:
-            ratings_url = self.__url_call__("Calendar / Fundamentals", "calendar", "ratings")
+            ratings_url = self.__url_call__("calendar", "ratings")
             ratings = requests.get(ratings_url, headers=self.headers, params=params)
         except requests.exceptions.RequestException as request_denied:
             print(request_denied)
@@ -181,13 +234,24 @@ class Benzinga:
                   "parameters[updated]": updated_params}
         self.param_initiate.calendar_check(params)
         try:
-            conference_url = self.__url_call__("Calendar / Fundamentals", "calendar", "conference-calls")
+            conference_url = self.__url_call__("calendar", "conference-calls")
             conference = requests.get(conference_url, headers=self.headers, params=params)
         except requests.exceptions.RequestException as request_denied:
             print(request_denied)
         return conference.json()
 
     """Financial Fundamentals"""
+
+    def fundamentals(self, company_tickers=None, isin=None, cik=None, date_asof=None):
+        params = {'token': self.token, "symbols": company_tickers, "isin": isin, "cik": cik, "asOf": date_asof}
+        self.param_initiate.fundamentals_check(params)
+        try:
+            financials_url = self.__url_call__("fundamentals")
+            financials = requests.get(financials_url, headers=self.headers, params= params)
+            print(financials.url)
+        except requests.exceptions.RequestException as request_denied:
+            print(request_denied)
+        return financials.json()
     
 
     def financials(self, company_tickers=None, isin=None, cik=None, date_asof=None, period=None, reporttype=None):
@@ -195,8 +259,9 @@ class Benzinga:
                   "period": period, "reportType": reporttype}
         self.param_initiate.fundamentals_check(params)
         try:
-            financials_url = self.__url_call__("Calendar / Fundamentals", "fundamentals", "financials")
+            financials_url = self.__url_call__("fundamentals", "financials")
             financials = requests.get(financials_url, headers=self.headers, params= params)
+            print(financials.url)
         except requests.exceptions.RequestException as request_denied:
             print(request_denied)
         return financials.json()
@@ -205,7 +270,7 @@ class Benzinga:
         params = {'token': self.token, "symbols": company_tickers, "isin": isin, "cik": cik, "asOf": date_asof}
         self.param_initiate.fundamentals_check(params)
         try:
-            valuation_url = self.__url_call__("Calendar / Fundamentals", "fundamentals", "valuationRatios")
+            valuation_url = self.__url_call__("fundamentals", "valuationRatios")
             valuation = requests.get(valuation_url, headers=self.headers, params=params)
         except requests.exceptions.RequestException as request_denied:
             print(request_denied)
@@ -215,7 +280,7 @@ class Benzinga:
         params = {'token': self.token, "symbols": company_tickers, "isin": isin, "cik": cik, "asOf": date_asof}
         self.param_initiate.fundamentals_check(params)
         try:
-            earnings_url = self.__url_call__("Calendar / Fundamentals", "fundamentals", "earningRatios")
+            earnings_url = self.__url_call__("fundamentals", "earningRatios")
             earnings = requests.get(earnings_url, headers=self.headers, params=params)
         except requests.exceptions.RequestException as request_denied:
             print(request_denied)
@@ -225,11 +290,92 @@ class Benzinga:
         params = {'token': self.token, "symbols": company_ticker, "isin": isin, "cik": cik, "asOf": date_asof}
         self.param_initiate.fundamentals_check(params)
         try:
-            operations_url = self.__url_call__("Calendar / Fundamentals", "fundamentals", "operationRatios")
+            operations_url = self.__url_call__("fundamentals", "operationRatios")
             operations = requests.get(operations_url, headers=self.headers, params= params)
         except requests.exceptions.RequestException as request_denied:
             print(request_denied)
         return operations.json()
+
+    def share_class(self, company_ticker=None, isin=None, cik=None, date_asof=None):
+        params = {'token': self.token, "symbols": company_ticker, "isin": isin, "cik": cik, "asOf": date_asof}
+        self.param_initiate.fundamentals_check(params)
+        try:
+            shareclass_url = self.__url_call__("fundamentals", "shareClass")
+            shareclass = requests.get(shareclass_url, headers=self.headers, params= params)
+        except requests.exceptions.RequestException as request_denied:
+            print(request_denied)
+        return shareclass.json()
+
+    def earning_reports(self, company_ticker=None, isin=None, cik=None, date_asof=None):
+        params = {'token': self.token, "symbols": company_ticker, "isin": isin, "cik": cik, "asOf": date_asof}
+        self.param_initiate.fundamentals_check(params)
+        try:
+            earningreports_url = self.__url_call__("fundamentals", "earningReports")
+            earningreports = requests.get(earningreports_url, headers=self.headers, params= params)
+        except requests.exceptions.RequestException as request_denied:
+            print(request_denied)
+        return earningreports.json()
+
+    def financial_statements(self, company_ticker=None, isin=None, cik=None, date_asof=None):
+        params = {'token': self.token, "symbols": company_ticker, "isin": isin, "cik": cik, "asOf": date_asof}
+        self.param_initiate.fundamentals_check(params)
+        try:
+            financialstatements_url = self.__url_call__("fundamentals", "financialStatements")
+            financialstatements = requests.get(financialstatements_url, headers=self.headers, params= params)
+        except requests.exceptions.RequestException as request_denied:
+            print(request_denied)
+        return financialstatements.json()
+
+    def alpha_beta(self, company_ticker=None, isin=None, cik=None, date_asof=None):
+        params = {'token': self.token, "symbols": company_ticker, "isin": isin, "cik": cik, "asOf": date_asof}
+        self.param_initiate.fundamentals_check(params)
+        try:
+            alphabeta_url = self.__url_call__("fundamentals", "alphaBeta")
+            alphabeta = requests.get(alphabeta_url, headers=self.headers, params= params)
+        except requests.exceptions.RequestException as request_denied:
+            print(request_denied)
+        return alphabeta.json()
+
+    def company_profile(self, company_ticker=None, isin=None, cik=None, date_asof=None):
+        params = {'token': self.token, "symbols": company_ticker, "isin": isin, "cik": cik, "asOf": date_asof}
+        self.param_initiate.fundamentals_check(params)
+        try:
+            companyprofile_url = self.__url_call__("fundamentals", "companyProfile")
+            company_profile = requests.get(companyprofile_url, headers=self.headers, params= params)
+        except requests.exceptions.RequestException as request_denied:
+            print(request_denied)
+        return company_profile.json()
+
+    def company(self, company_ticker=None, isin=None, cik=None, date_asof=None):
+        params = {'token': self.token, "symbols": company_ticker, "isin": isin, "cik": cik, "asOf": date_asof}
+        self.param_initiate.fundamentals_check(params)
+        try:
+            company_url = self.__url_call__("fundamentals", "company")
+            company = requests.get(company_url, headers=self.headers, params= params)
+        except requests.exceptions.RequestException as request_denied:
+            print(request_denied)
+        return company.json()
+
+    def share_class_profile_history(self, company_ticker=None, isin=None, cik=None, date_asof=None):
+        params = {'token': self.token, "symbols": company_ticker, "isin": isin, "cik": cik, "asOf": date_asof}
+        self.param_initiate.fundamentals_check(params)
+        try:
+            profilehistory_url = self.__url_call__("fundamentals", "shareClassProfileHistory")
+            profilehistory = requests.get(profilehistory_url, headers=self.headers, params= params)
+        except requests.exceptions.RequestException as request_denied:
+            print(request_denied)
+        return profilehistory.json()
+
+    def asset_classification(self, company_ticker=None, isin=None, cik=None, date_asof=None):
+        params = {'token': self.token, "symbols": company_ticker, "isin": isin, "cik": cik, "asOf": date_asof}
+        self.param_initiate.fundamentals_check(params)
+        try:
+            asset_url = self.__url_call__("fundamentals", "assetClassification")
+            asset = requests.get(asset_url, headers=self.headers, params= params)
+        except requests.exceptions.RequestException as request_denied:
+            print(request_denied)
+        return asset.json()
+
 
     """Delayed Quotes"""
 
@@ -242,6 +388,18 @@ class Benzinga:
         except requests.exceptions.RequestException as request_denied:
             print(request_denied)
         return delayedquote.json()
+
+    """Ownership"""
+
+    def summary(self, company_ticker=None, isin=None, cik=None, date_asof=None):
+        params = {'token': self.token, "symbols": company_ticker, "isin": isin, "cik": cik, "asOf": date_asof}
+        self.param_initiate.fundamentals_check(params)
+        try:
+            summary_url = self.__url_call__("ownership", "summary")
+            summary = requests.get(summary_url, headers=self.headers, params= params)
+        except requests.exceptions.RequestException as request_denied:
+            print(request_denied)
+        return summary.json()
 
     """Chart"""
 
@@ -281,9 +439,9 @@ if __name__ == '__main__':
     company_tickers = "AAPL"
     start_date = "2018-01-01"
     sample_run = Benzinga(token)
-    test = sample_run.delayed_quote(company_tickers=company_tickers)
-    test1= sample_run.logos(company_tickers)
-    sample_run.JSON(test1)
+    test = sample_run.batch_history(company_tickers="AAPL")
+    sample_run.JSON(test)
+
 
 
 
