@@ -10,10 +10,10 @@ class Benzinga:
 
         self.token = api_token
         self.headers = {'accept': 'application/json'}
-        self.url_dict = {"API v1": "https://api.benzinga.com/api/v1" ,"API v2": "https://api.benzinga.com/api/v2/",
+        self.url_dict = {"API v1": "https://api.benzinga.com/api/v1/" ,"API v2": "https://api.benzinga.com/api/v2/",
                          "Data v3": "http://data-api.zingbot.bz/rest/v3/","Data v2": "https://data.benzinga.com/rest/v2/"}
         self.endpoint_type = {"Calendar / Fundamentals": self.url_dict["API v2"], "Chart": self.url_dict["Data v2"],
-                              "Instruments": self.url_dict["Data v3"]}
+                              "Instruments": self.url_dict["Data v3"], "quoteDelayed": self.url_dict["API v1"]}
         self.param_initiate = param_check.Param_Check()
         self.__token_check__(self.token)
 
@@ -38,6 +38,8 @@ class Benzinga:
             url_string = self.endpoint_type[type] + "chart"
         elif type == "Instruments":
             url_string = self.endpoint_type[type] + "instruments"
+        elif type == "quoteDelayed":
+            url_string = self.endpoint_type[type] + "quoteDelayed"
         else:
             raise URLIncorrectlyFormattedError
         return url_string
@@ -184,8 +186,8 @@ class Benzinga:
     """Financial Fundamentals"""
     
 
-    def financials(self, company_ticker=None, isin=None, cik=None, date_asof=None, period=None, reporttype=None):
-        params = {'token': self.token, "symbols": company_ticker, "isin": isin, "cik": cik, "asOf": date_asof,
+    def financials(self, company_tickers=None, isin=None, cik=None, date_asof=None, period=None, reporttype=None):
+        params = {'token': self.token, "symbols": company_tickers, "isin": isin, "cik": cik, "asOf": date_asof,
                   "period": period, "reportType": reporttype}
         self.param_initiate.fundamentals_check(params)
         try:
@@ -195,8 +197,8 @@ class Benzinga:
             print(request_denied)
         return financials.json()
 
-    def valuation_ratios(self, company_ticker=None, isin=None, cik=None, date_asof=None):
-        params = {'token': self.token, "symbols": company_ticker, "isin": isin, "cik": cik, "asOf": date_asof}
+    def valuation_ratios(self, company_tickers=None, isin=None, cik=None, date_asof=None):
+        params = {'token': self.token, "symbols": company_tickers, "isin": isin, "cik": cik, "asOf": date_asof}
         self.param_initiate.fundamentals_check(params)
         try:
             valuation_url = self.__url_call__("Calendar / Fundamentals", "fundamentals", "valuationRatios")
@@ -205,8 +207,8 @@ class Benzinga:
             print(request_denied)
         return valuation.json()
 
-    def earning_ratios(self, company_ticker=None, isin=None, cik=None, date_asof=None):
-        params = {'token': self.token, "symbols": company_ticker, "isin": isin, "cik": cik, "asOf": date_asof}
+    def earning_ratios(self, company_tickers=None, isin=None, cik=None, date_asof=None):
+        params = {'token': self.token, "symbols": company_tickers, "isin": isin, "cik": cik, "asOf": date_asof}
         self.param_initiate.fundamentals_check(params)
         try:
             earnings_url = self.__url_call__("Calendar / Fundamentals", "fundamentals", "earningRatios")
@@ -227,11 +229,11 @@ class Benzinga:
 
     """Delayed Quotes"""
 
-    def delayed_quote(self, company_ticker=None, isin=None, cik=None):
-        params = {'token': self.token, "symbols": company_ticker, "isin": isin, "cik": cik}
+    def delayed_quote(self, company_tickers=None, isin=None, cik=None):
+        params = {'token': self.token, "symbols": company_tickers, "isin": isin, "cik": cik}
         self.param_initiate.delayed_quote_check(params)
         try:
-            delayedquote_url = self.__url_call__("quoteDelayed", "earningRatios")
+            delayedquote_url = self.__url_call__("quoteDelayed")
             delayedquote = requests.get(delayedquote_url, headers=self.headers, params=params)
         except requests.exceptions.RequestException as request_denied:
             print(request_denied)
@@ -239,8 +241,8 @@ class Benzinga:
 
     """Chart"""
 
-    def chart(self, ticker, date_range, interval):
-        params = {'symbol': ticker.upper(), 'from': date_range, 'interval': interval}
+    def chart(self, company_tickers, date_range, interval):
+        params = {'symbol': company_tickers.upper(), 'from': date_range, 'interval': interval}
         url = self.__url_call__("Chart")
         chart = requests.get(url, headers=self.headers, params=params)
         return chart.json()
@@ -258,17 +260,14 @@ class Benzinga:
             for o in func_output[object][0]:
                 print(o)
 
-
-
-
 if __name__ == '__main__':
     token = "899efcbfda344e089b23589cbddac62b"
     false_token = 0
-    company_ticker = "AAPL"
+    company_tickers = "AAPL"
     start_date = "2018-01-01"
     sample_run = Benzinga(token)
-    test = sample_run
-    sample_run.result(test)
+    test = sample_run.delayed_quote(company_tickers=company_tickers)
+    sample_run.JSON(test)
 
 
 

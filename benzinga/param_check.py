@@ -27,7 +27,7 @@ class Param_Check:
         self.__para_type_matching__(param_type, dict)
 
     def fundamentals_check(self, dict):
-        param_type = {'token': self.stri, "symbols": self.inte, "isin": self.stri, "cik": self.stri, "asOf": self.stri,
+        param_type = {'token': self.stri, "symbols": self.stri, "isin": self.stri, "cik": self.stri, "asOf": self.stri,
                   "period": self.stri, "reportType": self.stri}
         self.__para_type_matching__(param_type, dict)
 
