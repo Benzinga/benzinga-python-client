@@ -12,7 +12,8 @@ class Benzinga:
         self.headers = {'accept': 'application/json'}
         self.url_dict = {"API v1": "https://api.benzinga.com/api/v1/" , "API v1.v1": "https://api.benzinga.com/api/v1.1/",
                          "API v2": "https://api.benzinga.com/api/v2/", "Data v3": "http://data-api.zingbot.bz/rest/v3/",
-                         "Data v2": "https://data.benzinga.com/rest/v2/", "V3": "http://data-api.zingbot.bz/rest/v3/"}
+                         "Data v2": "https://data.benzinga.com/rest/v2/", "V3": "http://data-api.zingbot.bz/rest/v3/",
+                         "Data api v2": "https://api.benzinga.io/dataapi/rest/v2/"}
         self.param_initiate = param_check.Param_Check()
         self.__token_check__(self.token)
 
@@ -34,7 +35,7 @@ class Benzinga:
         endpoint_type = {"calendar": "%s%s/%s" % (self.url_dict["API v2"], resource, sub_resource),
                          "chart": "%s%s" % (self.url_dict["API v2"], resource),
                          "quote": "%s%s" % (self.url_dict["Data v2"], resource),
-                         "batchhistory": "%s%s" % (self.url_dict["Data v2"], resource),
+                         "batchhistory": "%s%s" % (self.url_dict["Data api v2"], resource),
                          "autocomplete": "%s%s" % (self.url_dict["Data v2"], resource),
                          "instruments": "%s%s" % (self.url_dict["Data v3"], resource),
                          "quoteDelayed": "%s%s" % (self.url_dict["API v1"], resource),
@@ -48,20 +49,22 @@ class Benzinga:
 
     """Batch Request"""
 
-    def batch_history(self, company_tickers = None):
-        params = {"token": self.token, "symbol": company_tickers}
-        self.param_initiate.fundamentals_check(params)
+    def batch_history(self, company_tickers = None, date_from = None, date_to = None):
+        revised_input = "%s:%s:%s"%(company_tickers, date_from, date_to)
+        params = {"symbol": revised_input, "apikey": self.token}
+        self.param_initiate.batchhistory_check(params)
         try:
             batchhistory_url = self.__url_call__("batchhistory")
             batchhistory = requests.get(batchhistory_url, headers=self.headers, params=params)
+            print(batchhistory.url)
         except requests.exceptions.RequestException as request_denied:
             print(request_denied)
         return batchhistory.json()
 
     """Autocomplete"""
 
-    def auto_complete(self, query = None, limit = None, search_method = None, exchanges = None, types = None):
-        params = {"token": self.token, "query": query, "limit": limit, "searchMethod": search_method,
+    def auto_complete(self, company_tickers = None, limit = None, search_method = None, exchanges = None, types = None):
+        params = {"token": self.token, "query": company_tickers, "limit": limit, "searchMethod": search_method,
                   "exchanges": exchanges, "types": types}
         self.param_initiate.autocomplete_check(params)
         try:
@@ -74,7 +77,7 @@ class Benzinga:
     """Security"""
 
     def security(self, company_tickers = None, cusip = None):
-        params = {"token": self.token, "symbol": company_tickers, "cusip": cusip}
+        params = {"token": self.token, "symbols": company_tickers, "cusip": cusip}
         self.param_initiate.security_check(params)
         try:
             security_url = self.__url_call__("quote")
@@ -286,8 +289,8 @@ class Benzinga:
             print(request_denied)
         return earnings.json()
 
-    def operation_ratios(self, company_ticker=None, isin=None, cik=None, date_asof=None):
-        params = {'token': self.token, "symbols": company_ticker, "isin": isin, "cik": cik, "asOf": date_asof}
+    def operation_ratios(self, company_tickers=None, isin=None, cik=None, date_asof=None):
+        params = {'token': self.token, "symbols": company_tickers, "isin": isin, "cik": cik, "asOf": date_asof}
         self.param_initiate.fundamentals_check(params)
         try:
             operations_url = self.__url_call__("fundamentals", "operationRatios")
@@ -296,8 +299,8 @@ class Benzinga:
             print(request_denied)
         return operations.json()
 
-    def share_class(self, company_ticker=None, isin=None, cik=None, date_asof=None):
-        params = {'token': self.token, "symbols": company_ticker, "isin": isin, "cik": cik, "asOf": date_asof}
+    def share_class(self, company_tickers=None, isin=None, cik=None, date_asof=None):
+        params = {'token': self.token, "symbols": company_tickers, "isin": isin, "cik": cik, "asOf": date_asof}
         self.param_initiate.fundamentals_check(params)
         try:
             shareclass_url = self.__url_call__("fundamentals", "shareClass")
@@ -306,8 +309,8 @@ class Benzinga:
             print(request_denied)
         return shareclass.json()
 
-    def earning_reports(self, company_ticker=None, isin=None, cik=None, date_asof=None):
-        params = {'token': self.token, "symbols": company_ticker, "isin": isin, "cik": cik, "asOf": date_asof}
+    def earning_reports(self, company_tickers=None, isin=None, cik=None, date_asof=None):
+        params = {'token': self.token, "symbols": company_tickers, "isin": isin, "cik": cik, "asOf": date_asof}
         self.param_initiate.fundamentals_check(params)
         try:
             earningreports_url = self.__url_call__("fundamentals", "earningReports")
@@ -316,18 +319,20 @@ class Benzinga:
             print(request_denied)
         return earningreports.json()
 
-    def financial_statements(self, company_ticker=None, isin=None, cik=None, date_asof=None):
-        params = {'token': self.token, "symbols": company_ticker, "isin": isin, "cik": cik, "asOf": date_asof}
+    def financial_statements(self, company_tickers=None, isin=None, cik=None, date_asof=None):
+        params = {'token': self.token, "symbols": company_tickers, "isin": isin, "cik": cik, "asOf": date_asof}
         self.param_initiate.fundamentals_check(params)
         try:
             financialstatements_url = self.__url_call__("fundamentals", "financialStatements")
             financialstatements = requests.get(financialstatements_url, headers=self.headers, params= params)
+            print(financialstatements.url)
+            print(financialstatements.url)
         except requests.exceptions.RequestException as request_denied:
             print(request_denied)
         return financialstatements.json()
 
-    def alpha_beta(self, company_ticker=None, isin=None, cik=None, date_asof=None):
-        params = {'token': self.token, "symbols": company_ticker, "isin": isin, "cik": cik, "asOf": date_asof}
+    def alpha_beta(self, company_tickers=None, isin=None, cik=None, date_asof=None):
+        params = {'token': self.token, "symbols": company_tickers, "isin": isin, "cik": cik, "asOf": date_asof}
         self.param_initiate.fundamentals_check(params)
         try:
             alphabeta_url = self.__url_call__("fundamentals", "alphaBeta")
@@ -336,8 +341,8 @@ class Benzinga:
             print(request_denied)
         return alphabeta.json()
 
-    def company_profile(self, company_ticker=None, isin=None, cik=None, date_asof=None):
-        params = {'token': self.token, "symbols": company_ticker, "isin": isin, "cik": cik, "asOf": date_asof}
+    def company_profile(self, company_tickers=None, isin=None, cik=None, date_asof=None):
+        params = {'token': self.token, "symbols": company_tickers, "isin": isin, "cik": cik, "asOf": date_asof}
         self.param_initiate.fundamentals_check(params)
         try:
             companyprofile_url = self.__url_call__("fundamentals", "companyProfile")
@@ -346,8 +351,8 @@ class Benzinga:
             print(request_denied)
         return company_profile.json()
 
-    def company(self, company_ticker=None, isin=None, cik=None, date_asof=None):
-        params = {'token': self.token, "symbols": company_ticker, "isin": isin, "cik": cik, "asOf": date_asof}
+    def company(self, company_tickers=None, isin=None, cik=None, date_asof=None):
+        params = {'token': self.token, "symbols": company_tickers, "isin": isin, "cik": cik, "asOf": date_asof}
         self.param_initiate.fundamentals_check(params)
         try:
             company_url = self.__url_call__("fundamentals", "company")
@@ -356,8 +361,8 @@ class Benzinga:
             print(request_denied)
         return company.json()
 
-    def share_class_profile_history(self, company_ticker=None, isin=None, cik=None, date_asof=None):
-        params = {'token': self.token, "symbols": company_ticker, "isin": isin, "cik": cik, "asOf": date_asof}
+    def share_class_profile_history(self, company_tickers=None, isin=None, cik=None, date_asof=None):
+        params = {'token': self.token, "symbols": company_tickers, "isin": isin, "cik": cik, "asOf": date_asof}
         self.param_initiate.fundamentals_check(params)
         try:
             profilehistory_url = self.__url_call__("fundamentals", "shareClassProfileHistory")
@@ -366,8 +371,8 @@ class Benzinga:
             print(request_denied)
         return profilehistory.json()
 
-    def asset_classification(self, company_ticker=None, isin=None, cik=None, date_asof=None):
-        params = {'token': self.token, "symbols": company_ticker, "isin": isin, "cik": cik, "asOf": date_asof}
+    def asset_classification(self, company_tickers=None, isin=None, cik=None, date_asof=None):
+        params = {'token': self.token, "symbols": company_tickers, "isin": isin, "cik": cik, "asOf": date_asof}
         self.param_initiate.fundamentals_check(params)
         try:
             asset_url = self.__url_call__("fundamentals", "assetClassification")
@@ -435,11 +440,13 @@ class Benzinga:
 
 if __name__ == '__main__':
     token = "899efcbfda344e089b23589cbddac62b"
+    api_key = "22f84f867c5746fd92ef8e13f5835c02"
     false_token = 0
     company_tickers = "AAPL"
     start_date = "2018-01-01"
+    end_date = "2018-05-05"
     sample_run = Benzinga(token)
-    test = sample_run.batch_history(company_tickers="AAPL")
+    test = sample_run.financial_statements(company_tickers="AAPL")
     sample_run.JSON(test)
 
 

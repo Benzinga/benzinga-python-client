@@ -55,6 +55,9 @@ class Param_Check:
                       "exchanges": self.stri, "types": self.stri}
         self.__para_type_matching__(param_type, dict)
 
+    def batchhistory_check(self, dict):
+        param_type = {"apikey": self.stri, "symbol": self.stri}
+        self.__para_type_matching__(param_type, dict)
 
 
 
