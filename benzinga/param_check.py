@@ -59,6 +59,19 @@ class Param_Check:
         param_type = {"apikey": self.stri, "symbol": self.stri}
         self.__para_type_matching__(param_type, dict)
 
+    def news_check(self, dict):
+        param_type = {"token": self.stri, "pageSize": self.inte, "page": self.inte, "displayOutput": self.stri,
+                  "date": self.stri, "dateFrom": self.stri, "dateTo": self.stri, "lastId": self.stri,
+                  "updatedSince": self.stri, "publishedSince": self.stri, "tickers": self.stri, "channel": self.stri}
+        self.__para_type_matching__(param_type, dict)
+
+    def quantified_news_check(self, dict):
+        param_type = {"token": self.stri, "pagesize": self.inte, "page": self.inte, "date": self.stri,
+                      "date_from": self.stri, "date_to": self.stri, "updated_since": self.inte, "symbols": self.stri}
+        self.__para_type_matching__(param_type, dict)
+
+
+
 
 
 

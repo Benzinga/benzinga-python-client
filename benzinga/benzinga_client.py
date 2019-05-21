@@ -445,8 +445,8 @@ if __name__ == '__main__':
     company_tickers = "AAPL"
     start_date = "2018-01-01"
     end_date = "2018-05-05"
-    sample_run = Benzinga(token)
-    test = sample_run.financial_statements(company_tickers="AAPL")
+    sample_run = Benzinga(api_key)
+    test = sample_run.batch_history(company_tickers="AAPL")
     sample_run.JSON(test)
 
 
