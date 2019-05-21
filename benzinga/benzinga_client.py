@@ -35,6 +35,7 @@ class Benzinga:
         endpoint_type = {"calendar": "%s%s/%s" % (self.url_dict["API v2"], resource, sub_resource),
                          "chart": "%s%s" % (self.url_dict["API v2"], resource),
                          "quote": "%s%s" % (self.url_dict["Data v2"], resource),
+                         "security": "%s%s" % (self.url_dict["Data api v2"], resource),
                          "batchhistory": "%s%s" % (self.url_dict["Data api v2"], resource),
                          "autocomplete": "%s%s" % (self.url_dict["Data v2"], resource),
                          "instruments": "%s%s" % (self.url_dict["Data v3"], resource),
@@ -50,6 +51,8 @@ class Benzinga:
     """Batch Request"""
 
     def batch_history(self, company_tickers = None, date_from = None, date_to = None):
+        if date_from == None and date_to == None:
+            raise IncorrectParameterEntry
         revised_input = "%s:%s:%s"%(company_tickers, date_from, date_to)
         params = {"symbol": revised_input, "apikey": self.token}
         self.param_initiate.batchhistory_check(params)
@@ -77,10 +80,10 @@ class Benzinga:
     """Security"""
 
     def security(self, company_tickers = None, cusip = None):
-        params = {"token": self.token, "symbols": company_tickers, "cusip": cusip}
+        params = {"apikey": self.token, "symbol": company_tickers, "cusip": cusip}
         self.param_initiate.security_check(params)
         try:
-            security_url = self.__url_call__("quote")
+            security_url = self.__url_call__("security")
             security = requests.get(security_url, headers=self.headers, params=params)
         except requests.exceptions.RequestException as request_denied:
             print(request_denied)
@@ -396,8 +399,8 @@ class Benzinga:
 
     """Ownership"""
 
-    def summary(self, company_ticker=None, isin=None, cik=None, date_asof=None):
-        params = {'token': self.token, "symbols": company_ticker, "isin": isin, "cik": cik, "asOf": date_asof}
+    def summary(self, company_tickers=None, isin=None, cik=None, date_asof=None):
+        params = {'token': self.token, "symbols": company_tickers, "isin": isin, "cik": cik, "asOf": date_asof}
         self.param_initiate.fundamentals_check(params)
         try:
             summary_url = self.__url_call__("ownership", "summary")
@@ -405,14 +408,6 @@ class Benzinga:
         except requests.exceptions.RequestException as request_denied:
             print(request_denied)
         return summary.json()
-
-    """Chart"""
-
-    def chart(self, company_tickers, date_range, interval):
-        params = {'symbol': company_tickers.upper(), 'from': date_range, 'interval': interval}
-        url = self.__url_call__("Chart")
-        chart = requests.get(url, headers=self.headers, params=params)
-        return chart.json()
 
     def logos(self, company_tickers = None, filters = None):
         params = {"token": self.token, "symbols": company_tickers, "filters": filters}
@@ -432,11 +427,6 @@ class Benzinga:
         print(result)
         return result
 
-    def result(self, func_output):
-        for object in func_output:
-            print("You have the following options to display: ")
-            for o in func_output[object][0]:
-                print(o)
 
 if __name__ == '__main__':
     token = "899efcbfda344e089b23589cbddac62b"
@@ -446,7 +436,7 @@ if __name__ == '__main__':
     start_date = "2018-01-01"
     end_date = "2018-05-05"
     sample_run = Benzinga(api_key)
-    test = sample_run.batch_history(company_tickers="AAPL")
+    test = sample_run.summary(company_tickers="AAPL")
     sample_run.JSON(test)
 
 

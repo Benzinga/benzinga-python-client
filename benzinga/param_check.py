@@ -47,7 +47,7 @@ class Param_Check:
         self.__para_type_matching__(param_type, dict)
 
     def security_check(self, dict):
-        param_type = {"token": self.stri, "symbols": self.stri, "cusip": self.stri}
+        param_type = {"apikey": self.stri, "symbol": self.stri, "cusip": self.stri}
         self.__para_type_matching__(param_type, dict)
 
     def autocomplete_check(self, dict):
