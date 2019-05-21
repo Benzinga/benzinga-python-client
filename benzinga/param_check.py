@@ -67,7 +67,12 @@ class Param_Check:
 
     def quantified_news_check(self, dict):
         param_type = {"token": self.stri, "pagesize": self.inte, "page": self.inte, "date": self.stri,
-                      "date_from": self.stri, "date_to": self.stri, "updated_since": self.inte, "symbols": self.stri}
+                      "date_from": self.stri, "date_to": self.stri, "updated_since": self.inte, "symbols": self.stri,
+                      "apikey": self.stri}
+        self.__para_type_matching__(param_type, dict)
+
+    def movers_check(self, dict):
+        param_type = {"apikey": self.stri, "fromDate": self.stri, "toDate": self.stri}
         self.__para_type_matching__(param_type, dict)
 
 

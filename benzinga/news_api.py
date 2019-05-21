@@ -29,6 +29,7 @@ class News_API:
                          "news-top-stories": "%s%s/%s" % (self.url_dict["API V2"], resource, sub_resource),
                          "channels": "%s%s/%s" % (self.url_dict["API V2"], resource, sub_resource),
                          "newsquantified": "%s%s/%s" % (self.url_dict["API V2"], resource, sub_resource)}
+
         url_string = endpoint_type[resource]
         return url_string
 
@@ -76,7 +77,7 @@ class News_API:
             print(request_denied)
         return channels.json()
 
-    def quantified_news(self, pagesize=None, page=None, display_output=None, base_date=None, date_from=None,
+    def quantified_news(self, pagesize=None, page=None, base_date=None, date_from=None,
                         date_to=None, company_tickers = None, updated_since = None):
         params = {"token": self.token, "pagesize": pagesize, "page": page, "date": base_date,
                   "date_from": date_from, "date_to": date_to, "updated_since": updated_since,
@@ -89,7 +90,6 @@ class News_API:
             print(request_denied)
         return quantnews.json()
 
-
     def JSON(self, func_output):
         result = json.dumps(func_output, indent= 4)
         print(result)
@@ -98,8 +98,9 @@ class News_API:
 if __name__ == '__main__':
     token = "899efcbfda344e089b23589cbddac62b"
     api_key = "22f84f867c5746fd92ef8e13f5835c02"
-    sample_run = News_API(token)
-    test = sample_run.news(display_output="full")
+    newapikey = "54b595f497164e0499409ca93342e394"
+    sample_run = News_API(newapikey)
+    test = sample_run.news()
     print(sample_run.JSON(test))
 
 

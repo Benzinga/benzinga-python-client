@@ -13,7 +13,8 @@ class Benzinga:
         self.url_dict = {"API v1": "https://api.benzinga.com/api/v1/" , "API v1.v1": "https://api.benzinga.com/api/v1.1/",
                          "API v2": "https://api.benzinga.com/api/v2/", "Data v3": "http://data-api.zingbot.bz/rest/v3/",
                          "Data v2": "https://data.benzinga.com/rest/v2/", "V3": "http://data-api.zingbot.bz/rest/v3/",
-                         "Data api v2": "https://api.benzinga.io/dataapi/rest/v2/"}
+                         "Data api v2": "https://api.benzinga.io/dataapi/rest/v2/",
+                         "API rest": "https://api.benzinga.io/data/rest/"}
         self.param_initiate = param_check.Param_Check()
         self.__token_check__(self.token)
 
@@ -42,7 +43,8 @@ class Benzinga:
                          "quoteDelayed": "%s%s" % (self.url_dict["API v1"], resource),
                          "logos": "%s%s" % (self.url_dict["API v1.v1"], resource),
                          "fundamentals": "%s%s/%s" % (self.url_dict["V3"], resource, sub_resource),
-                         "ownership": "%s%s/%s" % (self.url_dict["V3"], resource, sub_resource)}
+                         "ownership": "%s%s/%s" % (self.url_dict["V3"], resource, sub_resource),
+                         "movers": "%s%s/%s" % (self.url_dict["API rest"], resource, sub_resource)}
         if resource not in endpoint_type:
             raise URLIncorrectlyFormattedError
         url_string = endpoint_type[resource]
@@ -419,6 +421,18 @@ class Benzinga:
             print(request_denied)
         return logos.json()
 
+    """Movers"""
+
+    def movers(self, date_from = None, date_to = None):
+        params = {"apikey": self.token, "fromDate": date_from, "toDate": date_to}
+        self.param_initiate.movers_check(params)
+        try:
+            movers_url = self.__url_call__("movers")
+            movers = requests.get(movers_url, headers=self.headers, params=params)
+        except requests.exceptions.RequestException as request_denied:
+            print(request_denied)
+        return movers.json()
+
 
     """Output"""
 
@@ -431,12 +445,13 @@ class Benzinga:
 if __name__ == '__main__':
     token = "899efcbfda344e089b23589cbddac62b"
     api_key = "22f84f867c5746fd92ef8e13f5835c02"
+    newapikey = "54b595f497164e0499409ca93342e394"
     false_token = 0
     company_tickers = "AAPL"
     start_date = "2018-01-01"
     end_date = "2018-05-05"
-    sample_run = Benzinga(api_key)
-    test = sample_run.summary(company_tickers="AAPL")
+    sample_run = Benzinga(newapikey)
+    test = sample_run.movers()
     sample_run.JSON(test)
 
 
