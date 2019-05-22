@@ -32,8 +32,14 @@ class Automate_Movers:
             return None
 
     def __time_range__(self):
-        if self.date_from != None:
-            range_dict = {}
+        if self.date_from != None and len(date_from) <= 3:
+            range_dict = {"-1d": "Previous Day", "-1w": "Past Week", "-1y": "Past Year", "YTD": "Year-To-Date"}
+            range_type = range_dict[self.date_from]
+            return range_type
+        else:
+            return None
+
+    def __sector__
 
 
 

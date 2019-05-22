@@ -107,7 +107,7 @@ class Benzinga:
 
     def instruments(self, query = None, date_from=None, date_to =None, date_asof=None,
                     sort_field=None, sort_dir=None):
-        fields = "symbol,marketcap,previousClose,open,close,change,changePercent"
+        fields = "symbol,marketcap,ipoDate,previousClose,open,close,change,changePercent,sector"
         params = {"token": self.token, "fields": fields, "query":query,
                   "from": date_from, "to": date_to, "asOf": date_asof}
         self.param_initiate.instruments_check(params)
@@ -428,14 +428,26 @@ class Benzinga:
 
     def movers(self, session = None, date_from = None, date_to = None, max_results = None,
                market_cap_gt = None, close_gt = None, sector = None, marketcap_lt = None):
-        market_cap_greater = "marketcap_gt_%s" % (market_cap_gt)
+        if market_cap_gt != None:
+            market_cap_greater =  ";marketcap_gt_%s" % (market_cap_gt)
+        else:
+            market_cap_greater = ""
         if marketcap_lt != None:
-            marketcap_less = "marketcap_lt_%s" % (marketcap_lt)
+            marketcap_less = ";marketcap_lt_%s" % (marketcap_lt)
         else:
             marketcap_less = ""
-        close_greater = "close_gt_%s"% (close_gt)
-        sector = "sector_in_%s" % (sector)
-        screener_query = "%s;%s;%s;%s"% (market_cap_greater, marketcap_less, close_greater,sector)
+        if close_gt != None:
+            close_greater = ";close_gt_%s" % (close_gt)
+        else:
+            close_greater = ""
+        if sector != None:
+            sector = ";sector_in_%s" % (sector)
+        else:
+            sector = ""
+        if market_cap_gt == None and marketcap_lt == None and close_gt == None and sector ==None:
+            screener_query = None
+        else:
+            screener_query = "%s%s%s%s"% (market_cap_greater, marketcap_less, close_greater,sector)
         print(screener_query)
         params = {"apikey": self.token, "from": date_from, "to": date_to, "session": session,
                   "screenerQuery": screener_query, "maxResults": max_results}
@@ -466,8 +478,8 @@ if __name__ == '__main__':
     start_date = "2018-01-01"
     end_date = "2018-05-05"
     sample_run = Benzinga(token)
-    test = sample_run.movers(date_from= "2019-04-01", date_to="2019-05-22", max_results=10, marketcap_lt="2b",
-                             market_cap_gt="1b", close_gt= "90", sector= "healthcare")
+    test = sample_run.movers(close_gt=90)
+    test2 = sample_run.instruments()
     sample_run.JSON(test)
 
 
