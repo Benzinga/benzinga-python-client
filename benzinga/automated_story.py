@@ -3,11 +3,40 @@ import datetime
 from fpdf import FPDF
 
 
-class Automate:
+class Automate_Movers:
 
-    def __init__(self, api_token):
+    def __init__(self, api_token, session = None, date_from = None, date_to = None, max_results = None,
+                 market_cap_gt = None, close_gt = None, sector = None, marketcap_lt = None):
         self.token = api_token
+        self.session = session
+        self.date_from = date_from
+        self.date_to = date_to
+        self.max_results = max_results
+        self.market_cap_gt = market_cap_gt
+        self.close_gt = close_gt
+        self.sector = sector
+        self.marketcap_lt = marketcap_lt
+        initiate = benzinga_client.Benzinga(self.token)
+        self.movers_output = initiate.movers(session = self.session, date_from = self.date_from, date_to = self.date_to,
+                                             max_results = self.max_results, market_cap_gt = self.market_cap_gt,
+                                             close_gt = self.close_gt, sector = self.sector,
+                                             marketcap_lt = self.marketcap_lt)
         self._template_()
+
+    def __session_type_check__(self):
+        if self.session != None:
+            session_dict = {"PRE_MARKET": "Pre-Market", "AFTER_MARKET": "After-Market", "REGULAR": "Regular"}
+            session_type = session_dict[self.session]
+            return session_type
+        else:
+            return None
+
+    def __time_range__(self):
+        if self.date_from != None:
+            range_dict = {}
+
+
+
 
     def __gainers_output__(self, company_name, change_percent, close):
         output = "%s, Inc. shares rose %0.1f percent to close at $%0.2f in pre-market trading."\
@@ -21,9 +50,7 @@ class Automate:
         return output
 
     def __retrieve__(self):
-        initiate = benzinga_client.Benzinga(self.token)
-        output = initiate.movers()
-        print(output)
+        output = self.movers_output
         gainers = output["result"]["gainers"]
         losers = output["result"]["losers"]
         gainers_list = []
@@ -60,15 +87,17 @@ class Automate:
         pdf.output("sampledemo.pdf")
 
 
+class Automated_Ratings:
 
-
-
-
-
+    def __init__(self, api_token):
+        self.token = api_token
 
 
 if __name__ == '__main__':
-    api_token = "54b595f497164e0499409ca93342e394"
-    auto = Automate(api_token)
+    token = "899efcbfda344e089b23589cbddac62b"
+    api_key = "22f84f867c5746fd92ef8e13f5835c02"
+    newapikey = "54b595f497164e0499409ca93342e394"
+    auto = Automate_Movers(token, session= "REGULAR" date_from= "2019-05-20", date_to="2019-05-22", max_results=10, marketcap_lt="2b",
+                             market_cap_gt="1b", close_gt= "90", sector= "healthcare")
 
 

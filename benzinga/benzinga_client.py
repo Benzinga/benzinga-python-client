@@ -14,7 +14,7 @@ class Benzinga:
                          "API v2": "https://api.benzinga.com/api/v2/", "Data v3": "http://data-api.zingbot.bz/rest/v3/",
                          "Data v2": "https://data.benzinga.com/rest/v2/", "V3": "http://data-api.zingbot.bz/rest/v3/",
                          "Data api v2": "https://api.benzinga.io/dataapi/rest/v2/",
-                         "API rest": "https://api.benzinga.io/data/rest/"}
+                         "API rest": "https://data.benzinga.com/quote-store/api/"}
         self.param_initiate = param_check.Param_Check()
         self.__token_check__(self.token)
 
@@ -105,14 +105,16 @@ class Benzinga:
 
     """Instruments"""
 
-    def instruments(self, fields = None, query = None, date_from=None, date_to =None, date_asof=None,
+    def instruments(self, query = None, date_from=None, date_to =None, date_asof=None,
                     sort_field=None, sort_dir=None):
-        params = {"token": self.token, "fields": fields, "query":query, "start_date": start_date, "date_from":date_from,
-                  "date_to":date_to, "date_asof": date_asof, "sortfield":sort_field, "sortdir":sort_dir}
+        fields = "symbol,marketcap,previousClose,open,close,change,changePercent"
+        params = {"token": self.token, "fields": fields, "query":query,
+                  "from": date_from, "to": date_to, "asOf": date_asof}
         self.param_initiate.instruments_check(params)
         try:
             instruments_url = self.__url_call__("instruments")
             instruments = requests.get(instruments_url, headers=self.headers, params=params)
+            print(instruments.url)
         except requests.exceptions.RequestException as request_denied:
             print(request_denied)
         return instruments.json()
@@ -230,6 +232,7 @@ class Benzinga:
         try:
             ratings_url = self.__url_call__("calendar", "ratings")
             ratings = requests.get(ratings_url, headers=self.headers, params=params)
+            print(ratings.url)
         except requests.exceptions.RequestException as request_denied:
             print(request_denied)
         return ratings.json()
@@ -423,12 +426,24 @@ class Benzinga:
 
     """Movers"""
 
-    def movers(self, date_from = None, date_to = None):
-        params = {"apikey": self.token, "fromDate": date_from, "toDate": date_to}
+    def movers(self, session = None, date_from = None, date_to = None, max_results = None,
+               market_cap_gt = None, close_gt = None, sector = None, marketcap_lt = None):
+        market_cap_greater = "marketcap_gt_%s" % (market_cap_gt)
+        if marketcap_lt != None:
+            marketcap_less = "marketcap_lt_%s" % (marketcap_lt)
+        else:
+            marketcap_less = ""
+        close_greater = "close_gt_%s"% (close_gt)
+        sector = "sector_in_%s" % (sector)
+        screener_query = "%s;%s;%s;%s"% (market_cap_greater, marketcap_less, close_greater,sector)
+        print(screener_query)
+        params = {"apikey": self.token, "from": date_from, "to": date_to, "session": session,
+                  "screenerQuery": screener_query, "maxResults": max_results}
         self.param_initiate.movers_check(params)
         try:
             movers_url = self.__url_call__("movers")
             movers = requests.get(movers_url, headers=self.headers, params=params)
+            print(movers.url)
         except requests.exceptions.RequestException as request_denied:
             print(request_denied)
         return movers.json()
@@ -450,9 +465,11 @@ if __name__ == '__main__':
     company_tickers = "AAPL"
     start_date = "2018-01-01"
     end_date = "2018-05-05"
-    sample_run = Benzinga(newapikey)
-    test = sample_run.movers()
+    sample_run = Benzinga(token)
+    test = sample_run.movers(date_from= "2019-04-01", date_to="2019-05-22", max_results=10, marketcap_lt="2b",
+                             market_cap_gt="1b", close_gt= "90", sector= "healthcare")
     sample_run.JSON(test)
+
 
 
 

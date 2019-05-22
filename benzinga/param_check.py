@@ -41,9 +41,8 @@ class Param_Check:
         self.__para_type_matching__(param_type, dict)
 
     def instruments_check(self, dict):
-        param_type = {"token": self.stri, "fields": self.stri, "query": self.stri, "start_date": self.stri,
-                  "date_from": self.stri, "date_to": self.stri, "date_asof": self.stri, "sortfield": self.stri,
-                  "sortdir": self.stri}
+        param_type = {"token": self.stri, "fields": self.stri, "query": self.stri, "to": self.stri,
+                      "from": self.stri, "asOf": self.stri, "sortfield": self.stri, "sortdir": self.stri}
         self.__para_type_matching__(param_type, dict)
 
     def security_check(self, dict):
@@ -72,7 +71,8 @@ class Param_Check:
         self.__para_type_matching__(param_type, dict)
 
     def movers_check(self, dict):
-        param_type = {"apikey": self.stri, "fromDate": self.stri, "toDate": self.stri}
+        param_type = {"apikey": self.stri, "from": self.stri, "to": self.stri, "session": self.stri,
+                      "maxResults": self.stri, "screenerQuery":self.stri}
         self.__para_type_matching__(param_type, dict)
 
 
