@@ -478,7 +478,7 @@ if __name__ == '__main__':
     start_date = "2018-01-01"
     end_date = "2018-05-05"
     sample_run = Benzinga(token)
-    test = sample_run.movers(close_gt=90)
+    test = sample_run.ratings(company_tickers="AAPL")
     test2 = sample_run.instruments()
     sample_run.JSON(test)
 

@@ -21,38 +21,33 @@ class Automate_Movers:
                                              max_results = self.max_results, market_cap_gt = self.market_cap_gt,
                                              close_gt = self.close_gt, sector = self.sector,
                                              marketcap_lt = self.marketcap_lt)
+
         self._template_()
 
     def __session_type_check__(self):
-        if self.session != None:
-            session_dict = {"PRE_MARKET": "Pre-Market", "AFTER_MARKET": "After-Market", "REGULAR": "Regular"}
-            session_type = session_dict[self.session]
-            return session_type
-        else:
-            return None
+        session_dict = {"PRE_MARKET": "Pre-Market", "AFTER_MARKET": "After-Market", "REGULAR": "Regular"}
+        session_type = session_dict[self.session]
+        return session_type
 
     def __time_range__(self):
-        if self.date_from != None and len(date_from) <= 3:
+        if self.date_from != None and len(self.date_from) <= 3:
             range_dict = {"-1d": "Previous Day", "-1w": "Past Week", "-1y": "Past Year", "YTD": "Year-To-Date"}
             range_type = range_dict[self.date_from]
             return range_type
         else:
             return None
 
-    def __sector__
-
-
-
-
     def __gainers_output__(self, company_name, change_percent, close):
-        output = "%s, Inc. shares rose %0.1f percent to close at $%0.2f in pre-market trading."\
-                 %(company_name, abs(change_percent), close)
+        session = self.__session_type_check__()
+        output = "%s, Inc. shares rose %0.1f percent to close at $%0.2f in %s trading."\
+                 %(company_name, abs(change_percent), close, session.lower())
         return output
 
     def __losers_output__(self, company_name, change_percent, close):
+        session = self.__session_type_check__()
         nonnegated_change = abs(change_percent)
-        output = "%s, Inc. shares fell %0.1f percent to close at $%0.2f in pre-market trading."\
-                 % (company_name, nonnegated_change, close)
+        output = "%s, Inc. shares fell %0.1f percent to close at $%0.2f in %s trading."\
+                 % (company_name, nonnegated_change, close, session.lower())
         return output
 
     def __retrieve__(self):
@@ -68,14 +63,20 @@ class Automate_Movers:
             losers_list.append(self.__losers_output__(comp["companyName"],
                                                         comp["changePercent"], comp["close"]))
         total_movement = len(gainers_list) + len(losers_list)
-        date = datetime.datetime.strptime(output["result"]["toDate"][0:10], "%Y-%m-%d")
-        weekDays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-        day = weekDays[date.weekday()]
+        time_check = self.__time_range__()
+        if time_check == None:
+            date = datetime.datetime.strptime(output["result"]["toDate"][0:10], "%Y-%m-%d")
+            weekDays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+            day = weekDays[date.weekday()]
+        else:
+            day = time_check
         return gainers_list, losers_list, total_movement, day
 
     def _template_(self):
+        session = self.__session_type_check__()
         retrieve_call = self.__retrieve__()
-        sample_heading = "%s Stocks Moving In %s's Pre-Market Session" % (retrieve_call[2], retrieve_call[3])
+        sample_heading = "%s %s Stocks Moving In %s's %s Session" % (retrieve_call[2], self.sector.capitalize(),
+                                                                             retrieve_call[3], session)
         pdf = FPDF(orientation='L', unit='mm', format='A4')
         pdf.add_page()
         pdf.set_font("Arial", size=16, style="B")
@@ -103,7 +104,6 @@ if __name__ == '__main__':
     token = "899efcbfda344e089b23589cbddac62b"
     api_key = "22f84f867c5746fd92ef8e13f5835c02"
     newapikey = "54b595f497164e0499409ca93342e394"
-    auto = Automate_Movers(token, session= "REGULAR" date_from= "2019-05-20", date_to="2019-05-22", max_results=10, marketcap_lt="2b",
-                             market_cap_gt="1b", close_gt= "90", sector= "healthcare")
+    auto = Automate_Movers(token, session= "REGULAR", date_from= "-1y", max_results="50", sector= "healthcare")
 
 
