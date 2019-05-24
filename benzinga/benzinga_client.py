@@ -2,7 +2,7 @@ import requests, json
 import datetime as dt
 import param_check
 from benzinga_errors import (TokenAuthenticationError, RequestAPIEndpointError, IncorrectParameterEntry,
-                             URLIncorrectlyFormattedError )
+                             URLIncorrectlyFormattedError, MissingParameter)
 
 class Benzinga: 
 
@@ -52,12 +52,12 @@ class Benzinga:
 
     """Batch Request"""
 
-    def batch_history(self, company_tickers = None, date_from = None, date_to = None):
-        if date_from == None and date_to == None:
-            raise IncorrectParameterEntry
+    def batch_history(self, company_tickers, date_from, date_to):
+        self.param_initiate.missing_param_calls(params_list)
         revised_input = "%s:%s:%s"%(company_tickers, date_from, date_to)
         params = {"symbol": revised_input, "apikey": self.token}
         self.param_initiate.batchhistory_check(params)
+        self.param_initiate.missing_param_calls(params)
         try:
             batchhistory_url = self.__url_call__("batchhistory")
             batchhistory = requests.get(batchhistory_url, headers=self.headers, params=params)
@@ -68,20 +68,21 @@ class Benzinga:
 
     """Autocomplete"""
 
-    def auto_complete(self, company_tickers = None, limit = None, search_method = None, exchanges = None, types = None):
+    def auto_complete(self, company_tickers, limit = None, search_method = None, exchanges = None, types = None):
         params = {"token": self.token, "query": company_tickers, "limit": limit, "searchMethod": search_method,
                   "exchanges": exchanges, "types": types}
         self.param_initiate.autocomplete_check(params)
         try:
             autocomplete_url = self.__url_call__("autocomplete")
             autocomplete = requests.get(autocomplete_url, headers=self.headers, params=params)
+            print(autocomplete.url)
         except requests.exceptions.RequestException as request_denied:
             print(request_denied)
         return autocomplete.json()
 
     """Security"""
 
-    def security(self, company_tickers = None, cusip = None):
+    def security(self, company_tickers, cusip = None):
         params = {"apikey": self.token, "symbol": company_tickers, "cusip": cusip}
         self.param_initiate.security_check(params)
         try:
@@ -93,7 +94,7 @@ class Benzinga:
 
     """Quote"""
 
-    def quote(self, company_tickers = None):
+    def quote(self, company_tickers):
         params = {"token": self.token, "symbols": company_tickers}
         self.param_initiate.fundamentals_check(params)
         try:
@@ -105,11 +106,32 @@ class Benzinga:
 
     """Instruments"""
 
-    def instruments(self, query = None, date_from=None, date_to =None, date_asof=None,
-                    sort_field=None, sort_dir=None):
-        fields = "symbol,marketcap,ipoDate,previousClose,open,close,change,changePercent,sector"
-        params = {"token": self.token, "fields": fields, "query":query,
-                  "from": date_from, "to": date_to, "asOf": date_asof}
+    def instruments(self, date_from=None, date_to =None, date_asof=None, market_cap_gt = None,
+                    market_cap_lt= None, close_gt = None, sector = None, sort_field=None, sort_dir=None):
+        fields = "symbol,marketcap,exchange," \
+                 "isin,country,name,previousClose,open,close,change,changePercent,sector"
+        if market_cap_gt != None:
+            market_cap_greater = ";marketcap_gt_%s" % (market_cap_gt)
+        else:
+            market_cap_greater = ""
+        if market_cap_lt != None:
+            marketcap_less = ";marketcap_lt_%s" % (market_cap_lt)
+        else:
+            marketcap_less = ""
+        if close_gt != None:
+            close_greater = ";close_gt_%s" % (close_gt)
+        else:
+            close_greater = ""
+        if sector != None:
+            sector = ";sector_in_%s" % (sector)
+        else:
+            sector = ""
+        if market_cap_gt == None and market_cap_lt == None and close_gt == None and sector ==None:
+            query = None
+        else:
+            query = "%s%s%s%s"% (market_cap_greater, marketcap_less, close_greater, sector)
+        params = {"token": self.token, "fields": fields, "query": query,
+                  "from": date_from, "to": date_to, "asOf": date_asof, "sortfield": sort_field, "sortdir": sort_dir}
         self.param_initiate.instruments_check(params)
         try:
             instruments_url = self.__url_call__("instruments")
@@ -121,10 +143,10 @@ class Benzinga:
 
     "Calendar Oriented Data"
 
-    def dividends(self, page=None, pagesize=None, base_date=None, date_from=None, date_to=None,
+    def dividends(self, page=None, pagesize=None, date_asof=None, date_from=None, date_to=None,
                   company_tickers=None, importance=None, date_sort=None, updated_params=None,
                   div_yield_operation=None, div_yield = None):
-        params = {'token': self.token, "page": page, "pagesize": pagesize, "parameters[date]": base_date,
+        params = {'token': self.token, "page": page, "pagesize": pagesize, "parameters[date]": date_asof,
                   "parameters[date_from]": date_from, "parameters[date_to]": date_to,
                   "parameters[tickers]":company_tickers,"parameters[importance]": importance,
                   "parameters[date_sort]": date_sort, "parameters[updated]": updated_params,
@@ -138,9 +160,9 @@ class Benzinga:
             print(request_denied)
         return dividends.json()
 
-    def earnings(self, page=None, pagesize=None, base_date=None, date_from=None, date_to=None,
+    def earnings(self, page=None, pagesize=None, date_asof=None, date_from=None, date_to=None,
                   company_tickers=None, importance=None, date_sort=None, updated_params=None):
-        params = {'token': self.token, "page": page, "pagesize": pagesize, "parameters[date]": base_date,
+        params = {'token': self.token, "page": page, "pagesize": pagesize, "parameters[date]": date_asof,
                   "parameters[date_from]": date_from, "parameters[date_to]": date_to, "parameters[tickers]"
                   :company_tickers, "parameters[importance]": importance, "parameters[date_sort]": date_sort,
                   "parameters[updated]": updated_params}
@@ -152,9 +174,9 @@ class Benzinga:
             print(request_denied)
         return earnings.json()
 
-    def splits(self, page=None, pagesize=None, base_date=None, date_from=None, date_to=None,
+    def splits(self, page=None, pagesize=None, date_asof=None, date_from=None, date_to=None,
                   company_tickers=None, importance=None, date_sort=None, updated_params=None):
-        params = {'token': self.token, "page": page, "pagesize": pagesize, "parameters[date]": base_date,
+        params = {'token': self.token, "page": page, "pagesize": pagesize, "parameters[date]": date_asof,
                   "parameters[date_from]": date_from, "parameters[date_to]": date_to, "parameters[tickers]"
                   :company_tickers, "parameters[importance]": importance, "parameters[date_sort]": date_sort,
                   "parameters[updated]": updated_params}
@@ -166,11 +188,11 @@ class Benzinga:
             print(request_denied)
         return splits.json()
 
-    def economics(self, page=None, pagesize=None, base_date=None, date_from=None, date_to=None,
-                    company_tickers=None, importance=None, date_sort=None, updated_params=None, country=None):
-        params = {'token': self.token, "page": page, "pagesize": pagesize, "parameters[date]": base_date,
-                  "parameters[date_from]": date_from, "parameters[date_to]": date_to, "parameters[tickers]"
-                  : company_tickers, "parameters[importance]": importance, "parameters[date_sort]": date_sort,
+    def economics(self, page=None, pagesize=None, date_asof=None, date_from=None, date_to=None,
+                     importance=None, date_sort=None, updated_params=None, country=None):
+        params = {'token': self.token, "page": page, "pagesize": pagesize, "parameters[date]": date_asof,
+                  "parameters[date_from]": date_from, "parameters[date_to]": date_to,
+                  "parameters[importance]": importance, "parameters[date_sort]": date_sort,
                   "parameters[updated]": updated_params, "country": country}
         self.param_initiate.calendar_check(params)
         try:
@@ -180,9 +202,9 @@ class Benzinga:
             print(request_denied)
         return economics.json()
 
-    def guidance(self, page=None, pagesize=None, base_date=None, date_from=None, date_to=None,
+    def guidance(self, page=None, pagesize=None, date_asof=None, date_from=None, date_to=None,
                     company_tickers=None, importance=None, date_sort=None, updated_params=None, country=None):
-        params = {'token': self.token, "page": page, "pagesize": pagesize, "parameters[date]": base_date,
+        params = {'token': self.token, "page": page, "pagesize": pagesize, "parameters[date]": date_asof,
                   "parameters[date_from]": date_from, "parameters[date_to]": date_to, "parameters[tickers]"
                   : company_tickers, "parameters[importance]": importance, "parameters[date_sort]": date_sort,
                   "parameters[updated]": updated_params, "country": country}
@@ -194,9 +216,9 @@ class Benzinga:
             print(request_denied)
         return guidance.json()
 
-    def ipo(self, page=None, pagesize=None, base_date=None, date_from=None, date_to=None,
+    def ipo(self, page=None, pagesize=None, date_asof=None, date_from=None, date_to=None,
                   company_tickers=None, importance=None, date_sort=None, updated_params=None):
-        params = {'token': self.token, "page": page, "pagesize": pagesize, "parameters[date]": base_date,
+        params = {'token': self.token, "page": page, "pagesize": pagesize, "parameters[date]": date_asof,
                   "parameters[date_from]": date_from, "parameters[date_to]": date_to, "parameters[tickers]"
                   :company_tickers, "parameters[importance]": importance, "parameters[date_sort]": date_sort,
                   "parameters[updated]": updated_params}
@@ -208,9 +230,9 @@ class Benzinga:
             print(request_denied)
         return ipo.json()
 
-    def retail(self, page=None, pagesize=None, base_date=None, date_from=None, date_to=None,
+    def retail(self, page=None, pagesize=None, date_asof=None, date_from=None, date_to=None,
                   company_tickers=None, importance=None, date_sort=None, updated_params=None):
-        params = {'token': self.token, "page": page, "pagesize": pagesize, "parameters[date]": base_date,
+        params = {'token': self.token, "page": page, "pagesize": pagesize, "parameters[date]": date_asof,
                   "parameters[date_from]": date_from, "parameters[date_to]": date_to, "parameters[tickers]"
                   :company_tickers, "parameters[importance]": importance, "parameters[date_sort]": date_sort,
                   "parameters[updated]": updated_params}
@@ -222,9 +244,9 @@ class Benzinga:
             print(request_denied)
         return retail.json()
 
-    def ratings(self, page=None, pagesize=None, base_date=None, date_from=None, date_to=None,
+    def ratings(self, page=None, pagesize=None, date_asof=None, date_from=None, date_to=None,
                   company_tickers=None, importance=None, date_sort=None, updated_params=None, action=None):
-        params = {'token': self.token, "page": page, "pagesize": pagesize, "parameters[date]": base_date,
+        params = {'token': self.token, "page": page, "pagesize": pagesize, "parameters[date]": date_asof,
                   "parameters[date_from]": date_from, "parameters[date_to]": date_to, "parameters[tickers]"
                   :company_tickers, "parameters[importance]": importance, "parameters[date_sort]": date_sort,
                   "parameters[updated]": updated_params, "parameters[action]": action}
@@ -237,9 +259,9 @@ class Benzinga:
             print(request_denied)
         return ratings.json()
 
-    def conference_calls(self, page=None, pagesize=None, base_date=None, date_from=None, date_to=None,
+    def conference_calls(self, page=None, pagesize=None, date_asof=None, date_from=None, date_to=None,
                   company_tickers=None, importance=None, date_sort=None, updated_params=None):
-        params = {'token': self.token, "page": page, "pagesize": pagesize, "parameters[date]": base_date,
+        params = {'token': self.token, "page": page, "pagesize": pagesize, "parameters[date]": date_asof,
                   "parameters[date_from]": date_from, "parameters[date_to]": date_to, "parameters[tickers]"
                   :company_tickers, "parameters[importance]": importance, "parameters[date_sort]": date_sort,
                   "parameters[updated]": updated_params}
@@ -253,7 +275,7 @@ class Benzinga:
 
     """Financial Fundamentals"""
 
-    def fundamentals(self, company_tickers=None, isin=None, cik=None, date_asof=None):
+    def fundamentals(self, company_tickers, isin=None, cik=None, date_asof=None):
         params = {'token': self.token, "symbols": company_tickers, "isin": isin, "cik": cik, "asOf": date_asof}
         self.param_initiate.fundamentals_check(params)
         try:
@@ -265,7 +287,7 @@ class Benzinga:
         return financials.json()
     
 
-    def financials(self, company_tickers=None, isin=None, cik=None, date_asof=None, period=None, reporttype=None):
+    def financials(self, company_tickers, isin=None, cik=None, date_asof=None, period=None, reporttype=None):
         params = {'token': self.token, "symbols": company_tickers, "isin": isin, "cik": cik, "asOf": date_asof,
                   "period": period, "reportType": reporttype}
         self.param_initiate.fundamentals_check(params)
@@ -277,7 +299,7 @@ class Benzinga:
             print(request_denied)
         return financials.json()
 
-    def valuation_ratios(self, company_tickers=None, isin=None, cik=None, date_asof=None):
+    def valuation_ratios(self, company_tickers, isin=None, cik=None, date_asof=None):
         params = {'token': self.token, "symbols": company_tickers, "isin": isin, "cik": cik, "asOf": date_asof}
         self.param_initiate.fundamentals_check(params)
         try:
@@ -287,7 +309,7 @@ class Benzinga:
             print(request_denied)
         return valuation.json()
 
-    def earning_ratios(self, company_tickers=None, isin=None, cik=None, date_asof=None):
+    def earning_ratios(self, company_tickers, isin=None, cik=None, date_asof=None):
         params = {'token': self.token, "symbols": company_tickers, "isin": isin, "cik": cik, "asOf": date_asof}
         self.param_initiate.fundamentals_check(params)
         try:
@@ -297,7 +319,7 @@ class Benzinga:
             print(request_denied)
         return earnings.json()
 
-    def operation_ratios(self, company_tickers=None, isin=None, cik=None, date_asof=None):
+    def operation_ratios(self, company_tickers, isin=None, cik=None, date_asof=None):
         params = {'token': self.token, "symbols": company_tickers, "isin": isin, "cik": cik, "asOf": date_asof}
         self.param_initiate.fundamentals_check(params)
         try:
@@ -307,7 +329,7 @@ class Benzinga:
             print(request_denied)
         return operations.json()
 
-    def share_class(self, company_tickers=None, isin=None, cik=None, date_asof=None):
+    def share_class(self, company_tickers, isin=None, cik=None, date_asof=None):
         params = {'token': self.token, "symbols": company_tickers, "isin": isin, "cik": cik, "asOf": date_asof}
         self.param_initiate.fundamentals_check(params)
         try:
@@ -317,7 +339,7 @@ class Benzinga:
             print(request_denied)
         return shareclass.json()
 
-    def earning_reports(self, company_tickers=None, isin=None, cik=None, date_asof=None):
+    def earning_reports(self, company_tickers, isin=None, cik=None, date_asof=None):
         params = {'token': self.token, "symbols": company_tickers, "isin": isin, "cik": cik, "asOf": date_asof}
         self.param_initiate.fundamentals_check(params)
         try:
@@ -327,7 +349,7 @@ class Benzinga:
             print(request_denied)
         return earningreports.json()
 
-    def financial_statements(self, company_tickers=None, isin=None, cik=None, date_asof=None):
+    def financial_statements(self, company_tickers, isin=None, cik=None, date_asof=None):
         params = {'token': self.token, "symbols": company_tickers, "isin": isin, "cik": cik, "asOf": date_asof}
         self.param_initiate.fundamentals_check(params)
         try:
@@ -339,7 +361,7 @@ class Benzinga:
             print(request_denied)
         return financialstatements.json()
 
-    def alpha_beta(self, company_tickers=None, isin=None, cik=None, date_asof=None):
+    def alpha_beta(self, company_tickers, isin=None, cik=None, date_asof=None):
         params = {'token': self.token, "symbols": company_tickers, "isin": isin, "cik": cik, "asOf": date_asof}
         self.param_initiate.fundamentals_check(params)
         try:
@@ -349,7 +371,7 @@ class Benzinga:
             print(request_denied)
         return alphabeta.json()
 
-    def company_profile(self, company_tickers=None, isin=None, cik=None, date_asof=None):
+    def company_profile(self, company_tickers, isin=None, cik=None, date_asof=None):
         params = {'token': self.token, "symbols": company_tickers, "isin": isin, "cik": cik, "asOf": date_asof}
         self.param_initiate.fundamentals_check(params)
         try:
@@ -359,7 +381,7 @@ class Benzinga:
             print(request_denied)
         return company_profile.json()
 
-    def company(self, company_tickers=None, isin=None, cik=None, date_asof=None):
+    def company(self, company_tickers, isin=None, cik=None, date_asof=None):
         params = {'token': self.token, "symbols": company_tickers, "isin": isin, "cik": cik, "asOf": date_asof}
         self.param_initiate.fundamentals_check(params)
         try:
@@ -369,7 +391,7 @@ class Benzinga:
             print(request_denied)
         return company.json()
 
-    def share_class_profile_history(self, company_tickers=None, isin=None, cik=None, date_asof=None):
+    def share_class_profile_history(self, company_tickers, isin=None, cik=None, date_asof=None):
         params = {'token': self.token, "symbols": company_tickers, "isin": isin, "cik": cik, "asOf": date_asof}
         self.param_initiate.fundamentals_check(params)
         try:
@@ -379,7 +401,7 @@ class Benzinga:
             print(request_denied)
         return profilehistory.json()
 
-    def asset_classification(self, company_tickers=None, isin=None, cik=None, date_asof=None):
+    def asset_classification(self, company_tickers, isin=None, cik=None, date_asof=None):
         params = {'token': self.token, "symbols": company_tickers, "isin": isin, "cik": cik, "asOf": date_asof}
         self.param_initiate.fundamentals_check(params)
         try:
@@ -392,7 +414,7 @@ class Benzinga:
 
     """Delayed Quotes"""
 
-    def delayed_quote(self, company_tickers=None, isin=None, cik=None):
+    def delayed_quote(self, company_tickers, isin=None, cik=None):
         params = {'token': self.token, "symbols": company_tickers, "isin": isin, "cik": cik}
         self.param_initiate.delayed_quote_check(params)
         try:
@@ -404,7 +426,7 @@ class Benzinga:
 
     """Ownership"""
 
-    def summary(self, company_tickers=None, isin=None, cik=None, date_asof=None):
+    def summary(self, company_tickers, isin=None, cik=None, date_asof=None):
         params = {'token': self.token, "symbols": company_tickers, "isin": isin, "cik": cik, "asOf": date_asof}
         self.param_initiate.fundamentals_check(params)
         try:
@@ -414,7 +436,7 @@ class Benzinga:
             print(request_denied)
         return summary.json()
 
-    def logos(self, company_tickers = None, filters = None):
+    def logos(self, company_tickers, filters = None):
         params = {"token": self.token, "symbols": company_tickers, "filters": filters}
         self.param_initiate.logos_check(params)
         try:
@@ -426,14 +448,14 @@ class Benzinga:
 
     """Movers"""
 
-    def movers(self, session = None, date_from = None, date_to = None, max_results = None,
-               market_cap_gt = None, close_gt = None, sector = None, marketcap_lt = None):
+    def movers(self, session = "REGULAR", date_from = None, date_to = None, max_results = None,
+               market_cap_gt = None, close_gt = None, sector = None, market_cap_lt = None):
         if market_cap_gt != None:
-            market_cap_greater =  ";marketcap_gt_%s" % (market_cap_gt)
+            market_cap_greater = ";marketcap_gt_%s" % (market_cap_gt)
         else:
             market_cap_greater = ""
-        if marketcap_lt != None:
-            marketcap_less = ";marketcap_lt_%s" % (marketcap_lt)
+        if market_cap_lt != None:
+            marketcap_less = ";marketcap_lt_%s" % (market_cap_lt)
         else:
             marketcap_less = ""
         if close_gt != None:
@@ -444,7 +466,7 @@ class Benzinga:
             sector = ";sector_in_%s" % (sector)
         else:
             sector = ""
-        if market_cap_gt == None and marketcap_lt == None and close_gt == None and sector ==None:
+        if market_cap_gt == None and market_cap_lt == None and close_gt == None and sector ==None:
             screener_query = None
         else:
             screener_query = "%s%s%s%s"% (market_cap_greater, marketcap_less, close_greater,sector)
@@ -475,12 +497,12 @@ if __name__ == '__main__':
     newapikey = "54b595f497164e0499409ca93342e394"
     false_token = 0
     company_tickers = "AAPL"
-    start_date = "2018-01-01"
-    end_date = "2018-05-05"
+    start_date = "2018-05-01"
+    end_date = "2006-09-12"
     sample_run = Benzinga(token)
-    test = sample_run.fundamentals(company_tickers="AAPL")
-    test2 = sample_run.instruments()
+    test = sample_run.logos()
     sample_run.JSON(test)
+
 
 
 

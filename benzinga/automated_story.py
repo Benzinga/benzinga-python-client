@@ -1,4 +1,5 @@
 import benzinga_client
+import news_api
 import datetime
 from fpdf import FPDF
 
@@ -21,6 +22,7 @@ class Automate_Movers:
                                              max_results = self.max_results, market_cap_gt = self.market_cap_gt,
                                              close_gt = self.close_gt, sector = self.sector,
                                              marketcap_lt = self.marketcap_lt)
+        self.news_initiate = news_api.News_API(self.token)
 
         self._template_()
 
@@ -54,9 +56,15 @@ class Automate_Movers:
         result = self.initiate.share_class(company_tickers=company_ticker)
         cap = int(result["result"][0]["shareClass"]["marketCap"])
         comma_cap = "{:,}".format(cap)
-        print(comma_cap)
         output = "The market cap stands at $%s." % (comma_cap)
         return output
+
+    def __news__(self, company_ticker):
+        result = self.initiate.company(company_tickers=company_ticker)
+        company_name = result["result"][0]["company"]["standardName"]
+        print(company_name)
+        news = self.news_initiate.news(company_tickers=company_ticker, display_output= "full", channel= "Analyst Ratings")
+        self.news_initiate.JSON(news[0]["title"])
 
     def __rating__(self, company_ticker):
         result = self.initiate.ratings(company_tickers=company_ticker)
@@ -86,6 +94,7 @@ class Automate_Movers:
                                                   companies["close"])
             mc_statement = self.__marketcap__(companies["symbol"])
             rating_statement = self.__rating__(companies["symbol"])
+            news = self.__news__(companies["symbol"])
             description = "%s %s %s" % (base_output, mc_statement, rating_statement)
             gainers_list.append(description)
         losers_list = []
@@ -137,6 +146,6 @@ if __name__ == '__main__':
     token = "899efcbfda344e089b23589cbddac62b"
     api_key = "22f84f867c5746fd92ef8e13f5835c02"
     newapikey = "54b595f497164e0499409ca93342e394"
-    auto = Automate_Movers(token, session= "REGULAR", date_from= "-1y", max_results="30", sector= "technology")
+    auto = Automate_Movers(token, session= "PRE_MARKET", date_from= "-1y", max_results="5", sector= "healthcare")
 
 

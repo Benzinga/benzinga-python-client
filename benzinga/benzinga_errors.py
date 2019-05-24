@@ -22,6 +22,8 @@ class IncorrectParameterEntry(BenzingaError):
 class URLIncorrectlyFormattedError(BenzingaError):
     pass
 
+class MissingParameter(BenzingaError):
+    pass
 
 
 

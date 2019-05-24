@@ -38,11 +38,12 @@ class News_API:
              publish_since = None, company_tickers = None, channel = None):
         params = {"token": self.token, "pageSize": pagesize, "page": page, "displayOutput": display_output,
         "date": base_date, "dateFrom": date_from, "dateTo": date_to, "lastId": last_id, "updatedSince": updated_since,
-        "publishedSince": publish_since, "tickers": company_tickers, "channel": channel}
+        "publishedSince": publish_since, "tickers": company_tickers, "channels": channel}
         self.param_initiate.news_check(params)
         try:
             news_url = self.__url_call__("news")
             news = requests.get(news_url, headers=self.headers, params=params)
+            print(news.url)
         except requests.exceptions.RequestException as request_denied:
             print(request_denied)
         return news.json()
@@ -53,7 +54,7 @@ class News_API:
         params = {"token": self.token, "pageSize": pagesize, "page": page, "displayOutput": display_output,
                   "date": base_date, "dateFrom": date_from, "dateTo": date_to, "lastId": last_id,
                   "updatedSince": updated_since,
-                  "publishedSince": publish_since, "tickers": company_tickers, "channel": channel}
+                  "publishedSince": publish_since, "tickers": company_tickers, "channels": channel}
         self.param_initiate.news_check(params)
         try:
             top_news_url = self.__url_call__("news-top-stories")
@@ -68,7 +69,7 @@ class News_API:
         params = {"token": self.token, "pageSize": pagesize, "page": page, "displayOutput": display_output,
                   "date": base_date, "dateFrom": date_from, "dateTo": date_to, "lastId": last_id,
                   "updatedSince": updated_since, "publishedSince": publish_since, "tickers": company_tickers,
-                  "channel": channel}
+                  "channels": channel}
         self.param_initiate.news_check(params)
         try:
             channels_url = self.__url_call__("channels")
@@ -100,7 +101,7 @@ if __name__ == '__main__':
     api_key = "22f84f867c5746fd92ef8e13f5835c02"
     newapikey = "54b595f497164e0499409ca93342e394"
     sample_run = News_API(token)
-    test = sample_run.news(display_output= "full")
+    test = sample_run.news(pagesize=100, display_output= "full", channel = "Analyst Ratings")
     print(sample_run.JSON(test))
 
 

@@ -1,11 +1,12 @@
 from benzinga_errors import (TokenAuthenticationError, RequestAPIEndpointError, IncorrectParameterEntry,
-                             URLIncorrectlyFormattedError)
+                             URLIncorrectlyFormattedError,MissingParameter)
 class Param_Check:
 
     def __init__(self):
         self.stri = "str"
         self.inte = "int"
         self.nonetype = "NoneType"
+        self.float = "float"
 
     def __para_type_matching__(self, param_metadata, para_dict):
         for param, value in para_dict.items():
@@ -22,7 +23,7 @@ class Param_Check:
                   "parameters[date_from]": self.stri, "parameters[date_to]": self.stri, "parameters[tickers]"
                   :self.stri, "parameters[importance]": self.inte, "parameters[date_sort]": self.stri,
                   "parameters[updated]": self.inte, "paramaters[dividend_yield_operation]": self.stri,
-                  "parameters[dividend_yield]": self.stri, "parameters[action]": self.stri, "country": self.stri,
+                  "parameters[dividend_yield]": self.float, "parameters[action]": self.stri, "country": self.stri,
                     "parameters[eps_surprise_percent]": self.stri, "parameters[revenue_surprise_percent]": self.stri}
         self.__para_type_matching__(param_type, dict)
 
@@ -61,7 +62,7 @@ class Param_Check:
     def news_check(self, dict):
         param_type = {"token": self.stri, "pageSize": self.inte, "page": self.inte, "displayOutput": self.stri,
                   "date": self.stri, "dateFrom": self.stri, "dateTo": self.stri, "lastId": self.stri,
-                  "updatedSince": self.stri, "publishedSince": self.stri, "tickers": self.stri, "channel": self.stri}
+                  "updatedSince": self.stri, "publishedSince": self.stri, "tickers": self.stri, "channels": self.stri}
         self.__para_type_matching__(param_type, dict)
 
     def quantified_news_check(self, dict):
