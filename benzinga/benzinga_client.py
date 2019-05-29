@@ -2,19 +2,23 @@ import requests, json
 import datetime as dt
 import param_check
 from benzinga_errors import (TokenAuthenticationError, RequestAPIEndpointError, IncorrectParameterEntry,
-                             URLIncorrectlyFormattedError, MissingParameter)
+                             URLIncorrectlyFormattedError, MissingParameter, AccessDeniedError)
 
 class Benzinga: 
 
     def __init__(self, api_token):
-
         self.token = api_token
         self.headers = {'accept': 'application/json'}
-        self.url_dict = {"API v1": "https://api.benzinga.com/api/v1/" , "API v1.v1": "https://api.benzinga.com/api/v1.1/",
-                         "API v2": "https://api.benzinga.com/api/v2/", "Data v3": "http://data-api.zingbot.bz/rest/v3/",
-                         "Data v2": "https://data.benzinga.com/rest/v2/", "V3": "http://data-api.zingbot.bz/rest/v3/",
-                         "Data api v2": "https://api.benzinga.io/dataapi/rest/v2/",
-                         "API rest": "https://data.benzinga.com/quote-store/api/"}
+        self.url_dict = {
+            "API v1": "https://api.benzinga.com/api/v1/", 
+            "API v1.v1": "https://api.benzinga.com/api/v1.1/",
+            "API v2": "https://api.benzinga.com/api/v2/", 
+            "Data v3": "http://data-api.zingbot.bz/rest/v3/",
+            "Data v2": "https://data.benzinga.com/rest/v2/", 
+            "V3": "http://data-api.zingbot.bz/rest/v3/",
+            "Data api v2": "https://api.benzinga.io/dataapi/rest/v2/",
+            "API rest": "https://data.benzinga.com/quote-store/api/"
+        }
         self.param_initiate = param_check.Param_Check()
         self.__token_check__(self.token)
 
@@ -28,23 +32,22 @@ class Benzinga:
             ratings = requests.get(ratingsUrl, headers= self.headers, params=params)
             if ratings.status_code == 401:
                 raise TokenAuthenticationError
-        except TokenAuthenticationError as t:
-            print("%sYour token is not valid. Please try again" % (t))
-
 
     def __url_call__(self, resource, sub_resource = ""):  # Private Method to modify requests calls
-        endpoint_type = {"calendar": "%s%s/%s" % (self.url_dict["API v2"], resource, sub_resource),
-                         "chart": "%s%s" % (self.url_dict["API v2"], resource),
-                         "quote": "%s%s" % (self.url_dict["Data v2"], resource),
-                         "security": "%s%s" % (self.url_dict["Data api v2"], resource),
-                         "batchhistory": "%s%s" % (self.url_dict["Data api v2"], resource),
-                         "autocomplete": "%s%s" % (self.url_dict["Data v2"], resource),
-                         "instruments": "%s%s" % (self.url_dict["Data v3"], resource),
-                         "quoteDelayed": "%s%s" % (self.url_dict["API v1"], resource),
-                         "logos": "%s%s" % (self.url_dict["API v1.v1"], resource),
-                         "fundamentals": "%s%s/%s" % (self.url_dict["V3"], resource, sub_resource),
-                         "ownership": "%s%s/%s" % (self.url_dict["V3"], resource, sub_resource),
-                         "movers": "%s%s/%s" % (self.url_dict["API rest"], resource, sub_resource)}
+        endpoint_type = {
+            "calendar": "%s%s/%s" % (self.url_dict["API v2"], resource, sub_resource),
+            "chart": "%s%s" % (self.url_dict["API v2"], resource),
+            "quote": "%s%s" % (self.url_dict["Data v2"], resource),
+            "security": "%s%s" % (self.url_dict["Data api v2"], resource),
+            "batchhistory": "%s%s" % (self.url_dict["Data api v2"], resource),
+            "autocomplete": "%s%s" % (self.url_dict["Data v2"], resource),
+            "instruments": "%s%s" % (self.url_dict["Data v3"], resource),
+            "quoteDelayed": "%s%s" % (self.url_dict["API v1"], resource),
+            "logos": "%s%s" % (self.url_dict["API v1.v1"], resource),
+            "fundamentals": "%s%s/%s" % (self.url_dict["V3"], resource, sub_resource),
+            "ownership": "%s%s/%s" % (self.url_dict["V3"], resource, sub_resource),
+            "movers": "%s%s/%s" % (self.url_dict["API rest"], resource, sub_resource)
+        }
         if resource not in endpoint_type:
             raise URLIncorrectlyFormattedError
         url_string = endpoint_type[resource]
@@ -63,12 +66,21 @@ class Benzinga:
             batchhistory = requests.get(batchhistory_url, headers=self.headers, params=params)
             print(batchhistory.url)
         except requests.exceptions.RequestException as request_denied:
-            print(request_denied)
+            raise AccessDeniedError
         return batchhistory.json()
 
-    """Autocomplete"""
 
     def auto_complete(self, company_tickers, limit = None, search_method = None, exchanges = None, types = None):
+        """Benzinga auto complete for tickers API
+
+        This method performs autocomplete for all tickers available on Benzinga.
+
+        Args:
+            company_tickers (str): The list of tickers to check for.
+        Returns:
+            dict: dictionary of the autocomplete results
+
+        """
         params = {"token": self.token, "query": company_tickers, "limit": limit, "searchMethod": search_method,
                   "exchanges": exchanges, "types": types}
         self.param_initiate.autocomplete_check(params)
@@ -146,12 +158,17 @@ class Benzinga:
     def dividends(self, page=None, pagesize=None, date_asof=None, date_from=None, date_to=None,
                   company_tickers=None, importance=None, date_sort=None, updated_params=None,
                   div_yield_operation=None, div_yield = None):
-        params = {'token': self.token, "page": page, "pagesize": pagesize, "parameters[date]": date_asof,
-                  "parameters[date_from]": date_from, "parameters[date_to]": date_to,
-                  "parameters[tickers]":company_tickers,"parameters[importance]": importance,
-                  "parameters[date_sort]": date_sort, "parameters[updated]": updated_params,
-                  "paramaters[dividend_yield_operation]": div_yield_operation,
-                  "parameters[dividend_yield]": div_yield}
+        params = {
+            'token': self.token, 
+            "page": page, 
+            "pagesize": pagesize, 
+            "parameters[date]": date_asof,
+            "parameters[date_from]": date_from, "parameters[date_to]": date_to,
+            "parameters[tickers]":company_tickers,"parameters[importance]": importance,
+            "parameters[date_sort]": date_sort, "parameters[updated]": updated_params,
+            "paramaters[dividend_yield_operation]": div_yield_operation,
+            "parameters[dividend_yield]": div_yield
+        }
         self.param_initiate.calendar_check(params)
         try:
             dividends_url = self.__url_call__("calendar", "dividends")
@@ -481,39 +498,3 @@ class Benzinga:
         except requests.exceptions.RequestException as request_denied:
             print(request_denied)
         return movers.json()
-
-
-    """Output"""
-
-    def JSON(self, func_output):
-        result = json.dumps(func_output, indent= 4)
-        print(result)
-        return result
-
-
-if __name__ == '__main__':
-    token = "899efcbfda344e089b23589cbddac62b"
-    api_key = "22f84f867c5746fd92ef8e13f5835c02"
-    newapikey = "54b595f497164e0499409ca93342e394"
-    false_token = 0
-    company_tickers = "AAPL"
-    start_date = "2018-05-01"
-    end_date = "2006-09-12"
-    sample_run = Benzinga(token)
-    test = sample_run.logos()
-    sample_run.JSON(test)
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-

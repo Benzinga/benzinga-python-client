@@ -90,18 +90,3 @@ class News_API:
         except requests.exceptions.RequestException as request_denied:
             print(request_denied)
         return quantnews.json()
-
-    def JSON(self, func_output):
-        result = json.dumps(func_output, indent= 4)
-        print(result)
-        return result
-
-if __name__ == '__main__':
-    token = "899efcbfda344e089b23589cbddac62b"
-    api_key = "22f84f867c5746fd92ef8e13f5835c02"
-    newapikey = "54b595f497164e0499409ca93342e394"
-    sample_run = News_API(token)
-    test = sample_run.news(pagesize=100, display_output= "full", channel = "Analyst Ratings")
-    print(sample_run.JSON(test))
-
-
