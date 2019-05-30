@@ -16,12 +16,12 @@ class Benzinga:
                          "Data api v2": "https://api.benzinga.io/dataapi/rest/v2/",
                          "API rest": "https://data.benzinga.com/quote-store/api/"}
         self.param_initiate = param_check.Param_Check()
-        self.__token_check__(self.token)
 
     def __token_check__(self, api_token):
         end_date = dt.date.today().strftime('%Y-%m-%d')
         company_ticker = "AAPL"
-        params = {'token': api_token, 'parameters[date_to]': end_date,
+        params = {'token': api_token,
+                  'parameters[date_to]': end_date,
                   'parameters[tickers]': company_ticker}
         try:
             ratingsUrl = self.__url_call__("calendar", "dividends")
@@ -29,7 +29,7 @@ class Benzinga:
             if ratings.status_code == 401:
                 raise TokenAuthenticationError
         except TokenAuthenticationError as t:
-            print("%sYour token is not valid. Please try again" % (t))
+            raise
 
 
     def __url_call__(self, resource, sub_resource = ""):  # Private Method to modify requests calls
