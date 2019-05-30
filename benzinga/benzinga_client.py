@@ -34,9 +34,11 @@ class Benzinga:
 
         end_date = dt.date.today().strftime('%Y-%m-%d')
         company_ticker = "AAPL"
-        params = {'token': api_token,
-                  'parameters[date_to]': end_date,
-                  'parameters[tickers]': company_ticker}
+        params = {
+            'token': api_token,
+            'parameters[date_to]': end_date,
+            'parameters[tickers]': company_ticker
+        }
 
         ratingsUrl = self.__url_call__("calendar", "dividends")
         ratings = requests.get(ratingsUrl, headers=self.headers, params=params)
@@ -85,9 +87,11 @@ class Benzinga:
          Returns:
              Daily candles for the company for a specific date range"""
         
-        revised_input = "%s:%s:%s"%(company_tickers, date_from, date_to)
-        params = {"symbol": revised_input,
-                  "apikey": self.token}
+        revised_input = "%s:%s:%s" % (company_tickers, date_from, date_to)
+        params = {
+            "symbol": revised_input,
+            "apikey": self.token
+        }
         self.param_initiate.batchhistory_check(params)
         try:
             batchhistory_url = self.__url_call__("batchhistory")
@@ -115,12 +119,14 @@ class Benzinga:
         Returns:
             Relevant information such as company name of short name, type and exchange"""
 
-        params = {"token": self.token,
-                  "query": company_tickers,
-                  "limit": limit,
-                  "searchMethod": search_method,
-                  "exchanges": exchanges,
-                  "types": types}
+        params = {
+            "token": self.token,
+            "query": company_tickers,
+            "limit": limit,
+            "searchMethod": search_method,
+            "exchanges": exchanges,
+            "types": types
+        }
         self.param_initiate.autocomplete_check(params)
         try:
             autocomplete_url = self.__url_call__("autocomplete")
@@ -142,9 +148,11 @@ class Benzinga:
         Returns:
             Symbol, exchange symbol, exchange, country, currency, cusip and description """
 
-        params = {"apikey": self.token,
-                  "symbol": company_tickers,
-                  "cusip": cusip}
+        params = {
+            "apikey": self.token,
+            "symbol": company_tickers,
+            "cusip": cusip
+        }
         self.param_initiate.security_check(params)
         try:
             security_url = self.__url_call__("security")
@@ -168,8 +176,10 @@ class Benzinga:
         fifty two week high, fifty two week low, dividend yield, price/earnings, forward price/earnings,
         payout ratio, shares outstanding, open interest, shares per contract, multiplier"""
 
-        params = {"token": self.token,
-                  "symbols": company_tickers}
+        params = {
+            "token": self.token,
+            "symbols": company_tickers
+        }
         self.param_initiate.fundamentals_check(params)
         try:
             quote_url = self.__url_call__("quote")
@@ -204,33 +214,35 @@ class Benzinga:
         fields = "symbol,marketcap,exchange," \
                  "isin,country,name,previousClose,open,close,change,changePercent,sector"
         if market_cap_gt is not None:
-            market_cap_greater = ";marketcap_gt_%s" % (market_cap_gt)
+            market_cap_greater = ";marketcap_gt_%s" % market_cap_gt
         else:
             market_cap_greater = ""
         if market_cap_lt is not None:
-            marketcap_less = ";marketcap_lt_%s" % (market_cap_lt)
+            marketcap_less = ";marketcap_lt_%s" % market_cap_lt
         else:
             marketcap_less = ""
         if close_gt is not None:
-            close_greater = ";close_gt_%s" % (close_gt)
+            close_greater = ";close_gt_%s" % close_gt
         else:
             close_greater = ""
         if sector is not None:
-            sector = ";sector_in_%s" % (sector)
+            sector = ";sector_in_%s" % sector
         else:
             sector = ""
         if market_cap_gt is None and market_cap_lt is None and close_gt is None and sector is None:
             query = None
         else:
             query = "%s%s%s%s" % (market_cap_greater, marketcap_less, close_greater, sector)
-        params = {"token": self.token,
-                  "fields": fields,
-                  "query": query,
-                  "from": date_from,
-                  "to": date_to,
-                  "asOf": date_asof,
-                  "sortfield": sort_field,
-                  "sortdir": sort_dir}
+        params = {
+            "token": self.token,
+            "fields": fields,
+            "query": query,
+            "from": date_from,
+            "to": date_to,
+            "asOf": date_asof,
+            "sortfield": sort_field,
+            "sortdir": sort_dir
+        }
         self.param_initiate.instruments_check(params)
         try:
             instruments_url = self.__url_call__("instruments")
@@ -268,18 +280,20 @@ class Benzinga:
              dividend prior, dividend type, dividend yield, ex-dividend date, payable date,
              record date, importance
              """
-        params = {'token': self.token,
-                  "page": page,
-                  "pagesize": pagesize,
-                  "parameters[date]": date_asof,
-                  "parameters[date_from]": date_from,
-                  "parameters[date_to]": date_to,
-                  "parameters[tickers]": company_tickers,
-                  "parameters[importance]": importance,
-                  "parameters[date_sort]": date_sort,
-                  "parameters[updated]": updated_params,
-                  "paramaters[dividend_yield_operation]": div_yield_operation,
-                  "parameters[dividend_yield]": div_yield}
+        params = {
+            'token': self.token,
+            "page": page,
+            "pagesize": pagesize,
+            "parameters[date]": date_asof,
+            "parameters[date_from]": date_from,
+            "parameters[date_to]": date_to,
+            "parameters[tickers]": company_tickers,
+            "parameters[importance]": importance,
+            "parameters[date_sort]": date_sort,
+            "parameters[updated]": updated_params,
+            "paramaters[dividend_yield_operation]": div_yield_operation,
+            "parameters[dividend_yield]": div_yield
+        }
         self.param_initiate.calendar_check(params)
         try:
             dividends_url = self.__url_call__("calendar", "dividends")
@@ -315,16 +329,18 @@ class Benzinga:
 
 
         """
-        params = {'token': self.token,
-                  "page": page,
-                  "pagesize": pagesize,
-                  "parameters[date]": date_asof,
-                  "parameters[date_from]": date_from,
-                  "parameters[date_to]": date_to,
-                  "parameters[tickers]": company_tickers,
-                  "parameters[importance]": importance,
-                  "parameters[date_sort]": date_sort,
-                  "parameters[updated]": updated_params}
+        params = {
+            'token': self.token,
+            "page": page,
+            "pagesize": pagesize,
+            "parameters[date]": date_asof,
+            "parameters[date_from]": date_from,
+            "parameters[date_to]": date_to,
+            "parameters[tickers]": company_tickers,
+            "parameters[importance]": importance,
+            "parameters[date_sort]": date_sort,
+            "parameters[updated]": updated_params
+        }
         self.param_initiate.calendar_check(params)
         try:
             earnings_url = self.__url_call__("calendar", "earnings")
@@ -356,16 +372,18 @@ class Benzinga:
                     id, updated, date, time, ticker, exchange, importance, ratio, optionable,
                     date_ex, date_recorded, date_distribution"""
 
-        params = {'token': self.token,
-                  "page": page,
-                  "pagesize": pagesize,
-                  "parameters[date]": date_asof,
-                  "parameters[date_from]": date_from,
-                  "parameters[date_to]": date_to,
-                  "parameters[tickers]": company_tickers,
-                  "parameters[importance]": importance,
-                  "parameters[date_sort]": date_sort,
-                  "parameters[updated]": updated_params}
+        params = {
+            'token': self.token,
+            "page": page,
+            "pagesize": pagesize,
+            "parameters[date]": date_asof,
+            "parameters[date_from]": date_from,
+            "parameters[date_to]": date_to,
+            "parameters[tickers]": company_tickers,
+            "parameters[importance]": importance,
+            "parameters[date_sort]": date_sort,
+            "parameters[updated]": updated_params
+        }
         self.param_initiate.calendar_check(params)
         try:
             splits_url = self.__url_call__("calendar", "splits")
@@ -398,16 +416,18 @@ class Benzinga:
                     id, date, time, country, event_name, event_period, period_year, actual, actual_t
                     consensus, consensus_t, prior, importance, updated, description"""
 
-        params = {'token': self.token,
-                  "page": page,
-                  "pagesize": pagesize,
-                  "parameters[date]": date_asof,
-                  "parameters[date_from]": date_from,
-                  "parameters[date_to]": date_to,
-                  "parameters[importance]": importance,
-                  "parameters[date_sort]": date_sort,
-                  "parameters[updated]": updated_params,
-                  "country": country}
+        params = {
+            'token': self.token,
+            "page": page,
+            "pagesize": pagesize,
+            "parameters[date]": date_asof,
+            "parameters[date_from]": date_from,
+            "parameters[date_to]": date_to,
+            "parameters[importance]": importance,
+            "parameters[date_sort]": date_sort,
+            "parameters[updated]": updated_params,
+            "country": country
+        }
         self.param_initiate.calendar_check(params)
         try:
             economics_url = self.__url_call__("calendar", "economics")
@@ -441,17 +461,19 @@ class Benzinga:
                 revenue_guidance_est, revenue_guidance_max, revenue_guidance_min, revenue_guidance_prior_max
                 , revenue_guidance_prior_min, importance, updated"""
 
-        params = {'token': self.token,
-                  "page": page,
-                  "pagesize": pagesize,
-                  "parameters[date]": date_asof,
-                  "parameters[date_from]": date_from,
-                  "parameters[date_to]": date_to,
-                  "parameters[tickers]": company_tickers,
-                  "parameters[importance]": importance,
-                  "parameters[date_sort]": date_sort,
-                  "parameters[updated]": updated_params,
-                  "country": country}
+        params = {
+            'token': self.token,
+            "page": page,
+            "pagesize": pagesize,
+            "parameters[date]": date_asof,
+            "parameters[date_from]": date_from,
+            "parameters[date_to]": date_to,
+            "parameters[tickers]": company_tickers,
+            "parameters[importance]": importance,
+            "parameters[date_sort]": date_sort,
+            "parameters[updated]": updated_params,
+            "country": country
+        }
         self.param_initiate.calendar_check(params)
         try:
             guidance_url = self.__url_call__("calendar", "guidance")
@@ -484,16 +506,18 @@ class Benzinga:
                 insider_lockup_days, insider_lockup_date, offering_value, offering_shares, lead_underwriters,
                 underwriter_quiet_expiration_days, underwriter_quiet_expiration_date, update"""
 
-        params = {'token': self.token,
-                  "page": page,
-                  "pagesize": pagesize,
-                  "parameters[date]": date_asof,
-                  "parameters[date_from]": date_from,
-                  "parameters[date_to]": date_to,
-                  "parameters[tickers]": company_tickers,
-                  "parameters[importance]": importance,
-                  "parameters[date_sort]": date_sort,
-                  "parameters[updated]": updated_params}
+        params = {
+            'token': self.token,
+            "page": page,
+            "pagesize": pagesize,
+            "parameters[date]": date_asof,
+            "parameters[date_from]": date_from,
+            "parameters[date_to]": date_to,
+            "parameters[tickers]": company_tickers,
+            "parameters[importance]": importance,
+            "parameters[date_sort]": date_sort,
+            "parameters[updated]": updated_params
+        }
         self.param_initiate.calendar_check(params)
         try:
             ipo_url = self.__url_call__("calendar", "ipos")
@@ -525,16 +549,18 @@ class Benzinga:
                 id, date, time, ticker, exchange, name, importance, period, period_year, sss,
                 sss_est, retail_surprise, updated"""
 
-        params = {'token': self.token,
-                  "page": page,
-                  "pagesize": pagesize,
-                  "parameters[date]": date_asof,
-                  "parameters[date_from]": date_from,
-                  "parameters[date_to]": date_to,
-                  "parameters[tickers]": company_tickers,
-                  "parameters[importance]": importance,
-                  "parameters[date_sort]": date_sort,
-                  "parameters[updated]": updated_params}
+        params = {
+            'token': self.token,
+            "page": page,
+            "pagesize": pagesize,
+            "parameters[date]": date_asof,
+            "parameters[date_from]": date_from,
+            "parameters[date_to]": date_to,
+            "parameters[tickers]": company_tickers,
+            "parameters[importance]": importance,
+            "parameters[date_sort]": date_sort,
+            "parameters[updated]": updated_params
+        }
 
         self.param_initiate.calendar_check(params)
         try:
@@ -570,17 +596,19 @@ class Benzinga:
                     pt_current, rating_prior, pt_prior, url, importance, updated, url_calendar, url_news,
                     analyst, analyst_name"""
 
-        params = {'token': self.token,
-                  "page": page,
-                  "pagesize": pagesize,
-                  "parameters[date]": date_asof,
-                  "parameters[date_from]": date_from,
-                  "parameters[date_to]": date_to,
-                  "parameters[tickers]": company_tickers,
-                  "parameters[importance]": importance,
-                  "parameters[date_sort]": date_sort,
-                  "parameters[updated]": updated_params,
-                  "parameters[action]": action}
+        params = {
+            'token': self.token,
+            "page": page,
+            "pagesize": pagesize,
+            "parameters[date]": date_asof,
+            "parameters[date_from]": date_from,
+            "parameters[date_to]": date_to,
+            "parameters[tickers]": company_tickers,
+            "parameters[importance]": importance,
+            "parameters[date_sort]": date_sort,
+            "parameters[updated]": updated_params,
+            "parameters[action]": action
+        }
 
         self.param_initiate.calendar_check(params)
         try:
@@ -613,16 +641,18 @@ class Benzinga:
                 id, date, time, ticker, exchange, name, start_time, phone_num, international_line,
                 reservation_num, access_code, webcase_url, importance, updated"""
 
-        params = {'token': self.token,
-                  "page": page,
-                  "pagesize": pagesize,
-                  "parameters[date]": date_asof,
-                  "parameters[date_from]": date_from,
-                  "parameters[date_to]": date_to,
-                  "parameters[tickers]": company_tickers,
-                  "parameters[importance]": importance,
-                  "parameters[date_sort]": date_sort,
-                  "parameters[updated]": updated_params}
+        params = {
+            'token': self.token,
+            "page": page,
+            "pagesize": pagesize,
+            "parameters[date]": date_asof,
+            "parameters[date_from]": date_from,
+            "parameters[date_to]": date_to,
+            "parameters[tickers]": company_tickers,
+            "parameters[importance]": importance,
+            "parameters[date_sort]": date_sort,
+            "parameters[updated]": updated_params
+        }
         self.param_initiate.calendar_check(params)
         try:
             conference_url = self.__url_call__("calendar", "conference-calls")
@@ -647,11 +677,13 @@ class Benzinga:
             company, companyProfile, shareClass, earningReports, financialStatements, operation earning and valuation
             ratios, alphaBeta
         """
-        params = {'token': self.token,
-                  "symbols": company_tickers,
-                  "isin": isin,
-                  "cik": cik,
-                  "asOf": date_asof}
+        params = {
+            'token': self.token,
+            "symbols": company_tickers,
+            "isin": isin,
+            "cik": cik,
+            "asOf": date_asof
+        }
         self.param_initiate.fundamentals_check(params)
         try:
             financials_url = self.__url_call__("fundamentals")
@@ -678,13 +710,15 @@ class Benzinga:
             Returns:
                 company, financials such as balance sheet information, assets and liabilities
                 """
-        params = {'token': self.token,
-                  "symbols": company_tickers,
-                  "isin": isin,
-                  "cik": cik,
-                  "asOf": date_asof,
-                  "period": period,
-                  "reportType": reporttype}
+        params = {
+            'token': self.token,
+            "symbols": company_tickers,
+            "isin": isin,
+            "cik": cik,
+            "asOf": date_asof,
+            "period": period,
+            "reportType": reporttype
+        }
 
         self.param_initiate.fundamentals_check(params)
         try:
@@ -709,11 +743,13 @@ class Benzinga:
                different attributes of the valuation ratios
                        """
 
-        params = {'token': self.token,
-                  "symbols": company_tickers,
-                  "isin": isin,
-                  "cik": cik,
-                  "asOf": date_asof}
+        params = {
+            'token': self.token,
+            "symbols": company_tickers,
+            "isin": isin,
+            "cik": cik,
+            "asOf": date_asof
+        }
         self.param_initiate.fundamentals_check(params)
         try:
             valuation_url = self.__url_call__("fundamentals", "valuationRatios")
@@ -736,11 +772,13 @@ class Benzinga:
               Returns:
                   different attributes of the earning ratios
                               """
-        params = {'token': self.token,
-                  "symbols": company_tickers,
-                  "isin": isin,
-                  "cik": cik,
-                  "asOf": date_asof}
+        params = {
+            'token': self.token,
+            "symbols": company_tickers,
+            "isin": isin,
+            "cik": cik,
+            "asOf": date_asof
+        }
         self.param_initiate.fundamentals_check(params)
         try:
             earnings_url = self.__url_call__("fundamentals", "earningRatios")
@@ -763,11 +801,13 @@ class Benzinga:
               Returns:
                   different attributes of the operation ratios
                               """
-        params = {'token': self.token,
-                  "symbols": company_tickers,
-                  "isin": isin,
-                  "cik": cik,
-                  "asOf": date_asof}
+        params = {
+            'token': self.token,
+            "symbols": company_tickers,
+            "isin": isin,
+            "cik": cik,
+            "asOf": date_asof
+        }
         self.param_initiate.fundamentals_check(params)
         try:
             operations_url = self.__url_call__("fundamentals", "operationRatios")
@@ -789,11 +829,13 @@ class Benzinga:
                   different attributes of the share class.
                                       """
 
-        params = {'token': self.token,
-                  "symbols": company_tickers,
-                  "isin": isin,
-                  "cik": cik,
-                  "asOf": date_asof}
+        params = {
+            'token': self.token,
+            "symbols": company_tickers,
+            "isin": isin,
+            "cik": cik,
+            "asOf": date_asof
+        }
         self.param_initiate.fundamentals_check(params)
         try:
             shareclass_url = self.__url_call__("fundamentals", "shareClass")
@@ -816,11 +858,13 @@ class Benzinga:
               Returns:
                   different attributes of the earning reports.
                                       """
-        params = {'token': self.token,
-                  "symbols": company_tickers,
-                  "isin": isin,
-                  "cik": cik,
-                  "asOf": date_asof}
+        params = {
+            'token': self.token,
+            "symbols": company_tickers,
+            "isin": isin,
+            "cik": cik,
+            "asOf": date_asof
+        }
         self.param_initiate.fundamentals_check(params)
         try:
             earningreports_url = self.__url_call__("fundamentals", "earningReports")
@@ -843,11 +887,13 @@ class Benzinga:
                   Returns:
                       different attributes of the alpha beta.
                                       """
-        params = {'token': self.token,
-                  "symbols": company_tickers,
-                  "isin": isin,
-                  "cik": cik,
-                  "asOf": date_asof}
+        params = {
+            'token': self.token,
+            "symbols": company_tickers,
+            "isin": isin,
+            "cik": cik,
+            "asOf": date_asof
+        }
         self.param_initiate.fundamentals_check(params)
         try:
             alphabeta_url = self.__url_call__("fundamentals", "alphaBeta")
@@ -870,11 +916,13 @@ class Benzinga:
               Returns:
                   different attributes of the company profile.
                                       """
-        params = {'token': self.token,
-                  "symbols": company_tickers,
-                  "isin": isin,
-                  "cik": cik,
-                  "asOf": date_asof}
+        params = {
+            'token': self.token,
+            "symbols": company_tickers,
+            "isin": isin,
+            "cik": cik,
+            "asOf": date_asof
+        }
         self.param_initiate.fundamentals_check(params)
         try:
             companyprofile_url = self.__url_call__("fundamentals", "companyProfile")
@@ -897,11 +945,13 @@ class Benzinga:
                       Returns:
                           different attributes of the company.
                                               """
-        params = {'token': self.token,
-                  "symbols": company_tickers,
-                  "isin": isin,
-                  "cik": cik,
-                  "asOf": date_asof}
+        params = {
+            'token': self.token,
+            "symbols": company_tickers,
+            "isin": isin,
+            "cik": cik,
+            "asOf": date_asof
+        }
         self.param_initiate.fundamentals_check(params)
         try:
             company_url = self.__url_call__("fundamentals", "company")
@@ -924,11 +974,13 @@ class Benzinga:
               Returns:
                   different attributes of the share class profile history.
                                               """
-        params = {'token': self.token,
-                  "symbols": company_tickers,
-                  "isin": isin,
-                  "cik": cik,
-                  "asOf": date_asof}
+        params = {
+            'token': self.token,
+            "symbols": company_tickers,
+            "isin": isin,
+            "cik": cik,
+            "asOf": date_asof
+        }
         self.param_initiate.fundamentals_check(params)
         try:
             profilehistory_url = self.__url_call__("fundamentals", "shareClassProfileHistory")
@@ -951,11 +1003,13 @@ class Benzinga:
               Returns:
                   different attributes of the asset classification.
                                       """
-        params = {'token': self.token,
-                  "symbols": company_tickers,
-                  "isin": isin,
-                  "cik": cik,
-                  "asOf": date_asof}
+        params = {
+            'token': self.token,
+            "symbols": company_tickers,
+            "isin": isin,
+            "cik": cik,
+            "asOf": date_asof
+        }
         self.param_initiate.fundamentals_check(params)
         try:
             asset_url = self.__url_call__("fundamentals", "assetClassification")
@@ -978,11 +1032,13 @@ class Benzinga:
               Returns:
                   different attributes of the ownership summary.
                                               """
-        params = {'token': self.token,
-                  "symbols": company_tickers,
-                  "isin": isin,
-                  "cik": cik,
-                  "asOf": date_asof}
+        params = {
+            'token': self.token,
+            "symbols": company_tickers,
+            "isin": isin,
+            "cik": cik,
+            "asOf": date_asof
+        }
         self.param_initiate.fundamentals_check(params)
         try:
             summary_url = self.__url_call__("ownership", "summary")
@@ -1004,9 +1060,11 @@ class Benzinga:
               Returns:
                   different attributes of the logos
                                               """
-        params = {"token": self.token,
-                  "symbols": company_tickers,
-                  "filters": filters}
+        params = {
+            "token": self.token,
+            "symbols": company_tickers,
+            "filters": filters
+        }
         self.param_initiate.logos_check(params)
         try:
             logos_url = self.__url_call__("logos")
@@ -1056,12 +1114,14 @@ class Benzinga:
             screener_query = None
         else:
             screener_query = "%s%s%s%s"% (market_cap_greater, marketcap_less, close_greater,sector)
-        params = {"apikey": self.token,
-                  "from": date_from,
-                  "to": date_to,
-                  "session": session,
-                  "screenerQuery": screener_query,
-                  "maxResults": max_results}
+        params = {
+            "apikey": self.token,
+            "from": date_from,
+            "to": date_to,
+            "session": session,
+            "screenerQuery": screener_query,
+            "maxResults": max_results
+        }
         self.param_initiate.movers_check(params)
         try:
             movers_url = self.__url_call__("movers")
