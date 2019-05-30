@@ -13,6 +13,9 @@ class BenzingaError(Exception):
 class TokenAuthenticationError(BenzingaError):
     pass
 
+class AccessDeniedError(BenzingaError):
+    pass
+
 class RequestAPIEndpointError(BenzingaError):
     pass
 
