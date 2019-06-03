@@ -1,1 +1,1 @@
-from .benzinga_client import Benzinga
+from .financial_data import Benzinga

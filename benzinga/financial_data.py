@@ -1128,7 +1128,7 @@ class Benzinga:
             movers = requests.get(movers_url, headers=self.headers, params=params)
             if movers.status_code == 401:
                 raise TokenAuthenticationError
-        except requests.exceptions.RequestException as request_denied:
+        except requests.exceptions.RequestException:
             raise AccessDeniedError
         return movers.json()
 
