@@ -90,9 +90,20 @@ zinger = financial_data.Benzinga(api_key)
 ```
 
 2. A sample test run to get ratings on a stock. (Returns a JSON object):
+
 ```python
 stock_ratings = zinger.ratings()
 ```
+
+3. Since `zinger.ratings()` returns a JSON dict, for a better view of the dict,
+you can call the `zinger.output()` method on the result. Example:
+
+```python
+zinger.output(stock_ratings)
+```
+**Returns**
+
+
 
 ## Sample Test News Data Module
 
