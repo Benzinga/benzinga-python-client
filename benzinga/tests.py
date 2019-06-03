@@ -10,10 +10,11 @@ end_date = "2006-09-12"
 
 """Sample Run Data Client"""
 data = financial_data.Benzinga(token)
-data_output = json.dumps(data.logos(company_tickers=company_tickers), indent=4)
+
 
 
 """Sample Run News API"""
 news = news_data.News(token)
-output = json.dumps(news.channels(), indent=4)
+
+print(data.output(data.ratings()))
 

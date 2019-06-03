@@ -1132,3 +1132,7 @@ class Benzinga:
             raise AccessDeniedError
         return movers.json()
 
+    def output(self, json_object):
+        result = json.dumps(json_object, indent= 4)
+        return result
+
