@@ -5,6 +5,49 @@
 This is the the official documentation for Benzinga's Python Package. This package
 Is compatible with Python v3.x+
 
+- [Benzinga Python Client](#benzinga-python-client)
+  * [Getting Started](#getting-started)
+  * [Your Key](#your-key)
+  * [Sample Test (Financial Data Module)](#sample-test--financial-data-module-)
+  * [Sample Test (News Data Module)](#sample-test--news-data-module-)
+  * [Financial Data Methods:](#financial-data-methods-)
+    + [Batch History](#batch-history)
+    + [Auto-Complete](#auto-complete)
+    + [Security](#security)
+    + [Quote](#quote)
+    + [Instruments](#instruments)
+    + [Dividends](#dividends)
+    + [Earnings](#earnings)
+    + [Splits](#splits)
+    + [Economics](#economics)
+    + [Guidance](#guidance)
+    + [IPO](#ipo)
+    + [Retail](#retail)
+    + [Conference Calls](#conference-calls)
+    + [Fundamentals](#fundamentals)
+    + [Financials](#financials)
+    + [Valuation Ratios](#valuation-ratios)
+    + [Earning Ratios](#earning-ratios)
+    + [Operation Ratios](#operation-ratios)
+    + [Share Class](#share-class)
+    + [Earning Reports](#earning-reports)
+    + [Alpha Beta](#alpha-beta)
+    + [Company Profile](#company-profile)
+    + [Company](#company)
+    + [Share Class Profile History](#share-class-profile-history)
+    + [Asset Classification](#asset-classification)
+    + [Summary](#summary)
+    + [Logos](#logos)
+    + [Movers](#movers)
+  * [News Data:](#news-data-)
+    + [News](#news)
+    + [Top News](#top-news)
+    + [Channels](#channels)
+    + [Quantified News](#quantified-news)
+  * [Additional Links](#additional-links)
+
+
+
 ## Getting Started
 
 The installation process varies depending on your python version and system used. 
@@ -759,9 +802,9 @@ Public Method: Benzinga Quantified News
 
 ## Additional Links
 
-Benzinga API Documentation: https://docs.benzinga.io/benzinga/
-Benzinga News: https://www.benzinga.com/
-Benzinga Pro: https://pro.benzinga.com/
+* Benzinga API Documentation: https://docs.benzinga.io/benzinga/
+* Benzinga News: https://www.benzinga.com/
+* Benzinga Pro: https://pro.benzinga.com/
 
 
 
