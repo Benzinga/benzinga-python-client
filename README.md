@@ -757,9 +757,11 @@ Public Method: Benzinga Quantified News
    * multiple attributes like headlines, volume, day open, open gap, range etc.
 
 
+## Additional Links
 
-
-
+Benzinga API Documentation: https://docs.benzinga.io/benzinga/
+Benzinga News: https://www.benzinga.com/
+Benzinga Pro: https://pro.benzinga.com/
 
 
 
