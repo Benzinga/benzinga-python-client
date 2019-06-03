@@ -101,9 +101,6 @@ you can call the `zinger.output()` method on the result. Example:
 ```python
 zinger.output(stock_ratings)
 ```
-**Returns**
-
-
 
 ## Sample Test News Data Module
 
@@ -118,7 +115,14 @@ zinger = news_data.News(api_key)
 2. A sample test run to get general news. (Returns a JSON Object)
 
 ```python
-Stories = zinger.news()
+stories = zinger.news()
+```
+
+3. Since `zinger.news()` returns a JSON dict, for a better view of the dict,
+you can call the `zinger.output()` method on the result. Example:
+
+```python
+zinger.output(stories)
 ```
 
 It is important to note that for both the Financial Data Module and the News Data Module, there are many optional parameters for the methods. Below is a detailed listing of possible methods for the Financial Data Module and the news Data Module, their method
