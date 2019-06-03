@@ -3,7 +3,7 @@
 This is the the official documentation for Benzinga's Python Package. This package
 Is compatible with Python v3.x+
 
-##Getting Started
+## Getting Started
 
 The installation process varies depending on your python version and system used. 
 The basic installation instructions are as of follows:
@@ -28,14 +28,14 @@ or you can import the Benzinga News module, if you're looking into financial new
 From benzinga import news_data
 ```
 
-##Your Key
+## Your Key
 
 |Api Key| The Benzinga API key you have| To initiate a class, an API key is used, for
 authentication purposes. Don't worry! We'll provide you with the API Key.
 
 Sample API Key (type: str) : 899efcbfda344e089b23589cbddac62b
 
-##Sample Test (Financial Data Module)
+## Sample Test (Financial Data Module)
 
 1. Initiating the class:
 
@@ -50,7 +50,7 @@ zinger = financial_data.Benzinga(api_key)
 stock_ratings = zinger.ratings()
 ```
 
-##Sample Test (News Data Module)
+## Sample Test (News Data Module)
 
 1. Initiating the class:
 
@@ -69,9 +69,9 @@ Stories = zinger.news()
 It is important to note that for both the Financial Data Module and the News Data Module, there are many optional parameters for the methods. Below is a detailed listing of possible methods for the Financial Data Module and the news Data Module, their method
 call names, arguments, and what they return. 
 
-###Financial Data Methods:
+### Financial Data Methods:
 
-1. #Batch History
+1. # Batch History
 
 ```
 zinger.batch_history()
@@ -87,7 +87,7 @@ Public Method: Benzinga Batch History returns daily candles for a specific date 
              Daily candles for the company for a specific date range
 
 
-2. #Auto-Complete
+2. # Auto-Complete
 
 ```
 zinger.auto_complete()
@@ -109,7 +109,7 @@ Public Method: Benzinga Auto-Complete returns the relevant information related t
         *Returns*:
             Relevant information such as company name of short name, type and exchange
 
-3. #Security
+3. # Security
 
 ```
 zinger.security()
@@ -125,7 +125,7 @@ Public Method: Benzinga Security returns the information regarding the security.
         *Returns*:
             Symbol, exchange symbol, exchange, country, currency, cusip and description 
 
-4. #Quote
+4. # Quote
 
 ```
 zinger.quote()
@@ -143,7 +143,7 @@ Public Method: Benzinga Quote looks at many different attributes of the ticker l
         fifty two week high, fifty two week low, dividend yield, price/earnings, forward price/earnings,
         payout ratio, shares outstanding, open interest, shares per contract, multiplier.
 
-5. #Instruments
+5. # Instruments
 
 ```
 zinger.instruments()
@@ -168,7 +168,7 @@ Public Method: Benzinga Instruments looks at all of the screener data with price
              all of the data related to the instrument including marketcap, sector, company name
          etc, that can be found on the Benzinga Pro screener.
 
-6. #Dividends
+6. # Dividends
 
 ```
 zinger.dividends()
@@ -198,7 +198,7 @@ Public Method: Benzinga Dividends looks at the relevant dividend information for
              dividend prior, dividend type, dividend yield, ex-dividend date, payable date,
              record date, importance
 
-7. #Earnings
+7. # Earnings
 
 ```
 zinger.earnings()
@@ -225,7 +225,7 @@ Public Method: Benzinga Earnings looks at the quarterly earnings reports for dif
             eps, eps_est, eps_prior, eps_surprise, eps_surprise_percent, revenue, revenue est,
             revenue_prior, revenue_surprise, revenue_surprise_percent, importance, updated
 
-8. #Splits
+8. # Splits
 
 ```
 zinger.splits()
@@ -250,7 +250,7 @@ Public Method: Benzinga Splits looks at the stock splits calendar data
              id, updated, date, time, ticker, exchange, importance, ratio, optionable,
              date_ex, date_recorded, date_distribution
 
-9. #Economics
+9. # Economics
 
 ```
 zinger.economics()
@@ -276,7 +276,7 @@ Public Method: Benzinga Economics looks at different economic events in a countr
               id, date, time, country, event_name, event_period, period_year, actual, actual_t
               consensus, consensus_t, prior, importance, updated, description
 
-10. #Guidance 
+10. # Guidance 
 
 ```
 zinger.guidance()
@@ -303,7 +303,7 @@ Public Method: Benzinga Guidance looks at different attributes like revenue guid
                 revenue_guidance_est, revenue_guidance_max, revenue_guidance_min, revenue_guidance_prior_max
                 , revenue_guidance_prior_min, importance, updated
 
-11. #IPO
+11. # IPO
 
 ```
 zinger.ipo()
@@ -329,7 +329,7 @@ Public Method: Benzing IPO looks at initial public offering data for companies.
                 insider_lockup_days, insider_lockup_date, offering_value, offering_shares, lead_underwriters,
                 underwriter_quiet_expiration_days, underwriter_quiet_expiration_date, update
 
-12. #Retail
+12. # Retail
 
 ```
 zinger.retail()
@@ -354,7 +354,7 @@ Public Method: Benzinga Retail looks at retail data.
                 id, date, time, ticker, exchange, name, importance, period, period_year, sss,
                 sss_est, retail_surprise, updated
 
-13. #Conference Calls
+13. # Conference Calls
 
 ```
 zinger.conference_calls()
@@ -379,7 +379,7 @@ Public Method: Benzinga Conference calls looks at conference calls.
                 id, date, time, ticker, exchange, name, start_time, phone_num, international_line,
                 reservation_num, access_code, webcase_url, importance, updated
 
-14. #Fundamentals
+14. # Fundamentals
 
 ```
 zinger.fundamentals()
@@ -398,7 +398,7 @@ Public Method: Benzinga Fundamentals looks at overall financial data for a compa
                  company, companyProfile, shareClass, earningReports, financialStatements, operation earning and valuation
                  ratios, alphaBeta
 
-15. #Financials
+15. # Financials
 
 ```
 zinger.financials()
@@ -419,7 +419,7 @@ Public Method: Benzinga Financials looks at overall financial data like  for a c
                 company, financials such as balance sheet information, assets and liabilities
                 
 
-16. #Valuation Ratios
+16. # Valuation Ratios
 
 ```
 zinger.valuation_ratios()
@@ -437,7 +437,7 @@ Public Method: Benzinga Valuation Ratios looks at overall financial data like  f
            *Returns*:
                different attributes of the valuation ratios
 
-17. #Earning Ratios
+17. # Earning Ratios
 
 ```
 zinger.earning_ratios()
@@ -455,7 +455,7 @@ Public Method: Benzinga Earning Ratios
             *Returns*:
                different attributes of the earning ratios
                               
-18. #Operation Ratios
+18. # Operation Ratios
 
 ```
 zinger.operation_ratios()
@@ -473,7 +473,7 @@ Public Method: Benzinga Operation Ratios
             *Returns*:
                 different attributes of the operation ratios
 
-19. #Share Class
+19. # Share Class
 
 ```
 zinger.share_class()
@@ -493,7 +493,7 @@ Public Method: Benzinga Share Class
                 different attributes of the share class.
                                       
 
-20. #Earning Reports
+20. # Earning Reports
 
 ```
 zinger.earning_reports()
@@ -511,7 +511,7 @@ Public Method: Benzinga Earning Reports looks at overall earning reports for a c
             *Returns*:
                 different attributes of the earning reports.
                                       
-21. #Alpha Beta
+21. # Alpha Beta
 
 ```
 zinger.alpha_beta()
@@ -529,7 +529,7 @@ Public Method: Benzinga Alpha Beta
              *Returns*:
                       different attributes of the alpha beta.
 
-22. #Company Profile
+22. # Company Profile
 
 ```
 zinger.company_profile()
@@ -547,7 +547,7 @@ Public Method: Benzinga Company Profile
               *Returns*:
                   different attributes of the company profile.
 
-23. #Company 
+23. # Company 
 
 ```
 zinger.company()
@@ -565,7 +565,7 @@ Public Method: Benzinga Company
                *Returns*:
                   different attributes of the company.
 
-24. #Share Class Profile History
+24. # Share Class Profile History
 
 ```
 zinger.share_class()
@@ -583,7 +583,7 @@ Public Method: Benzinga Share Class Profile History
               *Returns*:
                   different attributes of the share class profile history.
                                               
-25. #Asset Classification
+25. # Asset Classification
 
 ```
 zinger.asset_classification()
@@ -601,7 +601,7 @@ Public Method: Benzinga Asset Classification
               *Returns*:
                   different attributes of the asset classification.
                                       
-26. #Summary 
+26. # Summary 
 
 ```
 zinger.summary()
@@ -619,7 +619,7 @@ Public Method: Summary
               *Returns*:
                   different attributes of the ownership summary.
 
-27. #Logos
+27. # Logos
 
 ```
 zinger.logos()
@@ -637,7 +637,7 @@ Public Method: Summary
               *Returns*:
                   different attributes of the ownership summary.
 
-28. #Movers
+28. # Movers
 
 ```
 zinger.movers()
@@ -661,13 +661,13 @@ Public Method: Movers Data on Gainers and Losers
 
 
 
-###News Data:
+### News Data:
 
 ```
 zinger.news()
 ```
 
-1. #News
+1. # News
 
 Public Method: Benzinga News
 
@@ -690,7 +690,7 @@ Public Method: Benzinga News
                   Author, created, updated, title, teaser, body, url, image, channels, stocks, tags
         
 
-2. #Top News
+2. # Top News
 
 ```
 zinger.top_news()
@@ -708,7 +708,7 @@ Public Method: Benzinga Top News
                *Returns*:
                    Author, created, updated, title, teaser, body, url, image, channels, stocks, tags
 
-3. #Channels
+3. # Channels
 
 ```
 zinger.channels()
@@ -735,7 +735,7 @@ Public Method: Benzinga Channels only focuses on Channel IDs. The below argument
                *Returns*:
                    Channel name, channel id.
 
-4. #Quantified News
+4. # Quantified News
 
 ```
 zinger.quantified_news()
