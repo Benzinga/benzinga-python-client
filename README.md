@@ -1,4 +1,4 @@
-![alt text](https://www.benzinga.com/sites/all/themes/bz2/images/benzinga-logo.png)
+![alt text](https://14bis.aero/wp-content/uploads/2018/05/benzinga-logo-300x104.png)
 
 # Benzinga Python Client
 
