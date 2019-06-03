@@ -141,7 +141,7 @@ Public Method: Benzinga Quote looks at many different attributes of the ticker l
         fifty two week high, fifty two week low, dividend yield, price/earnings, forward price/earnings,
         payout ratio, shares outstanding, open interest, shares per contract, multiplier.
 
-5. # Instruments
+5. ### Instruments
 
 ```python
 zinger.instruments()
@@ -165,7 +165,7 @@ Public Method: Benzinga Instruments looks at all of the screener data with price
     * all of the data related to the instrument including marketcap, sector, company name
          etc, that can be found on the Benzinga Pro screener.
 
-6. # Dividends
+6. ### Dividends
 
 ```python
 zinger.dividends()
@@ -301,7 +301,7 @@ Public Method: Benzinga Guidance looks at different attributes like revenue guid
     revenue_guidance_est, revenue_guidance_max, revenue_guidance_min, revenue_guidance_prior_max
     , revenue_guidance_prior_min, importance, updated
 
-11. # IPO
+11. ### IPO
 
 ```python
 zinger.ipo()
@@ -437,7 +437,7 @@ Public Method: Benzinga Valuation Ratios looks at overall financial data like  f
 * Returns:
     * different attributes of the valuation ratios
 
-17. # Earning Ratios
+17. ### Earning Ratios
 
 ```python
 zinger.earning_ratios()
@@ -474,7 +474,7 @@ Public Method: Benzinga Operation Ratios
 * Returns:
     * different attributes of the operation ratios
 
-19. # Share Class
+19. ### Share Class
 
 ```python
 zinger.share_class()
@@ -567,7 +567,7 @@ Public Method: Benzinga Company
     * different attributes of the company.
                                       
 
-24. # Share Class Profile History
+24. ### Share Class Profile History
 
 ```python
 zinger.share_class()
@@ -622,7 +622,7 @@ Public Method: Summary
     * different attributes of the summary.
                                       
 
-27. # Logos
+27. ### Logos
 
 ```python
 zinger.logos()
