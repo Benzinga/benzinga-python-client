@@ -5,11 +5,12 @@
 This is the the official documentation for Benzinga's Python Package. This package
 Is compatible with Python v3.x+
 
+## Table of Contents
 - [Benzinga Python Client](#benzinga-python-client)
   * [Getting Started](#getting-started)
   * [Your Key](#your-key)
-  * [Sample Test (Financial Data Module)](#sample-test--financial-data-module-)
-  * [Sample Test (News Data Module)](#sample-test--news-data-module-)
+  * [Sample Test Financial Data Module](#sample-test-financial-data-module)
+  * [Sample Test News Data Module](#sample-test-news-data-module)
   * [Financial Data Methods:](#financial-data-methods-)
     + [Batch History](#batch-history)
     + [Auto-Complete](#auto-complete)
@@ -46,8 +47,6 @@ Is compatible with Python v3.x+
     + [Quantified News](#quantified-news)
   * [Additional Links](#additional-links)
 
-
-
 ## Getting Started
 
 The installation process varies depending on your python version and system used. 
@@ -80,7 +79,7 @@ authentication purposes. Don't worry! We'll provide you with the API Key.
 
 *Sample API Key (type: str) : 899efcbfda344e089b23589cbddac62b*
 
-## Sample Test (Financial Data Module)
+## Sample Test Financial Data Module 
 
 1. Initiating the class:
 
@@ -95,7 +94,7 @@ zinger = financial_data.Benzinga(api_key)
 stock_ratings = zinger.ratings()
 ```
 
-## Sample Test (News Data Module)
+## Sample Test News Data Module
 
 1. Initiating the class:
 
