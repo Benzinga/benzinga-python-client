@@ -1,3 +1,5 @@
+![alt text](https://www.benzinga.com/sites/all/themes/bz2/images/benzinga-logo.png)
+
 # Benzinga Python Client
 
 This is the the official documentation for Benzinga's Python Package. This package
