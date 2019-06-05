@@ -89,6 +89,10 @@ zinger.output(stories)
 * Benzinga News: https://www.benzinga.com/
 * Benzinga Pro: https://pro.benzinga.com/
 
+## License
+
+[MIT License](http://opensource.org/licenses/MIT)
+
 
 
 
