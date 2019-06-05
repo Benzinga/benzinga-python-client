@@ -3,7 +3,7 @@
 # Benzinga Python Client
 
 This is the the official documentation for Benzinga's Python Package. This package
-Is compatible with Python v3.x+
+Is compatible with Python v3.x+. For extensive instructions, visit [Benzinga Docs](https://docs.benzinga.io/benzinga-python/)
 
 ## Getting Started
 
