@@ -16,5 +16,4 @@ data = financial_data.Benzinga(token)
 """Sample Run News API"""
 news = news_data.News(token)
 
-print(data.output(data.ratings()))
 

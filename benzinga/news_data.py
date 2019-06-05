@@ -218,3 +218,8 @@ class News:
         except requests.exceptions.RequestException:
             raise AccessDeniedError
         return quantnews.json()
+
+    def output(self, json_object):
+        result = json.dumps(json_object, indent= 4)
+        return result
+

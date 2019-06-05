@@ -1126,6 +1126,7 @@ class Benzinga:
         try:
             movers_url = self.__url_call__("movers")
             movers = requests.get(movers_url, headers=self.headers, params=params)
+            print(movers.url)
             if movers.status_code == 401:
                 raise TokenAuthenticationError
         except requests.exceptions.RequestException:
