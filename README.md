@@ -44,20 +44,20 @@ authentication purposes. Don't worry! We'll provide you with the API Key.
 ```python
 from benzinga import financial data
 api_key = "test123api878key892aksk762ks2e12"
-zinger = financial_data.Benzinga(api_key)
+fin = financial_data.Benzinga(api_key)
 ```
 
 2. A sample test run to get ratings on a stock. (Returns a JSON object):
 
 ```python
-stock_ratings = zinger.ratings()
+stock_ratings = fin.ratings()
 ```
 
-3. Since `zinger.ratings()` returns a JSON dict, for a better view of the dict,
-you can call the `zinger.output()` method on the result. Example:
+3. Since `fin.ratings()` returns a JSON dict, for a better view of the dict,
+you can call the `fin.output()` method on the result. Example:
 
 ```python
-zinger.output(stock_ratings)
+fin.output(stock_ratings)
 ```
 
 ## Sample Test News Data Module
@@ -67,20 +67,20 @@ zinger.output(stock_ratings)
 ```python
 from benzinga import news_data
 api_key = "test123api878key892aksk762ks2e12"
-zinger = news_data.News(api_key)
+paper = news_data.News(api_key)
 ```
 
 2. A sample test run to get general news. (Returns a JSON Object)
 
 ```python
-stories = zinger.news()
+stories = paper.news()
 ```
 
-3. Since `zinger.news()` returns a JSON dict, for a better view of the dict,
-you can call the `zinger.output()` method on the result. Example:
+3. Since `paper.news()` returns a JSON dict, for a better view of the dict,
+you can call the `paper.output()` method on the result. Example:
 
 ```python
-zinger.output(stories)
+paper.output(stories)
 ```
 
 ## Additional Links
