@@ -58,9 +58,9 @@ class Benzinga:
 
         endpoint_type = {
             "calendar": "%s%s/%s" % (self.url_dict["API v2"], resource, sub_resource),
-            "chart": "%s%s" % (self.url_dict["API v2"], resource),
             "quote": "%s%s" % (self.url_dict["Data v2"], resource),
             "security": "%s%s" % (self.url_dict["Data api v2"], resource),
+            "chart": "%s%s" % (self.url_dict["Data api v2"], resource),
             "batchhistory": "%s%s" % (self.url_dict["Data api v2"], resource),
             "autocomplete": "%s%s" % (self.url_dict["Data v2"], resource),
             "instruments": "%s%s" % (self.url_dict["Data v3"], resource),
@@ -68,15 +68,16 @@ class Benzinga:
             "logos": "%s%s" % (self.url_dict["API v1.v1"], resource),
             "fundamentals": "%s%s/%s" % (self.url_dict["V3"], resource, sub_resource),
             "ownership": "%s%s/%s" % (self.url_dict["V3"], resource, sub_resource),
-            "movers": "%s%s/%s" % (self.url_dict["API rest"], resource, sub_resource)
+            "movers": "%s%s/%s" % (self.url_dict["API rest"], resource, sub_resource),
+            "tickerDetail": "%s%s" % (self.url_dict["V3"], resource)
         }
         if resource not in endpoint_type:
             raise URLIncorrectlyFormattedError
         url_string = endpoint_type[resource]
         return url_string
 
-    def batch_history(self, company_tickers, date_from, date_to):
-        """Public Method: Benzinga Batch History requires 3 required arguments. It returns daily candles for a specific date range
+    def price_history(self, company_tickers, date_from, date_to):
+        """Public Method: Benzinga Price History requires 3 required arguments. It returns daily candles for a specific date range
          for a company. The from and to date is required along with the company ticker. 
          
          Arguments:
@@ -162,6 +163,39 @@ class Benzinga:
         except requests.exceptions.RequestException:
             raise AccessDeniedError
         return security.json()
+
+    def chart(self, company_tickers, date_from, date_to=None, interval=None, session=None):
+        """Public Method: Benzinga Chart looks at detailed price values over a period of time.
+
+                Arguments:
+                    Required - company_tickers (str)
+                    Required - date_from (str) - For date_from, you can enter "YTD" for the first trading day
+                    of the year. "1d", "5d" or "1m". You can also enter the date from in the "YY-MM-DD"format too.
+                    Optional:
+                    date_to (str) - "YY-MM-DD"
+                    interval (str) - "1MONTH", "1W", "1D", "1H", "15M". Default: "5M"
+                    session (str) - "ANY", "REGULAR"
+
+                Returns:
+                    open, high, low, close, volume, time, dateTime"""
+        params = {
+            "apikey": self.token,
+            "symbol": company_tickers,
+            "from": date_from,
+            "to": date_to,
+            "interval": interval,
+            "session": session
+        }
+        self.param_initiate.charts_check(params)
+        try:
+            chart_url = self.__url_call__("chart")
+            chart = requests.get(chart_url, headers=self.headers, params=params)
+            if chart.status_code == 401:
+                raise TokenAuthenticationError
+        except requests.exceptions.RequestException:
+            raise AccessDeniedError
+        return chart.json()
+
 
     def quote(self, company_tickers):
         """Public Method: Benzinga Quote looks at many different attributes of the ticker like high, low, close etc
@@ -1049,6 +1083,33 @@ class Benzinga:
             raise AccessDeniedError
         return summary.json()
 
+    def ticker_detail(self, company_tickers):
+        """Public Method: Ticker detail provides key statistics, peers, and percentile information on the company.
+
+             Arguments:
+                 Required - company_tickers (str)
+                 Optional:
+                     isin (str) - specifies company data to return.
+                     cik (str) - cik identifier
+                     date_asof (str) - "YYYY-MM-DD"
+             Returns:
+                 Key statistics, peer information and percentile information on the ticker.
+                                                     """
+
+        params = {
+            "apikey": self.token,
+            "symbols": company_tickers
+        }
+        self.param_initiate.ticker_check(params)
+        try:
+            ticker_url = self.__url_call__("tickerDetail")
+            ticker = requests.get(ticker_url, headers=self.headers, params= params)
+            if ticker.status_code == 401:
+                raise TokenAuthenticationError
+        except requests.exceptions.RequestException:
+            raise AccessDeniedError
+        return ticker.json()
+
     def logos(self, company_tickers, filters = None):
         """Public Method: Logos
 
@@ -1126,7 +1187,6 @@ class Benzinga:
         try:
             movers_url = self.__url_call__("movers")
             movers = requests.get(movers_url, headers=self.headers, params=params)
-            print(movers.url)
             if movers.status_code == 401:
                 raise TokenAuthenticationError
         except requests.exceptions.RequestException:

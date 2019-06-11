@@ -87,6 +87,23 @@ class Param_Check:
         }
         self.__para_type_matching__(param_type, dict)
 
+    def charts_check(self, dict):
+        param_type = {
+            "apikey": self.stri,
+            "symbol": self.stri,
+            "from": self.stri,
+            "to": self.stri,
+            "interval": self.stri,
+            "session": self.stri
+        }
+        self.__para_type_matching__(param_type, dict)
+
+    def ticker_check(self, dict):
+        param_type = {
+            "apikey": self.stri,
+            "symbols": self.stri
+        }
+        self.__para_type_matching__(param_type, dict)
     def autocomplete_check(self, dict):
         param_type = {
             "token": self.stri,
