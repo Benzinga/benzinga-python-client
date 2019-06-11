@@ -2,3 +2,4 @@
 *.egg-info
 benzinga/dist
 benzinga/build
+__pycache__
