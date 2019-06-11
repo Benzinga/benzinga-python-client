@@ -35,7 +35,7 @@ from benzinga import news_data
 **Api Key** To initiate a class, an API key is used, for
 authentication purposes. Don't worry! We'll provide you with the API Key.
 
-*Sample API Key (type: str) : 899efcbfda344e089b23589cbddac62b*
+*Sample API Key (type: str) : test123api878key892aksk762ks2e12 *
 
 ## Sample Test Financial Data Module 
 
@@ -43,7 +43,7 @@ authentication purposes. Don't worry! We'll provide you with the API Key.
 
 ```python
 from benzinga import financial data
-api_key = "899efcbfda344e089b23589cbddac62b"
+api_key = "test123api878key892aksk762ks2e12"
 zinger = financial_data.Benzinga(api_key)
 ```
 
@@ -66,7 +66,7 @@ zinger.output(stock_ratings)
 
 ```python
 from benzinga import news_data
-api_key = "899efcbfda344e089b23589cbddac62b"
+api_key = "test123api878key892aksk762ks2e12"
 zinger = news_data.News(api_key)
 ```
 
