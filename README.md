@@ -35,7 +35,7 @@ from benzinga import news_data
 **Api Key** To initiate a class, an API key is used, for
 authentication purposes. Don't worry! We'll provide you with the API Key.
 
-* Sample API Key (type: str) : test123api878key892aksk762ks2e12*
+*Sample API Key (type: str) : test123api878key892aksk762ks2e12*
 
 ## Sample Test Financial Data Module 
 
