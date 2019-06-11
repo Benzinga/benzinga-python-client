@@ -1088,10 +1088,7 @@ class Benzinga:
 
              Arguments:
                  Required - company_tickers (str)
-                 Optional:
-                     isin (str) - specifies company data to return.
-                     cik (str) - cik identifier
-                     date_asof (str) - "YYYY-MM-DD"
+
              Returns:
                  Key statistics, peer information and percentile information on the ticker.
                                                      """
