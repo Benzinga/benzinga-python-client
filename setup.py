@@ -8,4 +8,10 @@ setup(
         author_email='dev@benzinga.com',
         url='https://github.com/Benzinga/benzinga-python-client',
         packages= ["Benzinga Python Client"],
-        install_requires=['requests'] )
+        install_requires=['requests'],
+        classifiers=[
+                "Programming Language :: Python :: 3",
+                "License :: OSI Approved :: MIT License",
+                "Operating System :: OS Independent",
+            ],
+)
