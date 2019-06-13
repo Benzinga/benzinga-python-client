@@ -1,8 +1,7 @@
 import requests, json
-import datetime
-from benzinga_errors import (TokenAuthenticationError,RequestAPIEndpointError, IncorrectParameterEntry,
+from .benzinga_errors import (TokenAuthenticationError,RequestAPIEndpointError, IncorrectParameterEntry,
                              URLIncorrectlyFormattedError, AccessDeniedError)
-import param_check
+from.param_check import Param_Check
 
 class News:
 
@@ -11,10 +10,10 @@ class News:
         self.headers = {'accept': 'application/json'}
         self.url_dict = {"API V2": "http://api.benzinga.com/api/v2/"}
 
-        self.__token_check__(self.token)
-        self.param_initiate = param_check.Param_Check()
+        self.__token_check(self.token)
+        self.param_initiate = Param_Check()
 
-    def __token_check__(self, api_token):
+    def __token_check(self, api_token):
         """Private Method: Token check is a private method that does a basic check for whether the api token has
                access to the fundamentals and/or calendar data. Different tokens have access to different endpoints.
                Disregard the error if your request is fullfilled but the token authentication error is raised.
@@ -26,14 +25,14 @@ class News:
                 Token authentication error if token is invalid."""
         params = {'token': api_token}
         try:
-            sample_url = self.__url_call__("news")
+            sample_url = self.__url_call("news")
             sample = requests.get(sample_url, headers= self.headers, params=params)
             if sample.status_code == 401:
                 raise TokenAuthenticationError
         except TokenAuthenticationError as t:
             raise AccessDeniedError
 
-    def __url_call__(self, resource, sub_resource=""):
+    def __url_call(self, resource, sub_resource=""):
         """Private Method: URL Call is used to take input from the public methods and return the appropriate url format
                 for the endpoint. For example, the resource is calendar and the subresource might be ratings. The correct
                 url endpoint call is created by using these two.
@@ -94,7 +93,7 @@ class News:
         }
         self.param_initiate.news_check(params)
         try:
-            news_url = self.__url_call__("news")
+            news_url = self.__url_call("news")
             news = requests.get(news_url, headers=self.headers, params=params)
             if news.status_code == 401:
                 raise TokenAuthenticationError
@@ -124,7 +123,7 @@ class News:
         }
         self.param_initiate.news_check(params)
         try:
-            top_news_url = self.__url_call__("news-top-stories")
+            top_news_url = self.__url_call("news-top-stories")
             top_news = requests.get(top_news_url, headers=self.headers, params=params)
             if top_news.status_code == 401:
                 raise TokenAuthenticationError
@@ -173,7 +172,7 @@ class News:
         }
         self.param_initiate.news_check(params)
         try:
-            channels_url = self.__url_call__("channels")
+            channels_url = self.__url_call("channels")
             channels = requests.get(channels_url, headers=self.headers, params=params)
             if channels.status_code == 401:
                 raise TokenAuthenticationError
@@ -211,7 +210,7 @@ class News:
         }
         self.param_initiate.quantified_news_check(params)
         try:
-            quantnews_url = self.__url_call__("newsquantified")
+            quantnews_url = self.__url_call("newsquantified")
             quantnews = requests.get(quantnews_url, headers=self.headers, params=params)
             if quantnews.status_code == 401:
                 raise TokenAuthenticationError
