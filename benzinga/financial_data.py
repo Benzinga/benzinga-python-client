@@ -1,8 +1,9 @@
 import requests, json
 import datetime as dt
-import param_check
+from param_check import Param_Check
 from benzinga_errors import (TokenAuthenticationError, RequestAPIEndpointError, IncorrectParameterEntry,
                              URLIncorrectlyFormattedError, MissingParameter, AccessDeniedError)
+
 
 class Benzinga: 
 
@@ -19,7 +20,7 @@ class Benzinga:
             "Data api v2": "https://api.benzinga.io/dataapi/rest/v2/",
             "API rest": "https://data.benzinga.com/quote-store/api/"
         }
-        self.param_initiate = param_check.Param_Check()
+        self.param_initiate = Param_Check()
 
     def __token_check__(self, api_token):
         """Private Method: Token check is a private method that does a basic check for whether the api token has
