@@ -8,7 +8,7 @@ class Param_Check:
         self.nonetype = "NoneType"
         self.float = "float"
 
-    def __para_type_matching__(self, param_metadata, para_dict):
+    def __para_type_matching(self, param_metadata, para_dict):
         for param, value in para_dict.items():
             if (type(value).__name__ != param_metadata[param]) and (type(value).__name__ != self.nonetype):
                 raise IncorrectParameterEntry("Parameter Type for %s doesn't match: Correct Type: %s. " 
@@ -34,7 +34,7 @@ class Param_Check:
             "parameters[eps_surprise_percent]": self.stri,
             "parameters[revenue_surprise_percent]": self.stri
         }
-        self.__para_type_matching__(param_type, dict)
+        self.__para_type_matching(param_type, dict)
 
     def fundamentals_check(self, dict):
         param_type = {
@@ -47,7 +47,7 @@ class Param_Check:
             "period": self.stri,
             "reportType": self.stri
         }
-        self.__para_type_matching__(param_type, dict)
+        self.__para_type_matching(param_type, dict)
 
     def delayed_quote_check(self, dict):
         param_type = {
@@ -56,7 +56,7 @@ class Param_Check:
             "isin": self.stri,
             "cik": self.stri
         }
-        self.__para_type_matching__(param_type, dict)
+        self.__para_type_matching(param_type, dict)
 
     def logos_check(self, dict):
         param_type = {
@@ -64,7 +64,7 @@ class Param_Check:
             "symbols": self.stri,
             "filters": self.stri
         }
-        self.__para_type_matching__(param_type, dict)
+        self.__para_type_matching(param_type, dict)
 
     def instruments_check(self, dict):
         param_type = {
@@ -77,7 +77,7 @@ class Param_Check:
             "sortfield": self.stri,
             "sortdir": self.stri
         }
-        self.__para_type_matching__(param_type, dict)
+        self.__para_type_matching(param_type, dict)
 
     def security_check(self, dict):
         param_type = {
@@ -85,7 +85,7 @@ class Param_Check:
             "symbol": self.stri,
             "cusip": self.stri
         }
-        self.__para_type_matching__(param_type, dict)
+        self.__para_type_matching(param_type, dict)
 
     def charts_check(self, dict):
         param_type = {
@@ -96,14 +96,14 @@ class Param_Check:
             "interval": self.stri,
             "session": self.stri
         }
-        self.__para_type_matching__(param_type, dict)
+        self.__para_type_matching(param_type, dict)
 
     def ticker_check(self, dict):
         param_type = {
             "apikey": self.stri,
             "symbols": self.stri
         }
-        self.__para_type_matching__(param_type, dict)
+        self.__para_type_matching(param_type, dict)
     def autocomplete_check(self, dict):
         param_type = {
             "token": self.stri,
@@ -113,14 +113,14 @@ class Param_Check:
             "exchanges": self.stri,
             "types": self.stri
         }
-        self.__para_type_matching__(param_type, dict)
+        self.__para_type_matching(param_type, dict)
 
     def batchhistory_check(self, dict):
         param_type = {
             "apikey": self.stri,
             "symbol": self.stri
         }
-        self.__para_type_matching__(param_type, dict)
+        self.__para_type_matching(param_type, dict)
 
     def news_check(self, dict):
         param_type = {
@@ -140,7 +140,7 @@ class Param_Check:
             "limit": self.inte,
             "channel": self.stri
         }
-        self.__para_type_matching__(param_type, dict)
+        self.__para_type_matching(param_type, dict)
 
     def quantified_news_check(self, dict):
         param_type = {
@@ -154,7 +154,7 @@ class Param_Check:
             "symbols": self.stri,
             "apikey": self.stri
         }
-        self.__para_type_matching__(param_type, dict)
+        self.__para_type_matching(param_type, dict)
 
     def movers_check(self, dict):
         param_type = {
@@ -165,7 +165,7 @@ class Param_Check:
             "maxResults": self.stri,
             "screenerQuery":self.stri
         }
-        self.__para_type_matching__(param_type, dict)
+        self.__para_type_matching(param_type, dict)
 
 
 

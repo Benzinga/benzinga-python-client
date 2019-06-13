@@ -2,7 +2,7 @@
 from distutils.core import setup
 setup(
         name='Benzinga Python Client',
-        version='0.5',
+        version='0.6',
         description='Python Client Library for Benzinga Data',
         author='Benzinga Developers',
         author_email='dev@benzinga.com',

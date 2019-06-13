@@ -16,3 +16,4 @@ data = financial_data.Benzinga(token)
 news = news_data.News(token)
 
 print(data.output(data.movers(session = "REGULAR", sector = "healthcare", max_results = "100", interval= "YTD")))
+
