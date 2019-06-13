@@ -1,13 +1,13 @@
 #!/usr/bin/env python
-from distutils.core import setup
-setup(
-        name='Benzinga Python Client',
+import setuptools
+setuptools.setup(
+        name='benzinga',
         version='0.6',
         description='Python Client Library for Benzinga Data',
         author='Benzinga Developers',
         author_email='dev@benzinga.com',
         url='https://github.com/Benzinga/benzinga-python-client',
-        packages= ["Benzinga Python Client"],
+        packages= ["benzinga"],
         install_requires=['requests'],
         classifiers=[
                 "Programming Language :: Python :: 3",
