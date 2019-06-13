@@ -1,9 +1,8 @@
 import requests, json
 import datetime as dt
-from param_check import Param_Check
+import param_check
 from benzinga_errors import (TokenAuthenticationError, RequestAPIEndpointError, IncorrectParameterEntry,
                              URLIncorrectlyFormattedError, MissingParameter, AccessDeniedError)
-
 
 class Benzinga: 
 
@@ -20,7 +19,7 @@ class Benzinga:
             "Data api v2": "https://api.benzinga.io/dataapi/rest/v2/",
             "API rest": "https://data.benzinga.com/quote-store/api/"
         }
-        self.param_initiate = Param_Check()
+        self.param_initiate = param_check.Param_Check()
 
     def __token_check__(self, api_token):
         """Private Method: Token check is a private method that does a basic check for whether the api token has
@@ -1134,15 +1133,15 @@ class Benzinga:
             raise AccessDeniedError
         return logos.json()
 
-    def movers(self, session = "REGULAR", interval = None, date_asof = None, max_results = None,
+    def movers(self, session = "REGULAR", date_from = None, date_to = None, max_results = None,
                market_cap_gt = None, close_gt = None, sector = None, market_cap_lt = None):
         """Public Method: Movers Data on Gainers and Losers
 
               Arguments:
                   Optional:
                       session (str) - "PRE_MARKET, REGULAR, AFTER_MARKET
-                      interval (str) - "YTD" or "-1W" etc.
-                      date_asof (str) - "YYYY-MM-DD" default is the most recent timestamp
+                      date_from (str) - "YYYY-MM-DD"
+                      date_to (str) - "YYYY-MM-DD" default is the most recent timestamp
                       max_results (int) - default 10
                       market_cap_gt (str) - market cap greater than "1b" etc
                       market_cap_lt (str) - market cap less than "1b" etc
@@ -1175,8 +1174,8 @@ class Benzinga:
             screener_query = "%s%s%s%s"% (market_cap_greater, marketcap_less, close_greater,sector)
         params = {
             "apikey": self.token,
-            "from": interval,
-            "to": date_asof,
+            "from": date_from,
+            "to": date_to,
             "session": session,
             "screenerQuery": screener_query,
             "maxResults": max_results
