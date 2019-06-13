@@ -1,8 +1,8 @@
 import requests, json
 import datetime as dt
-from param_check import Param_Check
-from benzinga_errors import (TokenAuthenticationError, RequestAPIEndpointError, IncorrectParameterEntry,
-                             URLIncorrectlyFormattedError, MissingParameter, AccessDeniedError)
+from .param_check import Param_Check
+from .benzinga_errors import (TokenAuthenticationError, RequestAPIEndpointError, IncorrectParameterEntry,
+                             URLIncorrectlyFormattedError,  AccessDeniedError)
 
 class Benzinga: 
 

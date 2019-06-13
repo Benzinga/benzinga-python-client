@@ -1,7 +1,7 @@
 import requests, json
 import datetime as dt
-from param_check import Param_Check
-from benzinga_errors import (TokenAuthenticationError, RequestAPIEndpointError, IncorrectParameterEntry,
+from .param_check import Param_Check
+from .benzinga_errors import (TokenAuthenticationError, RequestAPIEndpointError, IncorrectParameterEntry,
                              URLIncorrectlyFormattedError, MissingParameter, AccessDeniedError)
 
 
