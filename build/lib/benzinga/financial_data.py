@@ -1,8 +1,9 @@
 import requests, json
 import datetime as dt
-from .param_check import Param_Check
-from .benzinga_errors import (TokenAuthenticationError, RequestAPIEndpointError, IncorrectParameterEntry,
-                             URLIncorrectlyFormattedError,  AccessDeniedError)
+from param_check import Param_Check
+from benzinga_errors import (TokenAuthenticationError, RequestAPIEndpointError, IncorrectParameterEntry,
+                             URLIncorrectlyFormattedError, MissingParameter, AccessDeniedError)
+
 
 class Benzinga: 
 
@@ -12,16 +13,15 @@ class Benzinga:
         self.url_dict = {
             "API v1": "https://api.benzinga.com/api/v1/", 
             "API v1.v1": "https://api.benzinga.com/api/v1.1/",
-            "API v2": "https://api.benzinga.com/api/v2/", 
-            "Data v3": "http://data-api.zingbot.bz/rest/v3/",
+            "API v2": "https://api.benzinga.com/api/v2/",
             "Data v2": "https://data.benzinga.com/rest/v2/", 
-            "V3": "http://data-api.zingbot.bz/rest/v3/",
+            "V3": "https://api.benzinga.io/dataapi/rest/v3/",
             "Data api v2": "https://api.benzinga.io/dataapi/rest/v2/",
             "API rest": "https://data.benzinga.com/quote-store/api/"
         }
         self.param_initiate = Param_Check()
 
-    def __token_check__(self, api_token):
+    def __token_check(self, api_token):
         """Private Method: Token check is a private method that does a basic check for whether the api token has
         access to the fundamentals and/or calendar data. Different tokens have access to different endpoints.
         Disregard the error if your request is fullfilled but the token authentication error is raised.
@@ -40,12 +40,12 @@ class Benzinga:
             'parameters[tickers]': company_ticker
         }
 
-        ratingsUrl = self.__url_call__("calendar", "dividends")
+        ratingsUrl = self.__url_call("calendar", "dividends")
         ratings = requests.get(ratingsUrl, headers=self.headers, params=params)
         if ratings.status_code == 401:
             raise TokenAuthenticationError
 
-    def __url_call__(self, resource, sub_resource=""):
+    def __url_call(self, resource, sub_resource=""):
         """Private Method: URL Call is used to take input from the public methods and return the appropriate url format
         for the endpoint. For example, the resource is calendar and the subresource might be ratings. The correct
         url endpoint call is created by using these two.
@@ -63,7 +63,7 @@ class Benzinga:
             "chart": "%s%s" % (self.url_dict["Data api v2"], resource),
             "batchhistory": "%s%s" % (self.url_dict["Data api v2"], resource),
             "autocomplete": "%s%s" % (self.url_dict["Data v2"], resource),
-            "instruments": "%s%s" % (self.url_dict["Data v3"], resource),
+            "instruments": "%s%s" % (self.url_dict["V3"], resource),
             "quoteDelayed": "%s%s" % (self.url_dict["API v1"], resource),
             "logos": "%s%s" % (self.url_dict["API v1.v1"], resource),
             "fundamentals": "%s%s/%s" % (self.url_dict["V3"], resource, sub_resource),
@@ -95,7 +95,7 @@ class Benzinga:
         }
         self.param_initiate.batchhistory_check(params)
         try:
-            batchhistory_url = self.__url_call__("batchhistory")
+            batchhistory_url = self.__url_call("batchhistory")
             batchhistory = requests.get(batchhistory_url, headers=self.headers, params=params)
             if batchhistory.status_code == 401:
                 raise TokenAuthenticationError
@@ -130,7 +130,7 @@ class Benzinga:
         }
         self.param_initiate.autocomplete_check(params)
         try:
-            autocomplete_url = self.__url_call__("autocomplete")
+            autocomplete_url = self.__url_call("autocomplete")
             autocomplete = requests.get(autocomplete_url, headers=self.headers, params=params)
             if autocomplete.status_code == 401:
                 raise TokenAuthenticationError
@@ -156,7 +156,7 @@ class Benzinga:
         }
         self.param_initiate.security_check(params)
         try:
-            security_url = self.__url_call__("security")
+            security_url = self.__url_call("security")
             security = requests.get(security_url, headers=self.headers, params=params)
             if security.status_code == 401:
                 raise TokenAuthenticationError
@@ -188,7 +188,7 @@ class Benzinga:
         }
         self.param_initiate.charts_check(params)
         try:
-            chart_url = self.__url_call__("chart")
+            chart_url = self.__url_call("chart")
             chart = requests.get(chart_url, headers=self.headers, params=params)
             if chart.status_code == 401:
                 raise TokenAuthenticationError
@@ -216,7 +216,7 @@ class Benzinga:
         }
         self.param_initiate.fundamentals_check(params)
         try:
-            quote_url = self.__url_call__("quote")
+            quote_url = self.__url_call("quote")
             quote = requests.get(quote_url, headers=self.headers, params=params)
             if quote.status_code == 401:
                 raise TokenAuthenticationError
@@ -268,7 +268,7 @@ class Benzinga:
         else:
             query = "%s%s%s%s" % (market_cap_greater, marketcap_less, close_greater, sector)
         params = {
-            "token": self.token,
+            "apikey": self.token,
             "fields": fields,
             "query": query,
             "from": date_from,
@@ -279,8 +279,10 @@ class Benzinga:
         }
         self.param_initiate.instruments_check(params)
         try:
-            instruments_url = self.__url_call__("instruments")
+            instruments_url = self.__url_call("instruments")
+            print(instruments_url)
             instruments = requests.get(instruments_url, headers=self.headers, params=params)
+            print(instruments.url)
             if instruments.status_code == 401:
                 raise TokenAuthenticationError
         except requests.exceptions.RequestException:
@@ -330,7 +332,7 @@ class Benzinga:
         }
         self.param_initiate.calendar_check(params)
         try:
-            dividends_url = self.__url_call__("calendar", "dividends")
+            dividends_url = self.__url_call("calendar", "dividends")
             dividends = requests.get(dividends_url, headers=self.headers, params=params)
             if dividends.status_code == 401:
                 raise AccessDeniedError
@@ -377,7 +379,7 @@ class Benzinga:
         }
         self.param_initiate.calendar_check(params)
         try:
-            earnings_url = self.__url_call__("calendar", "earnings")
+            earnings_url = self.__url_call("calendar", "earnings")
             earnings = requests.get(earnings_url, headers=self.headers, params=params)
             if earnings.status_code == 401:
                 raise TokenAuthenticationError
@@ -420,7 +422,7 @@ class Benzinga:
         }
         self.param_initiate.calendar_check(params)
         try:
-            splits_url = self.__url_call__("calendar", "splits")
+            splits_url = self.__url_call("calendar", "splits")
             splits = requests.get(splits_url, headers=self.headers, params=params)
             if splits.status_code == 401:
                 raise TokenAuthenticationError
@@ -464,7 +466,7 @@ class Benzinga:
         }
         self.param_initiate.calendar_check(params)
         try:
-            economics_url = self.__url_call__("calendar", "economics")
+            economics_url = self.__url_call("calendar", "economics")
             economics = requests.get(economics_url, headers=self.headers, params=params)
             if economics.status_code == 401:
                 raise TokenAuthenticationError
@@ -510,7 +512,7 @@ class Benzinga:
         }
         self.param_initiate.calendar_check(params)
         try:
-            guidance_url = self.__url_call__("calendar", "guidance")
+            guidance_url = self.__url_call("calendar", "guidance")
             guidance = requests.get(guidance_url, headers=self.headers, params=params)
             if guidance.status_code == 401:
                 raise TokenAuthenticationError
@@ -554,7 +556,7 @@ class Benzinga:
         }
         self.param_initiate.calendar_check(params)
         try:
-            ipo_url = self.__url_call__("calendar", "ipos")
+            ipo_url = self.__url_call("calendar", "ipos")
             ipo = requests.get(ipo_url, headers=self.headers, params=params)
             if ipo.status_code == 401:
                 raise TokenAuthenticationError
@@ -598,7 +600,7 @@ class Benzinga:
 
         self.param_initiate.calendar_check(params)
         try:
-            retail_url = self.__url_call__("calendar", "retail")
+            retail_url = self.__url_call("calendar", "retail")
             retail = requests.get(retail_url, headers=self.headers, params=params)
             if retail.status_code == 401:
                 raise TokenAuthenticationError
@@ -646,7 +648,7 @@ class Benzinga:
 
         self.param_initiate.calendar_check(params)
         try:
-            ratings_url = self.__url_call__("calendar", "ratings")
+            ratings_url = self.__url_call("calendar", "ratings")
             ratings = requests.get(ratings_url, headers=self.headers, params=params)
             if ratings.status_code == 401:
                 raise TokenAuthenticationError
@@ -689,7 +691,7 @@ class Benzinga:
         }
         self.param_initiate.calendar_check(params)
         try:
-            conference_url = self.__url_call__("calendar", "conference-calls")
+            conference_url = self.__url_call("calendar", "conference-calls")
             conference = requests.get(conference_url, headers=self.headers, params=params)
             if conference.status_code == 401:
                 raise TokenAuthenticationError
@@ -712,7 +714,7 @@ class Benzinga:
             ratios, alphaBeta
         """
         params = {
-            'token': self.token,
+            'apikey': self.token,
             "symbols": company_tickers,
             "isin": isin,
             "cik": cik,
@@ -720,7 +722,7 @@ class Benzinga:
         }
         self.param_initiate.fundamentals_check(params)
         try:
-            financials_url = self.__url_call__("fundamentals")
+            financials_url = self.__url_call("fundamentals")
             financials = requests.get(financials_url, headers=self.headers, params= params)
             if financials.status_code == 401:
                 raise TokenAuthenticationError
@@ -756,7 +758,7 @@ class Benzinga:
 
         self.param_initiate.fundamentals_check(params)
         try:
-            financials_url = self.__url_call__("fundamentals", "financials")
+            financials_url = self.__url_call("fundamentals", "financials")
             financials = requests.get(financials_url, headers=self.headers, params= params)
             if financials.status_code == 401:
                 raise TokenAuthenticationError
@@ -778,7 +780,7 @@ class Benzinga:
                        """
 
         params = {
-            'token': self.token,
+            'apikey': self.token,
             "symbols": company_tickers,
             "isin": isin,
             "cik": cik,
@@ -786,7 +788,7 @@ class Benzinga:
         }
         self.param_initiate.fundamentals_check(params)
         try:
-            valuation_url = self.__url_call__("fundamentals", "valuationRatios")
+            valuation_url = self.__url_call("fundamentals", "valuationRatios")
             valuation = requests.get(valuation_url, headers=self.headers, params=params)
             if valuation.status_code == 401:
                 raise TokenAuthenticationError
@@ -807,7 +809,7 @@ class Benzinga:
                   different attributes of the earning ratios
                               """
         params = {
-            'token': self.token,
+            'apikey': self.token,
             "symbols": company_tickers,
             "isin": isin,
             "cik": cik,
@@ -815,7 +817,7 @@ class Benzinga:
         }
         self.param_initiate.fundamentals_check(params)
         try:
-            earnings_url = self.__url_call__("fundamentals", "earningRatios")
+            earnings_url = self.__url_call("fundamentals", "earningRatios")
             earnings = requests.get(earnings_url, headers=self.headers, params=params)
             if earnings.status_code == 401:
                 raise TokenAuthenticationError
@@ -836,7 +838,7 @@ class Benzinga:
                   different attributes of the operation ratios
                               """
         params = {
-            'token': self.token,
+            'apikey': self.token,
             "symbols": company_tickers,
             "isin": isin,
             "cik": cik,
@@ -844,7 +846,7 @@ class Benzinga:
         }
         self.param_initiate.fundamentals_check(params)
         try:
-            operations_url = self.__url_call__("fundamentals", "operationRatios")
+            operations_url = self.__url_call("fundamentals", "operationRatios")
             operations = requests.get(operations_url, headers=self.headers, params= params)
         except requests.exceptions.RequestException:
             raise AccessDeniedError
@@ -864,7 +866,7 @@ class Benzinga:
                                       """
 
         params = {
-            'token': self.token,
+            'apikey': self.token,
             "symbols": company_tickers,
             "isin": isin,
             "cik": cik,
@@ -872,7 +874,7 @@ class Benzinga:
         }
         self.param_initiate.fundamentals_check(params)
         try:
-            shareclass_url = self.__url_call__("fundamentals", "shareClass")
+            shareclass_url = self.__url_call("fundamentals", "shareClass")
             shareclass = requests.get(shareclass_url, headers=self.headers, params= params)
             if shareclass.status_code == 401:
                 raise TokenAuthenticationError
@@ -893,7 +895,7 @@ class Benzinga:
                   different attributes of the earning reports.
                                       """
         params = {
-            'token': self.token,
+            'apikey': self.token,
             "symbols": company_tickers,
             "isin": isin,
             "cik": cik,
@@ -901,7 +903,7 @@ class Benzinga:
         }
         self.param_initiate.fundamentals_check(params)
         try:
-            earningreports_url = self.__url_call__("fundamentals", "earningReports")
+            earningreports_url = self.__url_call("fundamentals", "earningReports")
             earningreports = requests.get(earningreports_url, headers=self.headers, params= params)
             if earningreports.status_code == 401:
                 raise TokenAuthenticationError
@@ -922,7 +924,7 @@ class Benzinga:
                       different attributes of the alpha beta.
                                       """
         params = {
-            'token': self.token,
+            'apikey': self.token,
             "symbols": company_tickers,
             "isin": isin,
             "cik": cik,
@@ -930,7 +932,7 @@ class Benzinga:
         }
         self.param_initiate.fundamentals_check(params)
         try:
-            alphabeta_url = self.__url_call__("fundamentals", "alphaBeta")
+            alphabeta_url = self.__url_call("fundamentals", "alphaBeta")
             alphabeta = requests.get(alphabeta_url, headers=self.headers, params= params)
             if alphabeta.status_code == 401:
                 raise TokenAuthenticationError
@@ -951,7 +953,7 @@ class Benzinga:
                   different attributes of the company profile.
                                       """
         params = {
-            'token': self.token,
+            'apikey': self.token,
             "symbols": company_tickers,
             "isin": isin,
             "cik": cik,
@@ -959,7 +961,7 @@ class Benzinga:
         }
         self.param_initiate.fundamentals_check(params)
         try:
-            companyprofile_url = self.__url_call__("fundamentals", "companyProfile")
+            companyprofile_url = self.__url_call("fundamentals", "companyProfile")
             company_profile = requests.get(companyprofile_url, headers=self.headers, params= params)
             if company_profile.status_code == 401:
                 raise TokenAuthenticationError
@@ -980,7 +982,7 @@ class Benzinga:
                           different attributes of the company.
                                               """
         params = {
-            'token': self.token,
+            'apikey': self.token,
             "symbols": company_tickers,
             "isin": isin,
             "cik": cik,
@@ -988,7 +990,7 @@ class Benzinga:
         }
         self.param_initiate.fundamentals_check(params)
         try:
-            company_url = self.__url_call__("fundamentals", "company")
+            company_url = self.__url_call("fundamentals", "company")
             company = requests.get(company_url, headers=self.headers, params= params)
             if company.status_code == 401:
                 raise TokenAuthenticationError
@@ -1009,7 +1011,7 @@ class Benzinga:
                   different attributes of the share class profile history.
                                               """
         params = {
-            'token': self.token,
+            'apikey': self.token,
             "symbols": company_tickers,
             "isin": isin,
             "cik": cik,
@@ -1017,7 +1019,7 @@ class Benzinga:
         }
         self.param_initiate.fundamentals_check(params)
         try:
-            profilehistory_url = self.__url_call__("fundamentals", "shareClassProfileHistory")
+            profilehistory_url = self.__url_call("fundamentals", "shareClassProfileHistory")
             profilehistory = requests.get(profilehistory_url, headers=self.headers, params= params)
             if profilehistory.status_code == 401:
                 raise TokenAuthenticationError
@@ -1038,7 +1040,7 @@ class Benzinga:
                   different attributes of the asset classification.
                                       """
         params = {
-            'token': self.token,
+            'apikey': self.token,
             "symbols": company_tickers,
             "isin": isin,
             "cik": cik,
@@ -1046,7 +1048,7 @@ class Benzinga:
         }
         self.param_initiate.fundamentals_check(params)
         try:
-            asset_url = self.__url_call__("fundamentals", "assetClassification")
+            asset_url = self.__url_call("fundamentals", "assetClassification")
             asset = requests.get(asset_url, headers=self.headers, params= params)
             if asset.status_code == 401:
                 raise TokenAuthenticationError
@@ -1067,7 +1069,7 @@ class Benzinga:
                   different attributes of the ownership summary.
                                               """
         params = {
-            'token': self.token,
+            'apikey': self.token,
             "symbols": company_tickers,
             "isin": isin,
             "cik": cik,
@@ -1075,7 +1077,7 @@ class Benzinga:
         }
         self.param_initiate.fundamentals_check(params)
         try:
-            summary_url = self.__url_call__("ownership", "summary")
+            summary_url = self.__url_call("ownership", "summary")
             summary = requests.get(summary_url, headers=self.headers, params= params)
             if summary.status_code == 401:
                 raise TokenAuthenticationError
@@ -1099,7 +1101,7 @@ class Benzinga:
         }
         self.param_initiate.ticker_check(params)
         try:
-            ticker_url = self.__url_call__("tickerDetail")
+            ticker_url = self.__url_call("tickerDetail")
             ticker = requests.get(ticker_url, headers=self.headers, params= params)
             if ticker.status_code == 401:
                 raise TokenAuthenticationError
@@ -1125,7 +1127,7 @@ class Benzinga:
         }
         self.param_initiate.logos_check(params)
         try:
-            logos_url = self.__url_call__("logos")
+            logos_url = self.__url_call("logos")
             logos = requests.get(logos_url, headers = self.headers, params=params)
             if logos.status_code == 401:
                 raise TokenAuthenticationError
@@ -1182,7 +1184,7 @@ class Benzinga:
         }
         self.param_initiate.movers_check(params)
         try:
-            movers_url = self.__url_call__("movers")
+            movers_url = self.__url_call("movers")
             movers = requests.get(movers_url, headers=self.headers, params=params)
             if movers.status_code == 401:
                 raise TokenAuthenticationError
@@ -1194,3 +1196,4 @@ class Benzinga:
         result = json.dumps(json_object, indent= 4)
         return result
 
+test = Benzinga("899efcbfda344e089b23589cbddac62b")
