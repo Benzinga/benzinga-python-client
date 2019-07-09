@@ -1,7 +1,7 @@
 import requests, json
 import datetime as dt
-from .param_check import Param_Check
-from .benzinga_errors import (TokenAuthenticationError, RequestAPIEndpointError, IncorrectParameterEntry,
+from param_check import Param_Check
+from benzinga_errors import (TokenAuthenticationError, RequestAPIEndpointError, IncorrectParameterEntry,
                              URLIncorrectlyFormattedError, MissingParameter, AccessDeniedError)
 
 
@@ -13,10 +13,9 @@ class Benzinga:
         self.url_dict = {
             "API v1": "https://api.benzinga.com/api/v1/", 
             "API v1.v1": "https://api.benzinga.com/api/v1.1/",
-            "API v2": "https://api.benzinga.com/api/v2/", 
-            "Data v3": "http://data-api.zingbot.bz/rest/v3/",
+            "API v2": "https://api.benzinga.com/api/v2/",
             "Data v2": "https://data.benzinga.com/rest/v2/", 
-            "V3": "http://data-api.zingbot.bz/rest/v3/",
+            "V3": "https://api.benzinga.io/dataapi/rest/v3/",
             "Data api v2": "https://api.benzinga.io/dataapi/rest/v2/",
             "API rest": "https://data.benzinga.com/quote-store/api/"
         }
@@ -64,7 +63,7 @@ class Benzinga:
             "chart": "%s%s" % (self.url_dict["Data api v2"], resource),
             "batchhistory": "%s%s" % (self.url_dict["Data api v2"], resource),
             "autocomplete": "%s%s" % (self.url_dict["Data v2"], resource),
-            "instruments": "%s%s" % (self.url_dict["Data v3"], resource),
+            "instruments": "%s%s" % (self.url_dict["V3"], resource),
             "quoteDelayed": "%s%s" % (self.url_dict["API v1"], resource),
             "logos": "%s%s" % (self.url_dict["API v1.v1"], resource),
             "fundamentals": "%s%s/%s" % (self.url_dict["V3"], resource, sub_resource),
@@ -269,7 +268,7 @@ class Benzinga:
         else:
             query = "%s%s%s%s" % (market_cap_greater, marketcap_less, close_greater, sector)
         params = {
-            "token": self.token,
+            "apikey": self.token,
             "fields": fields,
             "query": query,
             "from": date_from,
@@ -281,7 +280,9 @@ class Benzinga:
         self.param_initiate.instruments_check(params)
         try:
             instruments_url = self.__url_call("instruments")
+            print(instruments_url)
             instruments = requests.get(instruments_url, headers=self.headers, params=params)
+            print(instruments.url)
             if instruments.status_code == 401:
                 raise TokenAuthenticationError
         except requests.exceptions.RequestException:
@@ -607,7 +608,7 @@ class Benzinga:
             raise AccessDeniedError
         return retail.json()
 
-    def _ratings(self, page=None, pagesize=None, date_asof=None, date_from=None, date_to=None,
+    def ratings(self, page=None, pagesize=None, date_asof=None, date_from=None, date_to=None,
                   company_tickers=None, importance=None, date_sort=None, updated_params=None, action=None):
         """Public Method: Benzinga Ratings looks at ratings from different firms.
 
@@ -713,7 +714,7 @@ class Benzinga:
             ratios, alphaBeta
         """
         params = {
-            'token': self.token,
+            'apikey': self.token,
             "symbols": company_tickers,
             "isin": isin,
             "cik": cik,
@@ -779,7 +780,7 @@ class Benzinga:
                        """
 
         params = {
-            'token': self.token,
+            'apikey': self.token,
             "symbols": company_tickers,
             "isin": isin,
             "cik": cik,
@@ -808,7 +809,7 @@ class Benzinga:
                   different attributes of the earning ratios
                               """
         params = {
-            'token': self.token,
+            'apikey': self.token,
             "symbols": company_tickers,
             "isin": isin,
             "cik": cik,
@@ -837,7 +838,7 @@ class Benzinga:
                   different attributes of the operation ratios
                               """
         params = {
-            'token': self.token,
+            'apikey': self.token,
             "symbols": company_tickers,
             "isin": isin,
             "cik": cik,
@@ -865,7 +866,7 @@ class Benzinga:
                                       """
 
         params = {
-            'token': self.token,
+            'apikey': self.token,
             "symbols": company_tickers,
             "isin": isin,
             "cik": cik,
@@ -894,7 +895,7 @@ class Benzinga:
                   different attributes of the earning reports.
                                       """
         params = {
-            'token': self.token,
+            'apikey': self.token,
             "symbols": company_tickers,
             "isin": isin,
             "cik": cik,
@@ -923,7 +924,7 @@ class Benzinga:
                       different attributes of the alpha beta.
                                       """
         params = {
-            'token': self.token,
+            'apikey': self.token,
             "symbols": company_tickers,
             "isin": isin,
             "cik": cik,
@@ -952,7 +953,7 @@ class Benzinga:
                   different attributes of the company profile.
                                       """
         params = {
-            'token': self.token,
+            'apikey': self.token,
             "symbols": company_tickers,
             "isin": isin,
             "cik": cik,
@@ -981,7 +982,7 @@ class Benzinga:
                           different attributes of the company.
                                               """
         params = {
-            'token': self.token,
+            'apikey': self.token,
             "symbols": company_tickers,
             "isin": isin,
             "cik": cik,
@@ -1010,7 +1011,7 @@ class Benzinga:
                   different attributes of the share class profile history.
                                               """
         params = {
-            'token': self.token,
+            'apikey': self.token,
             "symbols": company_tickers,
             "isin": isin,
             "cik": cik,
@@ -1039,7 +1040,7 @@ class Benzinga:
                   different attributes of the asset classification.
                                       """
         params = {
-            'token': self.token,
+            'apikey': self.token,
             "symbols": company_tickers,
             "isin": isin,
             "cik": cik,
@@ -1068,7 +1069,7 @@ class Benzinga:
                   different attributes of the ownership summary.
                                               """
         params = {
-            'token': self.token,
+            'apikey': self.token,
             "symbols": company_tickers,
             "isin": isin,
             "cik": cik,

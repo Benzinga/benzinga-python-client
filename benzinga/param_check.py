@@ -38,7 +38,7 @@ class Param_Check:
 
     def fundamentals_check(self, dict):
         param_type = {
-            'token': self.stri,
+            'apikey': self.stri,
             "symbols": self.stri,
             "symbol": self.stri,
             "isin": self.stri,
@@ -68,7 +68,7 @@ class Param_Check:
 
     def instruments_check(self, dict):
         param_type = {
-            "token": self.stri,
+            "apikey": self.stri,
             "fields": self.stri,
             "query": self.stri,
             "to": self.stri,
