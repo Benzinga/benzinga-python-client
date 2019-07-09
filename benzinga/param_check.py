@@ -45,7 +45,8 @@ class Param_Check:
             "cik": self.stri,
             "asOf": self.stri,
             "period": self.stri,
-            "reportType": self.stri
+            "reportType": self.stri,
+            "token": self.stri
         }
         self.__para_type_matching(param_type, dict)
 
