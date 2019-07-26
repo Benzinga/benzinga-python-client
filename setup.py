@@ -2,11 +2,11 @@
 import setuptools
 setuptools.setup(
         name='benzinga',
-        version='1.0.1',
+        version='1.0.4',
         description='Python Client Library for Benzinga Data',
         author='Benzinga Developers',
         author_email='dev@benzinga.com',
-        url='https://github.com/Benzinga/benzinga-python-client',
+        url='https://gitlab.benzinga.io/benzinga/python-client',
         packages= ["benzinga"],
         install_requires=['requests'],
         classifiers=[
