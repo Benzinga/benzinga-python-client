@@ -1,7 +1,7 @@
 import requests, json
-from benzinga_errors import (TokenAuthenticationError,RequestAPIEndpointError, IncorrectParameterEntry,
+from .benzinga_errors import (TokenAuthenticationError,RequestAPIEndpointError, IncorrectParameterEntry,
                              URLIncorrectlyFormattedError, AccessDeniedError)
-from param_check import Param_Check
+from .param_check import Param_Check
 
 class News:
 
