@@ -17,7 +17,8 @@ class Benzinga:
             "Data v2": "https://data.benzinga.com/rest/v2/", 
             "V3": "https://api.benzinga.io/dataapi/rest/v3/",
             "Data api v2": "https://api.benzinga.io/dataapi/rest/v2/",
-            "API rest": "https://data.benzinga.com/quote-store/api/"
+            "API rest": "https://data.benzinga.com/quote-store/api/",
+            "IO API": "https://api.benzinga.io/data/rest/"
         }
         self.param_initiate = Param_Check()
 
@@ -68,7 +69,7 @@ class Benzinga:
             "logos": "%s%s" % (self.url_dict["API v1.v1"], resource),
             "fundamentals": "%s%s/%s" % (self.url_dict["V3"], resource, sub_resource),
             "ownership": "%s%s/%s" % (self.url_dict["V3"], resource, sub_resource),
-            "movers": "%s%s/%s" % (self.url_dict["API rest"], resource, sub_resource),
+            "movers": "%s%s/%s" % (self.url_dict["IO API"], resource, sub_resource),
             "tickerDetail": "%s%s" % (self.url_dict["V3"], resource)
         }
         if resource not in endpoint_type:
@@ -280,9 +281,7 @@ class Benzinga:
         self.param_initiate.instruments_check(params)
         try:
             instruments_url = self.__url_call("instruments")
-            print(instruments_url)
             instruments = requests.get(instruments_url, headers=self.headers, params=params)
-            print(instruments.url)
             if instruments.status_code == 401:
                 raise TokenAuthenticationError
         except requests.exceptions.RequestException:
@@ -1135,15 +1134,15 @@ class Benzinga:
             raise AccessDeniedError
         return logos.json()
 
-    def movers(self, session = "REGULAR", interval = None, date_asof = None, max_results = None,
+    def movers(self, session = "REGULAR", period_from = None, period_to = None, max_results = None,
                market_cap_gt = None, close_gt = None, sector = None, market_cap_lt = None):
         """Public Method: Movers Data on Gainers and Losers
 
               Arguments:
                   Optional:
                       session (str) - "PRE_MARKET, REGULAR, AFTER_MARKET
-                      interval (str) - "YTD" or "-1W" etc.
-                      date_asof (str) - "YYYY-MM-DD" default is the most recent timestamp
+                      period_from (str) - "YTD" or "-1W" etc.
+                      period_to (str) - "YYYY-MM-DD" default is the most recent timestamp
                       max_results (int) - default 10
                       market_cap_gt (str) - market cap greater than "1b" etc
                       market_cap_lt (str) - market cap less than "1b" etc
@@ -1176,8 +1175,8 @@ class Benzinga:
             screener_query = "%s%s%s%s"% (market_cap_greater, marketcap_less, close_greater,sector)
         params = {
             "apikey": self.token,
-            "from": interval,
-            "to": date_asof,
+            "from": period_from,
+            "to": period_to,
             "session": session,
             "screenerQuery": screener_query,
             "maxResults": max_results
@@ -1186,6 +1185,7 @@ class Benzinga:
         try:
             movers_url = self.__url_call("movers")
             movers = requests.get(movers_url, headers=self.headers, params=params)
+            print(movers.url)
             if movers.status_code == 401:
                 raise TokenAuthenticationError
         except requests.exceptions.RequestException:

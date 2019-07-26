@@ -6,8 +6,16 @@ api_key = "22f84f867c5746fd92ef8e13f5835c02"
 newapikey = "54b595f497164e0499409ca93342e394"
 tomkey = "54b595f497164e0499409ca93342e394"
 
-data = financial_data.Benzinga(tomkey)
-result = data.movers(period_from="-1w")
+data = financial_data.Benzinga(token)
+
+
+
+result = data.conference_calls(date_asof = "2019-07-25")
+
+
+
+
+
 print(data.output(result))
 
 
