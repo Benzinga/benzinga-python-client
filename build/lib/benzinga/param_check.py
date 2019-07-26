@@ -1,4 +1,4 @@
-from benzinga_errors import (TokenAuthenticationError, RequestAPIEndpointError, IncorrectParameterEntry,
+from .benzinga_errors import (TokenAuthenticationError, RequestAPIEndpointError, IncorrectParameterEntry,
                              URLIncorrectlyFormattedError,MissingParameter)
 class Param_Check:
 

@@ -2,7 +2,7 @@
 import setuptools
 setuptools.setup(
         name='benzinga',
-        version='1.0.9',
+        version='1.1.9',
         description='Python Client Library for Benzinga Data',
         author='Benzinga Developers',
         author_email='dev@benzinga.com',
