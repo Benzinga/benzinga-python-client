@@ -1,7 +1,4 @@
 *.pyc
 *.egg-info
-dist
-build/*
-!build/build.xml
 __pychache__
 
