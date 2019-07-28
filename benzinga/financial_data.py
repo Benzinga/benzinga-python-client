@@ -77,32 +77,6 @@ class Benzinga:
         url_string = endpoint_type[resource]
         return url_string
 
-    def price_history(self, company_tickers, date_from, date_to):
-        """Public Method: Benzinga Price History requires 3 required arguments. It returns daily candles for a specific date range
-         for a company. The from and to date is required along with the company ticker. 
-         
-         Arguments:
-             Required - company_tickers (str)
-             Required - date_from (str) - "YYYY-MM-DD"
-             Required - date_to (str) - "YYYY-MM-DD"
-         
-         Returns:
-             Daily candles for the company for a specific date range"""
-        
-        revised_input = "%s:%s:%s" % (company_tickers, date_from, date_to)
-        params = {
-            "symbol": revised_input,
-            "apikey": self.token
-        }
-        self.param_initiate.batchhistory_check(params)
-        try:
-            batchhistory_url = self.__url_call("batchhistory")
-            batchhistory = requests.get(batchhistory_url, headers=self.headers, params=params)
-            if batchhistory.status_code == 401:
-                raise TokenAuthenticationError
-        except requests.exceptions.RequestException:
-            raise AccessDeniedError
-        return batchhistory.json()
 
     def auto_complete(self, company_tickers, limit=None, search_method=None, exchanges=None, types=None):
         """Public Method: Benzinga Auto-Complete returns the relevant information related to a company
