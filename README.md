@@ -1,4 +1,4 @@
-![alt text](https://14bis.aero/wp-content/uploads/2018/05/benzinga-logo-300x104.png)
+![alt text](https://raw.githubusercontent.com/Benzinga/benzinga-python-client/master/logo/black_logo.png)
 
 # Benzinga Python Client
 
@@ -33,9 +33,9 @@ from benzinga import news_data
 ## Your Key
 
 **Api Key** To initiate a class, an API key is used, for
-authentication purposes. Don't worry! We'll provide you with the API Key.
+authentication purposes. [Contact us](https://cloud.benzinga.com/lets-talk/) if you don't yet have a key, we will take care of you!
 
-*Sample API Key (type: str) : test123api878key892aksk762ks2e12*
+*Sample API Key (type: str) : "testkey892834789s9s8abshtuy"*
 
 ## Sample Test Financial Data Module 
 
@@ -43,7 +43,7 @@ authentication purposes. Don't worry! We'll provide you with the API Key.
 
 ```python
 from benzinga import financial data
-api_key = "test123api878key892aksk762ks2e12"
+api_key = "testkey892834789s9s8abshtuy"
 fin = financial_data.Benzinga(api_key)
 ```
 
@@ -66,7 +66,7 @@ fin.output(stock_ratings)
 
 ```python
 from benzinga import news_data
-api_key = "test123api878key892aksk762ks2e12"
+api_key = "testkey892834789s9s8abshtuy"
 paper = news_data.News(api_key)
 ```
 
@@ -76,28 +76,18 @@ paper = news_data.News(api_key)
 stories = paper.news()
 ```
 
-3. Since `paper.news()` returns a JSON dict, for a better view of the dict,
-you can call the `paper.output()` method on the result. Example:
+3. Since `fin.news()` returns a JSON dict, for a better view of the dict,
+you can call the `fin.output()` method on the result. Example:
 
 ```python
 paper.output(stories)
 ```
 
+It is important to note that for both the Financial Data Module and the News Data Module, there are many **optional** parameters for the methods. Below is a detailed listing of possible methods for the Financial Data Module and the news Data Module, their method call names, arguments, and what they return. 
+
+For more Financial Data and News Data methods, please visit Benzinga Cloud.
+
 ## Additional Links
 
-* Benzinga API Documentation: https://docs.benzinga.io/benzinga/
 * Benzinga News: https://www.benzinga.com/
 * Benzinga Pro: https://pro.benzinga.com/
-
-## License
-
-[MIT License](http://opensource.org/licenses/MIT)
-
-
-
-
-
-
-
-
-
