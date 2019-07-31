@@ -11,14 +11,11 @@ class Benzinga:
         self.token = api_token
         self.headers = {'accept': 'application/json'}
         self.url_dict = {
-            "API v1": "https://api.benzinga.com/api/v1/", 
             "API v1.v1": "https://api.benzinga.com/api/v1.1/",
             "API v2": "https://api.benzinga.com/api/v2/",
             "Data v2": "https://data.benzinga.com/rest/v2/", 
             "V3": "https://api.benzinga.io/dataapi/rest/v3/",
             "Data api v2": "https://api.benzinga.io/dataapi/rest/v2/",
-            "API rest": "https://data.benzinga.com/quote-store/api/",
-            "IO API": "https://api.benzinga.io/data/rest/"
         }
         self.param_initiate = Param_Check()
 
@@ -60,16 +57,10 @@ class Benzinga:
         endpoint_type = {
             "calendar": "%s%s/%s" % (self.url_dict["API v2"], resource, sub_resource),
             "quote": "%s%s" % (self.url_dict["Data v2"], resource),
-            "security": "%s%s" % (self.url_dict["Data api v2"], resource),
             "chart": "%s%s" % (self.url_dict["Data api v2"], resource),
-            "batchhistory": "%s%s" % (self.url_dict["Data api v2"], resource),
-            "autocomplete": "%s%s" % (self.url_dict["Data v2"], resource),
-            "instruments": "%s%s" % (self.url_dict["V3"], resource),
-            "quoteDelayed": "%s%s" % (self.url_dict["API v1"], resource),
             "logos": "%s%s" % (self.url_dict["API v1.v1"], resource),
             "fundamentals": "%s%s/%s" % (self.url_dict["V3"], resource, sub_resource),
             "ownership": "%s%s/%s" % (self.url_dict["V3"], resource, sub_resource),
-            "movers": "%s%s/%s" % (self.url_dict["IO API"], resource, sub_resource),
             "tickerDetail": "%s%s" % (self.url_dict["V3"], resource)
         }
         if resource not in endpoint_type:
