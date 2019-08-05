@@ -12,8 +12,8 @@ class Benzinga:
         self.headers = {'accept': 'application/json'}
         self.url_dict = {
             "API v1.v1": "https://api.benzinga.com/api/v1.1/",
+            "DQ": "https://api.benzinga.com/api/v1/",
             "API v2": "https://api.benzinga.com/api/v2/",
-            "Data v2": "https://data.benzinga.com/rest/v2/", 
             "V3": "https://api.benzinga.io/dataapi/rest/v3/",
             "Data api v2": "https://api.benzinga.io/dataapi/rest/v2/",
         }
@@ -56,7 +56,7 @@ class Benzinga:
 
         endpoint_type = {
             "calendar": "%s%s/%s" % (self.url_dict["API v2"], resource, sub_resource),
-            "quote": "%s%s" % (self.url_dict["Data v2"], resource),
+            "quoteDelayed": "%s%s" % (self.url_dict["DQ"], resource),
             "chart": "%s%s" % (self.url_dict["Data api v2"], resource),
             "logos": "%s%s" % (self.url_dict["API v1.v1"], resource),
             "fundamentals": "%s%s/%s" % (self.url_dict["V3"], resource, sub_resource),
@@ -67,6 +67,38 @@ class Benzinga:
             raise URLIncorrectlyFormattedError
         url_string = endpoint_type[resource]
         return url_string
+
+    def delayed_quote(self, company_tickers = None, isin = None, cik = None):
+        """Public Method: Delayed Quotes
+
+        Arguments:
+            Required - company_tickers (str)
+            Optional:
+            cik (str) - cik identifier
+            isin (str)
+
+        Returns:
+            date, previousClose, change, changePercent, fiftyTwoWeekHigh, fiftyTwoWeekLow,
+            currency, last, tradingHalted, volume, previousCloseDate
+
+        """
+        params = {
+            "token": self.token,
+            "symbols": company_tickers,
+            "isin": isin,
+            "cik": cik
+        }
+        self.param_initiate.delayed_quote_check(params)
+        try:
+            delayedquote_url = self.__url_call("quoteDelayed")
+            delayed_quote = requests.get(delayedquote_url, headers=self.headers, params=params)
+            if delayed_quote.status_code == 401:
+                raise TokenAuthenticationError
+        except requests.exceptions.RequestException:
+            raise AccessDeniedError
+        return delayed_quote.json()
+
+
 
     def chart(self, company_tickers, date_from, date_to=None, interval=None, session=None):
         """Public Method: Benzinga Chart looks at detailed price values over a period of time.
