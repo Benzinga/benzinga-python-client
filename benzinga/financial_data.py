@@ -590,7 +590,7 @@ class Benzinga:
                 company, financials such as balance sheet information, assets and liabilities
                 """
         params = {
-            'token': self.token,
+            'apikey': self.token,
             "symbols": company_tickers,
             "isin": isin,
             "cik": cik,
