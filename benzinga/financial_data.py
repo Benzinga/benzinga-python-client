@@ -167,7 +167,7 @@ class Benzinga:
             "parameters[date_from]": date_from,
             "parameters[date_to]": date_to,
             "parameters[tickers]": company_tickers,
-            "parameters[importance]": importance,
+            "parameters[importance]": None,
             "parameters[date_sort]": date_sort,
             "parameters[updated]": updated_params,
             "paramaters[dividend_yield_operation]": div_yield_operation,
@@ -181,7 +181,8 @@ class Benzinga:
                 raise AccessDeniedError
         except requests.exceptions.RequestException:
             raise AccessDeniedError
-        return dividends.json()
+        result_out = dividends.json() if importance == None or (not dividends.json()) else self.__importance("dividends", dividends.json(), importance)
+        return result_out
 
     def earnings(self, page=None, pagesize=None, date_asof=None, date_from=None, date_to=None,
                   company_tickers=None, importance=None, date_sort=None, updated_params=None):
@@ -216,7 +217,7 @@ class Benzinga:
             "parameters[date_from]": date_from,
             "parameters[date_to]": date_to,
             "parameters[tickers]": company_tickers,
-            "parameters[importance]": importance,
+            "parameters[importance]": None,
             "parameters[date_sort]": date_sort,
             "parameters[updated]": updated_params
         }
@@ -228,7 +229,8 @@ class Benzinga:
                 raise TokenAuthenticationError
         except requests.exceptions.RequestException:
             raise AccessDeniedError
-        return earnings.json()
+        result_out = earnings.json() if importance == None else self.__importance("earnings", earnings.json(), importance)
+        return result_out
 
     def splits(self, page=None, pagesize=None, date_asof=None, date_from=None, date_to=None,
                   company_tickers=None, importance=None, date_sort=None, updated_params=None):
@@ -259,7 +261,7 @@ class Benzinga:
             "parameters[date_from]": date_from,
             "parameters[date_to]": date_to,
             "parameters[tickers]": company_tickers,
-            "parameters[importance]": importance,
+            "parameters[importance]": None,
             "parameters[date_sort]": date_sort,
             "parameters[updated]": updated_params
         }
@@ -271,7 +273,8 @@ class Benzinga:
                 raise TokenAuthenticationError
         except requests.exceptions.RequestException:
             raise AccessDeniedError
-        return splits.json()
+        result_out = splits.json() if importance == None else self.__importance("splits", splits.json(), importance)
+        return result_out
 
     def economics(self, page=None, pagesize=None, date_asof=None, date_from=None, date_to=None,
                      importance=None, date_sort=None, updated_params=None, country=None):
@@ -302,7 +305,7 @@ class Benzinga:
             "parameters[date]": date_asof,
             "parameters[date_from]": date_from,
             "parameters[date_to]": date_to,
-            "parameters[importance]": importance,
+            "parameters[importance]": None,
             "parameters[date_sort]": date_sort,
             "parameters[updated]": updated_params,
             "country": country
@@ -315,7 +318,8 @@ class Benzinga:
                 raise TokenAuthenticationError
         except requests.exceptions.RequestException:
             raise AccessDeniedError
-        return economics.json()
+        result_out = economics.json() if importance == None else self.__importance("economics", economics.json(), importance)
+        return result_out
 
     def guidance(self, page=None, pagesize=None, date_asof=None, date_from=None, date_to=None,
                     company_tickers=None, importance=None, date_sort=None, updated_params=None, country=None):
@@ -348,7 +352,7 @@ class Benzinga:
             "parameters[date_from]": date_from,
             "parameters[date_to]": date_to,
             "parameters[tickers]": company_tickers,
-            "parameters[importance]": importance,
+            "parameters[importance]": None,
             "parameters[date_sort]": date_sort,
             "parameters[updated]": updated_params,
             "country": country
@@ -361,7 +365,8 @@ class Benzinga:
                 raise TokenAuthenticationError
         except requests.exceptions.RequestException:
             raise AccessDeniedError
-        return guidance.json()
+        result_out = guidance.json() if importance == None else self.__importance("guidance", guidance.json(), importance)
+        return result_out
 
     def ipo(self, page=None, pagesize=None, date_asof=None, date_from=None, date_to=None,
                   company_tickers=None, importance=None, date_sort=None, updated_params=None):
@@ -393,7 +398,7 @@ class Benzinga:
             "parameters[date_from]": date_from,
             "parameters[date_to]": date_to,
             "parameters[tickers]": company_tickers,
-            "parameters[importance]": importance,
+            "parameters[importance]": None,
             "parameters[date_sort]": date_sort,
             "parameters[updated]": updated_params
         }
@@ -405,7 +410,8 @@ class Benzinga:
                 raise TokenAuthenticationError
         except requests.exceptions.RequestException:
             raise AccessDeniedError
-        return ipo.json()
+        result_out = ipo.json() if importance == None else self.__importance("ipo", ipo.json(), importance)
+        return result_out
 
     def retail(self, page=None, pagesize=None, date_asof=None, date_from=None, date_to=None,
                   company_tickers=None, importance=None, date_sort=None, updated_params=None):
@@ -436,7 +442,7 @@ class Benzinga:
             "parameters[date_from]": date_from,
             "parameters[date_to]": date_to,
             "parameters[tickers]": company_tickers,
-            "parameters[importance]": importance,
+            "parameters[importance]": None,
             "parameters[date_sort]": date_sort,
             "parameters[updated]": updated_params
         }
@@ -449,7 +455,8 @@ class Benzinga:
                 raise TokenAuthenticationError
         except requests.exceptions.RequestException:
             raise AccessDeniedError
-        return retail.json()
+        result_out = retail.json() if importance == None else self.__importance("retail", retail.json(), importance)
+        return result_out
 
     def ratings(self, page=None, pagesize=None, date_asof=None, date_from=None, date_to=None,
                   company_tickers=None, importance=None, date_sort=None, updated_params=None, action=None):
@@ -483,7 +490,7 @@ class Benzinga:
             "parameters[date_from]": date_from,
             "parameters[date_to]": date_to,
             "parameters[tickers]": company_tickers,
-            "parameters[importance]": importance,
+            "parameters[importance]": None,
             "parameters[date_sort]": date_sort,
             "parameters[updated]": updated_params,
             "parameters[action]": action
@@ -497,7 +504,13 @@ class Benzinga:
                 raise TokenAuthenticationError
         except requests.exceptions.RequestException:
             raise AccessDeniedError
-        return ratings.json()
+        result_out = ratings.json() if importance == None or (not ratings.json()) else self.__importance("ratings", ratings.json(), importance)
+        return result_out
+
+    def __importance(self, name, calendar_obj, importance):
+        new_list, revised_dict = list(filter(lambda x: x["importance"] == importance, calendar_obj[name])), {}
+        revised_dict[name] = new_list
+        return revised_dict
 
     def conference_calls(self, page=None, pagesize=None, date_asof=None, date_from=None, date_to=None,
                             company_tickers=None, importance=None, date_sort=None, updated_params=None):
@@ -528,7 +541,7 @@ class Benzinga:
             "parameters[date_from]": date_from,
             "parameters[date_to]": date_to,
             "parameters[tickers]": company_tickers,
-            "parameters[importance]": importance,
+            "parameters[importance]": None,
             "parameters[date_sort]": date_sort,
             "parameters[updated]": updated_params
         }
@@ -540,7 +553,8 @@ class Benzinga:
                 raise TokenAuthenticationError
         except requests.exceptions.RequestException:
             raise AccessDeniedError
-        return conference.json()
+        result_out = conference.json() if importance == None else self.__importance("conference", conference.json(), importance)
+        return result_out
 
     def fundamentals(self, company_tickers, isin=None, cik=None, date_asof=None):
         """Public Method: Benzinga Fundamentals looks at overall financial data for a company.
@@ -981,5 +995,4 @@ class Benzinga:
     def output(self, json_object):
         result = json.dumps(json_object, indent= 4)
         return result
-
 
