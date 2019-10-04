@@ -1,4 +1,4 @@
-![alt text](https://raw.githubusercontent.com/Benzinga/benzinga-python-client/master/logo/black_logo.png)
+![alt text](https://raw.githubusercontent.com/Benzinga/benzinga-python-client/master/logo/Benzinga_Logo-navy.png)
 
 # Benzinga Python Client
 
@@ -42,7 +42,7 @@ authentication purposes. [Contact us](https://cloud.benzinga.com/lets-talk/) if 
 1. Initiating the class:
 
 ```python
-from benzinga import financial data
+from benzinga import financial_data
 api_key = "testkey892834789s9s8abshtuy"
 fin = financial_data.Benzinga(api_key)
 ```
