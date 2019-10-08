@@ -14,7 +14,6 @@ class Benzinga:
             "API v1.v1": "https://api.benzinga.com/api/v1.1/",
             "DQ": "https://api.benzinga.com/api/v1/",
             "API v2": "https://api.benzinga.com/api/v2/",
-            "V3": "https://api.benzinga.io/dataapi/rest/v3/",
             "Data api v2": "https://api.benzinga.io/dataapi/rest/v2/",
         }
         self.param_initiate = Param_Check()
@@ -22,7 +21,7 @@ class Benzinga:
     def __token_check(self, api_token):
         """Private Method: Token check is a private method that does a basic check for whether the api token has
         access to the fundamentals and/or calendar data. Different tokens have access to different endpoints.
-        Disregard the error if your request is fullfilled but the token authentication error is raised.
+        Disregard the error if your request is fulfilled but the token authentication error is raised.
 
          Arguments:
              API Token.
@@ -59,23 +58,20 @@ class Benzinga:
             "quoteDelayed": "%s%s" % (self.url_dict["DQ"], resource),
             "chart": "%s%s" % (self.url_dict["Data api v2"], resource),
             "logos": "%s%s" % (self.url_dict["API v1.v1"], resource),
-            "fundamentals": "%s%s/%s" % (self.url_dict["V3"], resource, sub_resource),
-            "ownership": "%s%s/%s" % (self.url_dict["V3"], resource, sub_resource),
-            "tickerDetail": "%s%s" % (self.url_dict["V3"], resource)
+            "fundamentals": "%s%s/%s" % (self.url_dict["API v2"], resource, sub_resource),
+            "ownership": "%s%s/%s" % (self.url_dict["API v2"], resource, sub_resource),
+            "tickerDetail": "%s%s" % (self.url_dict["API v2"], resource)
         }
         if resource not in endpoint_type:
             raise URLIncorrectlyFormattedError
         url_string = endpoint_type[resource]
         return url_string
 
-    def delayed_quote(self, company_tickers = None, isin = None, cik = None):
+    def delayed_quote(self, company_tickers=None):
         """Public Method: Delayed Quotes
 
         Arguments:
             Required - company_tickers (str)
-            Optional:
-            cik (str) - cik identifier
-            isin (str)
 
         Returns:
             date, previousClose, change, changePercent, fiftyTwoWeekHigh, fiftyTwoWeekLow,
@@ -84,9 +80,7 @@ class Benzinga:
         """
         params = {
             "token": self.token,
-            "symbols": company_tickers,
-            "isin": isin,
-            "cik": cik
+            "symbols": company_tickers
         }
         self.param_initiate.delayed_quote_check(params)
         try:
@@ -155,7 +149,7 @@ class Benzinga:
              div_yield (int) - div yield amount fo filter by. "1" for 100% or above.
 
          Returns:
-             the id, date, updated, isin, ticker, name, exchange, frequency, dividend,
+             the id, date, updated, ticker, name, exchange, frequency, dividend,
              dividend prior, dividend type, dividend yield, ex-dividend date, payable date,
              record date, importance
              """
@@ -203,7 +197,7 @@ class Benzinga:
              sort order to be greater or equal to the time stamp indicated.
 
         Returns:
-            id, date, date confirmed, time, isin, ticker, exchange, name, period, period_year,
+            id, date, date confirmed, time, ticker, exchange, name, period, period_year,
             eps, eps_est, eps_prior, eps_surprise, eps_surprise_percent, revenue, revenue est,
             revenue_prior, revenue_surprise, revenue_surprise_percent, importance, updated
 
@@ -556,14 +550,12 @@ class Benzinga:
         result_out = conference.json() if importance == None else self.__importance("conference", conference.json(), importance)
         return result_out
 
-    def fundamentals(self, company_tickers, isin=None, cik=None, date_asof=None):
+    def fundamentals(self, company_tickers, date_asof=None):
         """Public Method: Benzinga Fundamentals looks at overall financial data for a company.
 
         Arguments:
             Required - company_tickers (str)
             Optional:
-                isin (str) - specifies company data to return.
-                cik (str) - cik identifier
                 date_asof (str) "YYYY-MM-DD"
 
         Returns:
@@ -571,31 +563,26 @@ class Benzinga:
             ratios, alphaBeta
         """
         params = {
-            'apikey': self.token,
+            'token': self.token,
             "symbols": company_tickers,
-            "isin": isin,
-            "cik": cik,
             "asOf": date_asof
         }
         self.param_initiate.fundamentals_check(params)
         try:
             financials_url = self.__url_call("fundamentals")
-            financials = requests.get(financials_url, headers=self.headers, params= params)
+            financials = requests.get(financials_url, headers=self.headers, params=params)
             if financials.status_code == 401:
                 raise TokenAuthenticationError
         except requests.exceptions.RequestException:
             raise AccessDeniedError
         return financials.json()
-    
 
-    def financials(self, company_tickers, isin=None, cik=None, date_asof=None, period=None, reporttype=None):
+    def financials(self, company_tickers, date_asof=None, period=None, reporttype=None):
         """Public Method: Benzinga Financials looks at overall financial data like  for a company.
 
             Arguments:
                 Required - company_tickers (str)
                 Optional:
-                    isin (str) - specifies company data to return.
-                    cik (str) - cik identifier
                     date_asof (str) - "YYYY-MM-DD"
                     period (str) - select from (3M , 6M , 9M , 12M , 1Y)
                     reporttype (str) - select from (TTM, A (default), R,P)
@@ -606,8 +593,6 @@ class Benzinga:
         params = {
             'apikey': self.token,
             "symbols": company_tickers,
-            "isin": isin,
-            "cik": cik,
             "asOf": date_asof,
             "period": period,
             "reportType": reporttype
@@ -623,14 +608,12 @@ class Benzinga:
             raise AccessDeniedError
         return financials.json()
 
-    def valuation_ratios(self, company_tickers, isin=None, cik=None, date_asof=None):
+    def valuation_ratios(self, company_tickers, date_asof=None):
         """Public Method: Benzinga Valuation Ratios looks at overall financial data like  for a company.
 
            Arguments:
                Required - company_tickers (str)
                Optional:
-                   isin (str) - specifies company data to return.
-                   cik (str) - cik identifier
                    date_asof (str) - "YYYY-MM-DD"
            Returns:
                different attributes of the valuation ratios
@@ -639,8 +622,6 @@ class Benzinga:
         params = {
             'apikey': self.token,
             "symbols": company_tickers,
-            "isin": isin,
-            "cik": cik,
             "asOf": date_asof
         }
         self.param_initiate.fundamentals_check(params)
@@ -653,14 +634,12 @@ class Benzinga:
             raise AccessDeniedError
         return valuation.json()
 
-    def earning_ratios(self, company_tickers, isin=None, cik=None, date_asof=None):
+    def earning_ratios(self, company_tickers, date_asof=None):
         """Public Method: Benzinga Earning Ratios
 
               Arguments:
                   Required - company_tickers (str)
                   Optional:
-                      isin (str) - specifies company data to return.
-                      cik (str) - cik identifier
                       date_asof (str) - "YYYY-MM-DD"
               Returns:
                   different attributes of the earning ratios
@@ -668,8 +647,6 @@ class Benzinga:
         params = {
             'apikey': self.token,
             "symbols": company_tickers,
-            "isin": isin,
-            "cik": cik,
             "asOf": date_asof
         }
         self.param_initiate.fundamentals_check(params)
@@ -682,14 +659,12 @@ class Benzinga:
             raise AccessDeniedError
         return earnings.json()
 
-    def operation_ratios(self, company_tickers, isin=None, cik=None, date_asof=None):
+    def operation_ratios(self, company_tickers, date_asof=None):
         """Public Method: Benzinga Operation Ratios
 
               Arguments:
                   Required - company_tickers (str)
                   Optional:
-                      isin (str) - specifies company data to return.
-                      cik (str) - cik identifier
                       date_asof (str) - "YYYY-MM-DD"
               Returns:
                   different attributes of the operation ratios
@@ -697,8 +672,6 @@ class Benzinga:
         params = {
             'apikey': self.token,
             "symbols": company_tickers,
-            "isin": isin,
-            "cik": cik,
             "asOf": date_asof
         }
         self.param_initiate.fundamentals_check(params)
@@ -709,14 +682,12 @@ class Benzinga:
             raise AccessDeniedError
         return operations.json()
 
-    def share_class(self, company_tickers, isin=None, cik=None, date_asof=None):
+    def share_class(self, company_tickers, date_asof=None):
         """Public Method: Benzinga Share Class
 
               Arguments:
                   Required - company_tickers (str)
                   Optional:
-                      isin (str) - specifies company data to return.
-                      cik (str) - cik identifier
                       date_asof (str) - "YYYY-MM-DD"
               Returns:
                   different attributes of the share class.
@@ -725,8 +696,6 @@ class Benzinga:
         params = {
             'apikey': self.token,
             "symbols": company_tickers,
-            "isin": isin,
-            "cik": cik,
             "asOf": date_asof
         }
         self.param_initiate.fundamentals_check(params)
@@ -739,14 +708,12 @@ class Benzinga:
             raise AccessDeniedError
         return shareclass.json()
 
-    def earning_reports(self, company_tickers, isin=None, cik=None, date_asof=None):
+    def earning_reports(self, company_tickers, date_asof=None):
         """Public Method: Benzinga Earning Reports looks at overall earning reports for a company.
 
               Arguments:
                   Required - company_tickers (str)
                   Optional:
-                      isin (str) - specifies company data to return.
-                      cik (str) - cik identifier
                       date_asof (str) - "YYYY-MM-DD"
               Returns:
                   different attributes of the earning reports.
@@ -754,8 +721,6 @@ class Benzinga:
         params = {
             'apikey': self.token,
             "symbols": company_tickers,
-            "isin": isin,
-            "cik": cik,
             "asOf": date_asof
         }
         self.param_initiate.fundamentals_check(params)
@@ -768,14 +733,12 @@ class Benzinga:
             raise AccessDeniedError
         return earningreports.json()
 
-    def alpha_beta(self, company_tickers, isin=None, cik=None, date_asof=None):
+    def alpha_beta(self, company_tickers, date_asof=None):
         """Public Method: Benzinga Alpha Beta
 
                   Arguments:
                       Required - company_tickers (str)
                       Optional:
-                          isin (str) - specifies company data to return.
-                          cik (str) - cik identifier
                           date_asof (str) - "YYYY-MM-DD"
                   Returns:
                       different attributes of the alpha beta.
@@ -783,8 +746,6 @@ class Benzinga:
         params = {
             'apikey': self.token,
             "symbols": company_tickers,
-            "isin": isin,
-            "cik": cik,
             "asOf": date_asof
         }
         self.param_initiate.fundamentals_check(params)
@@ -797,14 +758,12 @@ class Benzinga:
             raise AccessDeniedError
         return alphabeta.json()
 
-    def company_profile(self, company_tickers, isin=None, cik=None, date_asof=None):
+    def company_profile(self, company_tickers, date_asof=None):
         """Public Method: Benzinga Company Profile
 
               Arguments:
                   Required - company_tickers (str)
                   Optional:
-                      isin (str) - specifies company data to return.
-                      cik (str) - cik identifier
                       date_asof (str) - "YYYY-MM-DD"
               Returns:
                   different attributes of the company profile.
@@ -812,8 +771,6 @@ class Benzinga:
         params = {
             'apikey': self.token,
             "symbols": company_tickers,
-            "isin": isin,
-            "cik": cik,
             "asOf": date_asof
         }
         self.param_initiate.fundamentals_check(params)
@@ -826,14 +783,12 @@ class Benzinga:
             raise AccessDeniedError
         return company_profile.json()
 
-    def company(self, company_tickers, isin=None, cik=None, date_asof=None):
+    def company(self, company_tickers, date_asof=None):
         """Public Method: Benzinga Company
 
                       Arguments:
                           Required - company_tickers (str)
                           Optional:
-                              isin (str) - specifies company data to return.
-                              cik (str) - cik identifier
                               date_asof (str) - "YYYY-MM-DD"
                       Returns:
                           different attributes of the company.
@@ -841,8 +796,6 @@ class Benzinga:
         params = {
             'apikey': self.token,
             "symbols": company_tickers,
-            "isin": isin,
-            "cik": cik,
             "asOf": date_asof
         }
         self.param_initiate.fundamentals_check(params)
@@ -855,14 +808,12 @@ class Benzinga:
             raise AccessDeniedError
         return company.json()
 
-    def share_class_profile_history(self, company_tickers, isin=None, cik=None, date_asof=None):
+    def share_class_profile_history(self, company_tickers, date_asof=None):
         """Public Method: Benzinga Share Class Profile History
 
               Arguments:
                   Required - company_tickers (str)
                   Optional:
-                      isin (str) - specifies company data to return.
-                      cik (str) - cik identifier
                       date_asof (str) - "YYYY-MM-DD"
               Returns:
                   different attributes of the share class profile history.
@@ -870,8 +821,6 @@ class Benzinga:
         params = {
             'apikey': self.token,
             "symbols": company_tickers,
-            "isin": isin,
-            "cik": cik,
             "asOf": date_asof
         }
         self.param_initiate.fundamentals_check(params)
@@ -884,14 +833,12 @@ class Benzinga:
             raise AccessDeniedError
         return profilehistory.json()
 
-    def asset_classification(self, company_tickers, isin=None, cik=None, date_asof=None):
+    def asset_classification(self, company_tickers, date_asof=None):
         """Public Method: Benzinga Asset Classification
 
               Arguments:
                   Required - company_tickers (str)
                   Optional:
-                      isin (str) - specifies company data to return.
-                      cik (str) - cik identifier
                       date_asof (str) - "YYYY-MM-DD"
               Returns:
                   different attributes of the asset classification.
@@ -899,8 +846,6 @@ class Benzinga:
         params = {
             'apikey': self.token,
             "symbols": company_tickers,
-            "isin": isin,
-            "cik": cik,
             "asOf": date_asof
         }
         self.param_initiate.fundamentals_check(params)
@@ -913,14 +858,12 @@ class Benzinga:
             raise AccessDeniedError
         return asset.json()
 
-    def summary(self, company_tickers, isin=None, cik=None, date_asof=None):
+    def summary(self, company_tickers, date_asof=None):
         """Public Method: Summary
 
               Arguments:
                   Required - company_tickers (str)
                   Optional:
-                      isin (str) - specifies company data to return.
-                      cik (str) - cik identifier
                       date_asof (str) - "YYYY-MM-DD"
               Returns:
                   different attributes of the ownership summary.
@@ -928,8 +871,6 @@ class Benzinga:
         params = {
             'apikey': self.token,
             "symbols": company_tickers,
-            "isin": isin,
-            "cik": cik,
             "asOf": date_asof
         }
         self.param_initiate.fundamentals_check(params)
@@ -993,6 +934,5 @@ class Benzinga:
         return logos.json()
 
     def output(self, json_object):
-        result = json.dumps(json_object, indent= 4)
+        result = json.dumps(json_object, indent=4)
         return result
-
