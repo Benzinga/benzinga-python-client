@@ -88,14 +88,13 @@ class Param_Check:
         }
         self.__para_type_matching(param_type, dict)
 
-    def charts_check(self, dict):
+    def bars_check(self, dict):
         param_type = {
-            "apikey": self.stri,
-            "symbol": self.stri,
+            "token": self.stri,
+            "symbols": self.stri,
             "from": self.stri,
             "to": self.stri,
-            "interval": self.stri,
-            "session": self.stri
+            "interval": self.stri
         }
         self.__para_type_matching(param_type, dict)
 

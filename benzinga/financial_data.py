@@ -56,11 +56,10 @@ class Benzinga:
         endpoint_type = {
             "calendar": "%s%s/%s" % (self.url_dict["API v2"], resource, sub_resource),
             "quoteDelayed": "%s%s" % (self.url_dict["DQ"], resource),
-            "chart": "%s%s" % (self.url_dict["Data api v2"], resource),
+            "bars": "%s%s" % (self.url_dict["Data api v2"], resource),
             "logos": "%s%s" % (self.url_dict["API v1.v1"], resource),
             "fundamentals": "%s%s/%s" % (self.url_dict["API v2"], resource, sub_resource),
-            "ownership": "%s%s/%s" % (self.url_dict["API v2"], resource, sub_resource),
-            "tickerDetail": "%s%s" % (self.url_dict["API v2"], resource)
+            "ownership": "%s%s/%s" % (self.url_dict["API v2"], resource, sub_resource)
         }
         if resource not in endpoint_type:
             raise URLIncorrectlyFormattedError
@@ -94,8 +93,8 @@ class Benzinga:
 
 
 
-    def chart(self, company_tickers, date_from, date_to=None, interval=None, session=None):
-        """Public Method: Benzinga Chart looks at detailed price values over a period of time.
+    def bars(self, company_tickers, date_from, date_to=None, interval=None, session=None):
+        """Public Method: Benzinga Bars looks at detailed price values over a period of time.
 
                 Arguments:
                     Required - company_tickers (str)
@@ -109,22 +108,21 @@ class Benzinga:
                 Returns:
                     open, high, low, close, volume, time, dateTime"""
         params = {
-            "apikey": self.token,
-            "symbol": company_tickers,
+            "token": self.token,
+            "symbols": company_tickers,
             "from": date_from,
             "to": date_to,
-            "interval": interval,
-            "session": session
+            "interval": interval
         }
-        self.param_initiate.charts_check(params)
+        self.param_initiate.bars_check(params)
         try:
-            chart_url = self.__url_call("chart")
-            chart = requests.get(chart_url, headers=self.headers, params=params)
-            if chart.status_code == 401:
+            bars_url = self.__url_call("bars")
+            bars = requests.get(bars_url, headers=self.headers, params=params)
+            if bars.status_code == 401:
                 raise TokenAuthenticationError
         except requests.exceptions.RequestException:
             raise AccessDeniedError
-        return chart.json()
+        return bars.json()
 
     def dividends(self, page=None, pagesize=None, date_asof=None, date_from=None, date_to=None,
                   company_tickers=None, importance=None, date_sort=None, updated_params=None,
