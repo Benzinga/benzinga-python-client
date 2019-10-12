@@ -281,7 +281,6 @@ class Benzinga:
                      date_asof (str) - "YYYY-MM-DD"
                      date_from (str) - "YYYY-MM-DD"
                      date_to (str) - "YYYY-MM-DD"
-                     company_tickers (str)
                      importance - (int) - not tested yet.
                      date_sort - (str) - Dividend date field to sort on
                      updated_params (int64) - records last updated unix time stamp. Forces the
@@ -405,51 +404,6 @@ class Benzinga:
         except requests.exceptions.RequestException:
             raise AccessDeniedError
         result_out = ipo.json() if importance == None else self.__importance("ipo", ipo.json(), importance)
-        return result_out
-
-    def retail(self, page=None, pagesize=None, date_asof=None, date_from=None, date_to=None,
-                  company_tickers=None, importance=None, date_sort=None, updated_params=None):
-        """Public Method: Benzinga Retail looks at retail data.
-
-            Arguments:
-                Optional:
-                page (int) - page offset
-                pagesize (int) - limit of results returned
-                date_asof (str) - "YYYY-MM-DD"
-                date_from (str) - "YYYY-MM-DD"
-                date_to (str) - "YYYY-MM-DD"
-                company_tickers (str)
-                importance - (int) - not tested yet.
-                date_sort - (str) - Dividend date field to sort on
-                updated_params (int64) - records last updated unix time stamp. Forces the
-                sort order to be greater or equal to the time stamp indicated.
-
-            Returns:
-                id, date, time, ticker, exchange, name, importance, period, period_year, sss,
-                sss_est, retail_surprise, updated"""
-
-        params = {
-            'token': self.token,
-            "page": page,
-            "pagesize": pagesize,
-            "parameters[date]": date_asof,
-            "parameters[date_from]": date_from,
-            "parameters[date_to]": date_to,
-            "parameters[tickers]": company_tickers,
-            "parameters[importance]": None,
-            "parameters[date_sort]": date_sort,
-            "parameters[updated]": updated_params
-        }
-
-        self.param_initiate.calendar_check(params)
-        try:
-            retail_url = self.__url_call("calendar", "retail")
-            retail = requests.get(retail_url, headers=self.headers, params=params)
-            if retail.status_code == 401:
-                raise TokenAuthenticationError
-        except requests.exceptions.RequestException:
-            raise AccessDeniedError
-        result_out = retail.json() if importance == None else self.__importance("retail", retail.json(), importance)
         return result_out
 
     def ratings(self, page=None, pagesize=None, date_asof=None, date_from=None, date_to=None,
@@ -807,105 +761,6 @@ class Benzinga:
         except requests.exceptions.RequestException:
             raise AccessDeniedError
         return company.json()
-
-    def share_class_profile_history(self, company_tickers, date_asof=None):
-        """Public Method: Benzinga Share Class Profile History
-
-              Arguments:
-                  Required - company_tickers (str)
-                  Optional:
-                      date_asof (str) - "YYYY-MM-DD"
-              Returns:
-                  different attributes of the share class profile history.
-                                              """
-        params = {
-            'token': self.token,
-            "symbols": company_tickers,
-            "asOf": date_asof
-        }
-        self.param_initiate.fundamentals_check(params)
-        try:
-            profilehistory_url = self.__url_call("fundamentals", "shareClassProfileHistory")
-            profilehistory = requests.get(profilehistory_url, headers=self.headers, params= params)
-            if profilehistory.status_code == 401:
-                raise TokenAuthenticationError
-        except requests.exceptions.RequestException:
-            raise AccessDeniedError
-        return profilehistory.json()
-
-    def asset_classification(self, company_tickers, date_asof=None):
-        """Public Method: Benzinga Asset Classification
-
-              Arguments:
-                  Required - company_tickers (str)
-                  Optional:
-                      date_asof (str) - "YYYY-MM-DD"
-              Returns:
-                  different attributes of the asset classification.
-                                      """
-        params = {
-            'token': self.token,
-            "symbols": company_tickers,
-            "asOf": date_asof
-        }
-        self.param_initiate.fundamentals_check(params)
-        try:
-            asset_url = self.__url_call("fundamentals", "assetClassification")
-            asset = requests.get(asset_url, headers=self.headers, params= params)
-            if asset.status_code == 401:
-                raise TokenAuthenticationError
-        except requests.exceptions.RequestException:
-            raise AccessDeniedError
-        return asset.json()
-
-    def summary(self, company_tickers, date_asof=None):
-        """Public Method: Summary
-
-              Arguments:
-                  Required - company_tickers (str)
-                  Optional:
-                      date_asof (str) - "YYYY-MM-DD"
-              Returns:
-                  different attributes of the ownership summary.
-                                              """
-        params = {
-            'token': self.token,
-            "symbols": company_tickers,
-            "asOf": date_asof
-        }
-        self.param_initiate.fundamentals_check(params)
-        try:
-            summary_url = self.__url_call("ownership", "summary")
-            summary = requests.get(summary_url, headers=self.headers, params= params)
-            if summary.status_code == 401:
-                raise TokenAuthenticationError
-        except requests.exceptions.RequestException:
-            raise AccessDeniedError
-        return summary.json()
-
-    def ticker_detail(self, company_tickers):
-        """Public Method: Ticker detail provides key statistics, peers, and percentile information on the company.
-
-             Arguments:
-                 Required - company_tickers (str)
-
-             Returns:
-                 Key statistics, peer information and percentile information on the ticker.
-                                                     """
-
-        params = {
-            "token": self.token,
-            "symbols": company_tickers
-        }
-        self.param_initiate.ticker_check(params)
-        try:
-            ticker_url = self.__url_call("tickerDetail")
-            ticker = requests.get(ticker_url, headers=self.headers, params= params)
-            if ticker.status_code == 401:
-                raise TokenAuthenticationError
-        except requests.exceptions.RequestException:
-            raise AccessDeniedError
-        return ticker.json()
 
     def logos(self, company_tickers, filters = None):
         """Public Method: Logos

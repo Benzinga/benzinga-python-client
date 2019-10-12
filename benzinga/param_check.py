@@ -143,30 +143,7 @@ class Param_Check:
         }
         self.__para_type_matching(param_type, dict)
 
-    def quantified_news_check(self, dict):
-        param_type = {
-            "token": self.stri,
-            "pagesize": self.inte,
-            "page": self.inte,
-            "date": self.stri,
-            "date_from": self.stri,
-            "date_to": self.stri,
-            "updated_since": self.inte,
-            "symbols": self.stri,
-            "apikey": self.stri
-        }
-        self.__para_type_matching(param_type, dict)
 
-    def movers_check(self, dict):
-        param_type = {
-            "apikey": self.stri,
-            "from": self.stri,
-            "to": self.stri,
-            "session": self.stri,
-            "maxResults": self.stri,
-            "screenerQuery":self.stri
-        }
-        self.__para_type_matching(param_type, dict)
 
 
 
