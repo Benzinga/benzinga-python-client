@@ -56,7 +56,7 @@ class Benzinga:
         endpoint_type = {
             "calendar": "%s%s/%s" % (self.url_dict["API v2"], resource, sub_resource),
             "quoteDelayed": "%s%s" % (self.url_dict["DQ"], resource),
-            "bars": "%s%s" % (self.url_dict["Data api v2"], resource),
+            "bars": "%s%s" % (self.url_dict["API v2"], resource),
             "logos": "%s%s" % (self.url_dict["API v1.v1"], resource),
             "fundamentals": "%s%s/%s" % (self.url_dict["API v2"], resource, sub_resource),
             "ownership": "%s%s/%s" % (self.url_dict["API v2"], resource, sub_resource)
