@@ -144,6 +144,7 @@ class Param_Check:
 
     def options_check(self, dict):
         param_type = {
+            "token": self.stri,
             "page": self.inte,
             "pagesize": self.inte,
             "parameters[date]": self.stri,
