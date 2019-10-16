@@ -142,6 +142,17 @@ class Param_Check:
         }
         self.__para_type_matching(param_type, dict)
 
+    def options_check(self, dict):
+        param_type = {
+            "page": self.inte,
+            "pagesize": self.inte,
+            "parameters[date]": self.stri,
+            "parameters[date_from]": self.stri,
+            "parameters[date_to]": self.stri,
+            "parameters[tickers]": self.stri
+        }
+        self.__para_type_matching(param_type, dict)
+
 
 
 

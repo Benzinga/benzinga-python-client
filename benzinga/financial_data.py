@@ -12,7 +12,7 @@ class Benzinga:
         self.headers = {'accept': 'application/json'}
         self.url_dict = {
             "API v1.v1": "https://api.benzinga.com/api/v1.1/",
-            "DQ": "https://api.benzinga.com/api/v1/",
+            "v1": "https://api.benzinga.com/api/v1/",
             "API v2": "https://api.benzinga.com/api/v2/",
             "Data api v2": "https://api.benzinga.io/dataapi/rest/v2/",
         }
@@ -55,7 +55,8 @@ class Benzinga:
 
         endpoint_type = {
             "calendar": "%s%s/%s" % (self.url_dict["API v2"], resource, sub_resource),
-            "quoteDelayed": "%s%s" % (self.url_dict["DQ"], resource),
+            "quoteDelayed": "%s%s" % (self.url_dict["v1"], resource),
+            "option_activity": "%s%s" % (self.url_dict["v1"], resource),
             "bars": "%s%s" % (self.url_dict["API v2"], resource),
             "logos": "%s%s" % (self.url_dict["API v1.v1"], resource),
             "fundamentals": "%s%s/%s" % (self.url_dict["API v2"], resource, sub_resource),
@@ -779,12 +780,64 @@ class Benzinga:
         self.param_initiate.logos_check(params)
         try:
             logos_url = self.__url_call("logos")
-            logos = requests.get(logos_url, headers = self.headers, params=params)
+            logos = requests.get(logos_url, headers=self.headers, params=params)
             if logos.status_code == 401:
                 raise TokenAuthenticationError
         except requests.exceptions.RequestException:
             raise AccessDeniedError
         return logos.json()
+
+    def options_activity(self, company_tickers=None, date=None, date_to=None, date_from=None, page=None,
+                         pagesize=None):
+        """Public Method: Option Activity
+
+        Arguments:
+            Required - company_tickers (str)
+            pagesize - Limit is 1000
+            page
+            date_from
+            date_to
+
+        Returns:
+
+            "id": "integer",
+            "date": "string (YYYY-MM-DD)",
+            "time": "string (HH:MM:SS)",
+            "ticker": "string",
+            "description": "string",
+            "updated": "integer",
+            "sentiment": "string",
+            "aggressor_ind": "string",
+            "option_symbol": "string",
+            "underlying_type": "string",
+            "cost_basis": "string",
+            "option_activity_type": "string",
+            "trade_count": "string",
+            "open_interest": "string",
+            "volume": "string",
+            "bid": "string",
+            "ask": "string",
+            "midpoint": "string"
+
+        """
+        params = {
+            "token": self.token,
+            "parameters[tickers]": company_tickers,
+            "parameters[date_from]": date_from,
+            "parameters[date_to]": date_to,
+            "parameters[date]": date,
+            "page": page,
+            "pagesize": pagesize
+        }
+        self.param_initiate.options_check(params)
+        try:
+            options_url = self.__url_call("option_activity")
+            options = requests.get(options_url, headers=self.headers, params=params)
+            if options.status_code == 401:
+                raise TokenAuthenticationError
+        except requests.exceptions.RequestException:
+            raise AccessDeniedError
+        return options.json()
 
     def output(self, json_object):
         result = json.dumps(json_object, indent=4)
