@@ -13,6 +13,7 @@ class Benzinga:
         self.url_dict = {
             "API v1.v1": "https://api.benzinga.com/api/v1.1/",
             "v1": "https://api.benzinga.com/api/v1/",
+            "v1 opt": "https://api.benzinga.com/api/v1/signal/",
             "API v2": "https://api.benzinga.com/api/v2/",
             "Data api v2": "https://api.benzinga.io/dataapi/rest/v2/",
         }
@@ -56,7 +57,7 @@ class Benzinga:
         endpoint_type = {
             "calendar": "%s%s/%s" % (self.url_dict["API v2"], resource, sub_resource),
             "quoteDelayed": "%s%s" % (self.url_dict["v1"], resource),
-            "option_activity": "%s%s" % (self.url_dict["v1"], resource),
+            "option_activity": "%s%s" % (self.url_dict["v1 opt"], resource),
             "bars": "%s%s" % (self.url_dict["API v2"], resource),
             "logos": "%s%s" % (self.url_dict["API v1.v1"], resource),
             "fundamentals": "%s%s/%s" % (self.url_dict["API v2"], resource, sub_resource),
