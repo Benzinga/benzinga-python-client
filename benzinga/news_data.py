@@ -1,7 +1,8 @@
 import requests, json
-from .benzinga_errors import (TokenAuthenticationError,RequestAPIEndpointError, IncorrectParameterEntry,
-                             URLIncorrectlyFormattedError, AccessDeniedError)
+from .benzinga_errors import (TokenAuthenticationError, RequestAPIEndpointError, IncorrectParameterEntry,
+                              URLIncorrectlyFormattedError, AccessDeniedError)
 from .param_check import Param_Check
+
 
 class News:
 
@@ -26,7 +27,7 @@ class News:
         params = {'token': api_token}
         try:
             sample_url = self.__url_call("news")
-            sample = requests.get(sample_url, headers= self.headers, params=params)
+            sample = requests.get(sample_url, headers=self.headers, params=params)
             if sample.status_code == 401:
                 raise TokenAuthenticationError
         except TokenAuthenticationError as t:
@@ -100,34 +101,3 @@ class News:
         except requests.exceptions.RequestException:
             raise AccessDeniedError
         return news.json()
-
-    def top_news(self, display_output=None, channel=None, limit=None, type=None):
-        """Public Method: Benzinga Top News
-
-               Arguments:
-                   Optional:
-                   type (str) - The type of content to select
-                   channel (str) - multiple channels separated by comma.
-                   limit (str) - max period
-                   display_output (str) - select from (full, abstract, headline)
-
-               Returns:
-                   Author, created, updated, title, teaser, body, url, image, channels, stocks, tags
-               """
-        params = {
-            "token": self.token,
-            "type" : type,
-            "displayOutput": display_output,
-            "channel": channel,
-            "limit": limit
-        }
-        self.param_initiate.news_check(params)
-        try:
-            top_news_url = self.__url_call("news-top-stories")
-            top_news = requests.get(top_news_url, headers=self.headers, params=params)
-            if top_news.status_code == 401:
-                raise TokenAuthenticationError
-        except requests.exceptions.RequestException:
-            raise AccessDeniedError
-        return top_news.json()
-
