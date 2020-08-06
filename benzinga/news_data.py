@@ -2,6 +2,7 @@ import requests, json
 from .benzinga_errors import (TokenAuthenticationError, RequestAPIEndpointError, IncorrectParameterEntry,
                               URLIncorrectlyFormattedError, AccessDeniedError)
 from .param_check import Param_Check
+from .config import requests_retry_session
 
 
 class News:
@@ -27,7 +28,7 @@ class News:
         params = {'token': api_token}
         try:
             sample_url = self.__url_call("news")
-            sample = requests.get(sample_url, headers=self.headers, params=params)
+            sample = requests_retry_session().get(sample_url, headers=self.headers, params=params)
             if sample.status_code == 401:
                 raise TokenAuthenticationError
         except TokenAuthenticationError as t:
@@ -95,7 +96,7 @@ class News:
         self.param_initiate.news_check(params)
         try:
             news_url = self.__url_call("news")
-            news = requests.get(news_url, headers=self.headers, params=params)
+            news = requests_retry_session().get(news_url, headers=self.headers, params=params)
             if news.status_code == 401:
                 raise TokenAuthenticationError
         except requests.exceptions.RequestException:
