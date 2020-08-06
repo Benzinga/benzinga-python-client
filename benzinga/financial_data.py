@@ -6,6 +6,7 @@ from .benzinga_errors import (TokenAuthenticationError, URLIncorrectlyFormattedE
 from .config import requests_retry_session
 import structlog
 
+
 log = structlog.get_logger()
 
 
@@ -44,7 +45,7 @@ class Benzinga:
         }
 
         ratings_url = self.__url_call("calendar", "dividends")
-        ratings = requests_retry_session().get(ratings_url, headers=self.headers, params=params)
+        ratings = requests_retry_session().get(ratings_url, headers=self.headers, params=params, timeout=10)
         if ratings.status_code == 401:
             raise TokenAuthenticationError
 
@@ -91,7 +92,8 @@ class Benzinga:
         self.param_initiate.delayed_quote_check(params)
         try:
             delayedquote_url = self.__url_call("quoteDelayed")
-            delayed_quote = requests_retry_session().get(delayedquote_url, headers=self.headers, params=params)
+            delayed_quote = requests_retry_session().get(delayedquote_url, headers=self.headers, params=params,
+                                                         timeout=10)
             statement = "Status Code: {status_code} Endpoint: {endpoint}".format(endpoint=delayed_quote.url,
                                                                                  status_code=delayed_quote.status_code)
             if self.log:
@@ -130,7 +132,7 @@ class Benzinga:
         self.param_initiate.bars_check(params)
         try:
             bars_url = self.__url_call("bars")
-            bars = requests_retry_session().get(bars_url, headers=self.headers, params=params)
+            bars = requests_retry_session().get(bars_url, headers=self.headers, params=params, timeout=10)
             statement = "Status Code: {status_code} Endpoint: {endpoint}".format(endpoint=bars.url,
                                                                                  status_code=bars.status_code)
             if self.log:
@@ -187,7 +189,7 @@ class Benzinga:
         self.param_initiate.calendar_check(params)
         try:
             dividends_url = self.__url_call("calendar", "dividends")
-            dividends = requests_retry_session().get(dividends_url, headers=self.headers, params=params)
+            dividends = requests_retry_session().get(dividends_url, headers=self.headers, params=params, timeout=10)
             statement = "Status Code: {status_code} Endpoint: {endpoint}".format(endpoint=dividends.url,
                                                                                  status_code=dividends.status_code)
             if self.log:
@@ -241,7 +243,7 @@ class Benzinga:
         self.param_initiate.calendar_check(params)
         try:
             earnings_url = self.__url_call("calendar", "earnings")
-            earnings = requests_retry_session().get(earnings_url, headers=self.headers, params=params)
+            earnings = requests_retry_session().get(earnings_url, headers=self.headers, params=params, timeout=10)
             statement = "Status Code: {status_code} Endpoint: {endpoint}".format(endpoint=earnings.url,
                                                                                  status_code=earnings.status_code)
             if self.log:
@@ -291,7 +293,7 @@ class Benzinga:
         self.param_initiate.calendar_check(params)
         try:
             splits_url = self.__url_call("calendar", "splits")
-            splits = requests_retry_session().get(splits_url, headers=self.headers, params=params)
+            splits = requests_retry_session().get(splits_url, headers=self.headers, params=params, timeout=10)
             statement = "Status Code: {status_code} Endpoint: {endpoint}".format(endpoint=splits.url,
                                                                                  status_code=splits.status_code)
             if self.log:
@@ -341,7 +343,7 @@ class Benzinga:
         self.param_initiate.calendar_check(params)
         try:
             economics_url = self.__url_call("calendar", "economics")
-            economics = requests_retry_session().get(economics_url, headers=self.headers, params=params)
+            economics = requests_retry_session().get(economics_url, headers=self.headers, params=params, timeout=10)
             statement = "Status Code: {status_code} Endpoint: {endpoint}".format(endpoint=economics.url,
                                                                                  status_code=economics.status_code)
             if self.log:
@@ -395,7 +397,7 @@ class Benzinga:
         self.param_initiate.calendar_check(params)
         try:
             guidance_url = self.__url_call("calendar", "guidance")
-            guidance = requests_retry_session().get(guidance_url, headers=self.headers, params=params)
+            guidance = requests_retry_session().get(guidance_url, headers=self.headers, params=params, timeout=10)
             statement = "Status Code: {status_code} Endpoint: {endpoint}".format(endpoint=guidance.url,
                                                                                  status_code=guidance.status_code)
             if self.log:
@@ -447,7 +449,7 @@ class Benzinga:
         self.param_initiate.calendar_check(params)
         try:
             ipo_url = self.__url_call("calendar", "ipos")
-            ipo = requests_retry_session().get(ipo_url, headers=self.headers, params=params)
+            ipo = requests_retry_session().get(ipo_url, headers=self.headers, params=params, timeout=10)
             statement = "Status Code: {status_code} Endpoint: {endpoint}".format(endpoint=ipo.url,
                                                                                  status_code=ipo.status_code)
             if self.log:
@@ -502,7 +504,7 @@ class Benzinga:
         self.param_initiate.calendar_check(params)
         try:
             ratings_url = self.__url_call("calendar", "ratings")
-            ratings = requests_retry_session().get(ratings_url, headers=self.headers, params=params)
+            ratings = requests_retry_session().get(ratings_url, headers=self.headers, params=params, timeout=10)
             statement = "Status Code: {status_code} Endpoint: {endpoint}".format(endpoint=ratings.url,
                                                                                  status_code=ratings.status_code)
             if self.log:
@@ -557,7 +559,7 @@ class Benzinga:
         self.param_initiate.calendar_check(params)
         try:
             conference_url = self.__url_call("calendar", "conference-calls")
-            conference = requests_retry_session().get(conference_url, headers=self.headers, params=params)
+            conference = requests_retry_session().get(conference_url, headers=self.headers, params=params, timeout=10)
             statement = "Status Code: {status_code} Endpoint: {endpoint}".format(endpoint=conference.url,
                                                                                  status_code=conference.status_code)
             if self.log:
@@ -593,7 +595,7 @@ class Benzinga:
         self.param_initiate.fundamentals_check(params)
         try:
             financials_url = self.__url_call("fundamentals")
-            financials = requests_retry_session().get(financials_url, headers=self.headers, params=params)
+            financials = requests_retry_session().get(financials_url, headers=self.headers, params=params, timeout=10)
             statement = "Status Code: {status_code} Endpoint: {endpoint}".format(endpoint=financials.url,
                                                                                  status_code=financials.status_code)
             if self.log:
@@ -632,7 +634,7 @@ class Benzinga:
         self.param_initiate.fundamentals_check(params)
         try:
             financials_url = self.__url_call("fundamentals", "financials")
-            financials = requests_retry_session().get(financials_url, headers=self.headers, params= params)
+            financials = requests_retry_session().get(financials_url, headers=self.headers,params=params, timeout=10)
             statement = "Status Code: {status_code} Endpoint: {endpoint}".format(endpoint=financials.url,
                                                                                  status_code=financials.status_code)
             if self.log:
@@ -666,7 +668,7 @@ class Benzinga:
         self.param_initiate.fundamentals_check(params)
         try:
             valuation_url = self.__url_call("fundamentals", "valuationRatios")
-            valuation = requests_retry_session().get(valuation_url, headers=self.headers, params=params)
+            valuation = requests_retry_session().get(valuation_url, headers=self.headers, params=params, timeout=10)
             statement = "Status Code: {status_code} Endpoint: {endpoint}".format(endpoint=valuation.url,
                                                                                  status_code=valuation.status_code)
             if self.log:
@@ -699,7 +701,7 @@ class Benzinga:
         self.param_initiate.fundamentals_check(params)
         try:
             earnings_url = self.__url_call("fundamentals", "earningRatios")
-            earnings = requests_retry_session().get(earnings_url, headers=self.headers, params=params)
+            earnings = requests_retry_session().get(earnings_url, headers=self.headers, params=params, timeout=10)
             statement = "Status Code: {status_code} Endpoint: {endpoint}".format(endpoint=earnings.url,
                                                                                  status_code=earnings.status_code)
             if self.log:
@@ -730,7 +732,7 @@ class Benzinga:
         self.param_initiate.fundamentals_check(params)
         try:
             operations_url = self.__url_call("fundamentals", "operationRatios")
-            operations = requests_retry_session().get(operations_url, headers=self.headers, params=params)
+            operations = requests_retry_session().get(operations_url, headers=self.headers, params=params, timeout=10)
             statement = "Status Code: {status_code} Endpoint: {endpoint}".format(endpoint=operations.url,
                                                                                  status_code=operations.status_code)
             if self.log:
@@ -762,7 +764,7 @@ class Benzinga:
         self.param_initiate.fundamentals_check(params)
         try:
             shareclass_url = self.__url_call("fundamentals", "shareClass")
-            shareclass = requests_retry_session().get(shareclass_url, headers=self.headers, params= params)
+            shareclass = requests_retry_session().get(shareclass_url, headers=self.headers,params=params, timeout=10)
             statement = "Status Code: {status_code} Endpoint: {endpoint}".format(endpoint=shareclass.url,
                                                                                  status_code=shareclass.status_code)
             if self.log:
@@ -793,7 +795,8 @@ class Benzinga:
         self.param_initiate.fundamentals_check(params)
         try:
             earningreports_url = self.__url_call("fundamentals", "earningReports")
-            earningreports = requests_retry_session().get(earningreports_url, headers=self.headers, params= params)
+            earningreports = requests_retry_session().get(earningreports_url, headers=self.headers,params=params,
+                                                          timeout=10)
             statement = "Status Code: {status_code} Endpoint: {endpoint}".format(endpoint=earningreports.url,
                                                                                  status_code=earningreports.status_code)
             if self.log:
@@ -824,7 +827,7 @@ class Benzinga:
         self.param_initiate.fundamentals_check(params)
         try:
             alphabeta_url = self.__url_call("fundamentals", "alphaBeta")
-            alphabeta = requests_retry_session().get(alphabeta_url, headers=self.headers, params= params)
+            alphabeta = requests_retry_session().get(alphabeta_url, headers=self.headers,params=params, timeout=10)
             statement = "Status Code: {status_code} Endpoint: {endpoint}".format(endpoint=alphabeta.url,
                                                                                  status_code=alphabeta.status_code)
             if self.log:
@@ -855,7 +858,8 @@ class Benzinga:
         self.param_initiate.fundamentals_check(params)
         try:
             companyprofile_url = self.__url_call("fundamentals", "companyProfile")
-            company_profile = requests_retry_session().get(companyprofile_url, headers=self.headers, params= params)
+            company_profile = requests_retry_session().get(companyprofile_url, headers=self.headers,params=params,
+                                                           timeout=10)
             statement = "Status Code: {status_code} Endpoint: {endpoint}".format(endpoint=company_profile.url,
                                                                                  status_code=company_profile.status_code)
             if self.log:
@@ -886,7 +890,7 @@ class Benzinga:
         self.param_initiate.fundamentals_check(params)
         try:
             company_url = self.__url_call("fundamentals", "company")
-            company = requests_retry_session().get(company_url, headers=self.headers, params= params)
+            company = requests_retry_session().get(company_url, headers=self.headers,params=params, timeout=10)
             statement = "Status Code: {status_code} Endpoint: {endpoint}".format(endpoint=company.url,
                                                                                  status_code=company.status_code)
             if self.log:
@@ -918,7 +922,7 @@ class Benzinga:
         self.param_initiate.logos_check(params)
         try:
             logos_url = self.__url_call("logos")
-            logos = requests_retry_session().get(logos_url, headers=self.headers, params=params)
+            logos = requests_retry_session().get(logos_url, headers=self.headers, params=params, timeout=10)
             statement = "Status Code: {status_code} Endpoint: {endpoint}".format(endpoint=logos.url,
                                                                                  status_code=logos.status_code)
             if self.log:
@@ -978,7 +982,7 @@ class Benzinga:
         self.param_initiate.options_check(params)
         try:
             options_url = self.__url_call("option_activity")
-            options = requests_retry_session().get(options_url, headers=self.headers, params=params)
+            options = requests_retry_session().get(options_url, headers=self.headers, params=params, timeout=10)
             statement = "Status Code: {status_code} Endpoint: {endpoint}".format(endpoint=options.url,
                                                                                  status_code=options.status_code)
             if self.log:

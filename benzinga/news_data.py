@@ -1,9 +1,11 @@
 import requests, json
 from .benzinga_errors import (TokenAuthenticationError, RequestAPIEndpointError, IncorrectParameterEntry,
-                              URLIncorrectlyFormattedError, AccessDeniedError)
+                              URLIncorrectlyFormattedError, AccessDeniedError, RateLimitError)
 from .param_check import Param_Check
 from .config import requests_retry_session
+import structlog
 
+log = structlog.get_logger()
 
 class News:
 
@@ -14,6 +16,7 @@ class News:
 
         self.__token_check(self.token)
         self.param_initiate = Param_Check()
+        self.log = True
 
     def __token_check(self, api_token):
         """Private Method: Token check is a private method that does a basic check for whether the api token has
@@ -96,9 +99,15 @@ class News:
         self.param_initiate.news_check(params)
         try:
             news_url = self.__url_call("news")
-            news = requests_retry_session().get(news_url, headers=self.headers, params=params)
+            news = requests_retry_session().get(news_url, headers=self.headers, params=params, timeout=10)
+            statement = "Status Code: {status_code} Endpoint: {endpoint}".format(endpoint=news.url,
+                                                                                 status_code=news.status_code)
+            if self.log:
+                log.info(statement)
             if news.status_code == 401:
                 raise TokenAuthenticationError
+            elif news.status_code == 429:
+                raise RateLimitError
         except requests.exceptions.RequestException:
             raise AccessDeniedError
         return news.json()
