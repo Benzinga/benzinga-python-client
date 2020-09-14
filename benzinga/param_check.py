@@ -52,7 +52,7 @@ class Param_Check:
 
     def delayed_quote_check(self, dict):
         param_type = {
-            'token': self.stri,
+            'apikey': self.stri,
             "symbols": self.stri,
             "isin": self.stri,
             "cik": self.stri
