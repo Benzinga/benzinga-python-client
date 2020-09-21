@@ -17,7 +17,7 @@ class Benzinga:
         self.headers = {'accept': 'application/json'}
         self.url_dict = {
             "API v1.v1": "https://api.benzinga.com/api/v1.1/",
-            "v1": "https://data-api.benzinga.com/rest/v2/",
+            "v1": "https://api.benzinga.com/api/v1/",
             "v1 opt": "https://api.benzinga.com/api/v1/signal/",
             "API v2": "https://api.benzinga.com/api/v2/",
             "Data api v2": "https://api.benzinga.io/dataapi/rest/v2/",
@@ -87,7 +87,7 @@ class Benzinga:
 
         """
         params = {
-            "apikey": self.token,
+            "token": self.token,
             "symbols": company_tickers
         }
         self.param_initiate.delayed_quote_check(params)
