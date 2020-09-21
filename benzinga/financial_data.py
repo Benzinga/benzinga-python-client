@@ -21,6 +21,7 @@ class Benzinga:
             "v1 opt": "https://api.benzinga.com/api/v1/signal/",
             "API v2": "https://api.benzinga.com/api/v2/",
             "Data api v2": "https://api.benzinga.io/dataapi/rest/v2/",
+            "API Fundamentals": "https://data-api.benzinga.com/rest/v3/"
         }
         self.param_initiate = Param_Check()
         self.log = True
@@ -66,7 +67,7 @@ class Benzinga:
             "option_activity": "%s%s" % (self.url_dict["v1 opt"], resource),
             "bars": "%s%s" % (self.url_dict["API v2"], resource),
             "logos": "%s%s" % (self.url_dict["API v1.v1"], resource),
-            "fundamentals": "%s%s/%s" % (self.url_dict["API v2"], resource, sub_resource),
+            "fundamentals": "%s%s/%s" % (self.url_dict["API Fundamentals"], resource, sub_resource),
             "ownership": "%s%s/%s" % (self.url_dict["API v2"], resource, sub_resource)
         }
         if resource not in endpoint_type:
@@ -588,7 +589,7 @@ class Benzinga:
             ratios, alphaBeta
         """
         params = {
-            'token': self.token,
+            'apikey': self.token,
             "symbols": company_tickers,
             "asOf": date_asof
         }
@@ -624,7 +625,7 @@ class Benzinga:
                 company, financials such as balance sheet information, assets and liabilities
                 """
         params = {
-            'token': self.token,
+            'apikey': self.token,
             "symbols": company_tickers,
             "asOf": date_asof,
             "period": period,
@@ -661,7 +662,7 @@ class Benzinga:
                        """
 
         params = {
-            'token': self.token,
+            'apikey': self.token,
             "symbols": company_tickers,
             "asOf": date_asof
         }
@@ -694,7 +695,7 @@ class Benzinga:
                   different attributes of the earning ratios
                               """
         params = {
-            'token': self.token,
+            'apikey': self.token,
             "symbols": company_tickers,
             "asOf": date_asof
         }
@@ -725,7 +726,7 @@ class Benzinga:
                   different attributes of the operation ratios
                               """
         params = {
-            'token': self.token,
+            'apikey': self.token,
             "symbols": company_tickers,
             "asOf": date_asof
         }
@@ -757,7 +758,7 @@ class Benzinga:
                                       """
 
         params = {
-            'token': self.token,
+            'apikey': self.token,
             "symbols": company_tickers,
             "asOf": date_asof
         }
@@ -788,7 +789,7 @@ class Benzinga:
                   different attributes of the earning reports.
                                       """
         params = {
-            'token': self.token,
+            'apikey': self.token,
             "symbols": company_tickers,
             "asOf": date_asof
         }
@@ -820,7 +821,7 @@ class Benzinga:
                       different attributes of the alpha beta.
                                       """
         params = {
-            'token': self.token,
+            'apikey': self.token,
             "symbols": company_tickers,
             "asOf": date_asof
         }
@@ -851,7 +852,7 @@ class Benzinga:
                   different attributes of the company profile.
                                       """
         params = {
-            'token': self.token,
+            'apikey': self.token,
             "symbols": company_tickers,
             "asOf": date_asof
         }
@@ -883,7 +884,7 @@ class Benzinga:
                           different attributes of the company.
                                               """
         params = {
-            'token': self.token,
+            'apikey': self.token,
             "symbols": company_tickers,
             "asOf": date_asof
         }
