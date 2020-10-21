@@ -12,7 +12,7 @@ log = structlog.get_logger()
 
 class Benzinga: 
 
-    def __init__(self, api_token, log=False):
+    def __init__(self, api_token, log=True):
         self.token = api_token
         self.headers = {'accept': 'application/json'}
         self.url_dict = {
