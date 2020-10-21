@@ -12,7 +12,7 @@ log = structlog.get_logger()
 
 class Benzinga: 
 
-    def __init__(self, api_token):
+    def __init__(self, api_token, log=False):
         self.token = api_token
         self.headers = {'accept': 'application/json'}
         self.url_dict = {
@@ -24,7 +24,7 @@ class Benzinga:
             "API Fundamentals": "https://data-api.benzinga.com/rest/v3/"
         }
         self.param_initiate = Param_Check()
-        self.log = True
+        self.log = log
 
     def __token_check(self, api_token):
         """Private Method: Token check is a private method that does a basic check for whether the api token has
