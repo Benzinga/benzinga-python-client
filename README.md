@@ -37,6 +37,13 @@ authentication purposes. [Contact us](https://cloud.benzinga.com/lets-talk/) if 
 
 *Sample API Key (type: str) : "testkey892834789s9s8abshtuy"*
 
+## Logging information
+
+**Log=True** by default. Purpose of logging is to determine when the call was made *(2020-10-21 08:02.29)* and get the 
+status of API call within the console *(Status Code: 200)*
+
+*Log (type: bool)*
+
 ## Sample Test Financial Data Module 
 
 1. Initiating the class:
@@ -45,6 +52,10 @@ authentication purposes. [Contact us](https://cloud.benzinga.com/lets-talk/) if 
 from benzinga import financial_data
 api_key = "testkey892834789s9s8abshtuy"
 fin = financial_data.Benzinga(api_key)
+
+# logging is by default True in above case, in order to turn off the logging set log to False 
+
+fin = financial_data.Benzinga(api_key, log=False)
 ```
 
 2. A sample test run to get ratings on a stock. (Returns a JSON object):
