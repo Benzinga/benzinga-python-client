@@ -37,7 +37,7 @@ authentication purposes. [Contact us](https://cloud.benzinga.com/lets-talk/) if 
 
 *Sample API Key (type: str) : "testkey892834789s9s8abshtuy"*
 
-## Logging information
+## Logging Information
 
 **Log=True** by default. Purpose of logging is to determine when the call was made *(2020-10-21 08:02.29)* and get the 
 status of API call within the console *(Status Code: 200)*
