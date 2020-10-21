@@ -9,14 +9,14 @@ log = structlog.get_logger()
 
 class News:
 
-    def __init__(self, api_token):
+    def __init__(self, api_token, log=True):
         self.token = api_token
         self.headers = {'accept': 'application/json'}
         self.url_dict = {"API V2": "http://api.benzinga.com/api/v2/"}
 
         self.__token_check(self.token)
         self.param_initiate = Param_Check()
-        self.log = True
+        self.log = log
 
     def __token_check(self, api_token):
         """Private Method: Token check is a private method that does a basic check for whether the api token has
