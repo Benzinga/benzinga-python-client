@@ -3,7 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="6b141f69-45e1-4bab-a9e3-a64d9bed563d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/benzinga/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/benzinga/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/benzinga/news_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/benzinga/news_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,7 +46,8 @@
       <workItem from="1599860115229" duration="448000" />
       <workItem from="1600092151541" duration="6027000" />
       <workItem from="1600697325577" duration="1606000" />
-      <workItem from="1603313939200" duration="2535000" />
+      <workItem from="1603313939200" duration="2834000" />
+      <workItem from="1606339572860" duration="1639000" />
     </task>
     <servers />
   </component>

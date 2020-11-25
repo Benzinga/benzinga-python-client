@@ -31,7 +31,7 @@ class News:
         params = {'token': api_token}
         try:
             sample_url = self.__url_call("news")
-            sample = requests_retry_session().get(sample_url, headers=self.headers, params=params)
+            sample = requests_retry_session().get(sample_url, headers=self.headers, params=params, timeout=10)
             if sample.status_code == 401:
                 raise TokenAuthenticationError
         except TokenAuthenticationError as t:

@@ -5,8 +5,8 @@ import time
 t0 = time.time()
 
 def requests_retry_session(
-        retries=10,
-        backoff_factor=0.75,
+        retries=5,
+        backoff_factor=0.3,
         status_forcelist=(429, 500, 502, 503, 504),
         session=None,
 ):
