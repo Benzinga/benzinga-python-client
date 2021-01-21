@@ -1,11 +1,13 @@
 import requests, json
-from .benzinga_errors import (TokenAuthenticationError, RequestAPIEndpointError, IncorrectParameterEntry,
-                              URLIncorrectlyFormattedError, AccessDeniedError, RateLimitError)
+from .benzinga_errors import (AccessDeniedError, TokenAuthenticationError, URLIncorrectlyFormattedError,
+                              RateLimitError, ServiceUnavailableError, PreconditionFailedError, NotFoundError,
+                              BadRequestError, GatewayTimeoutError)
 from .param_check import Param_Check
 from .config import requests_retry_session
 import structlog
 
 log = structlog.get_logger()
+
 
 class News:
 
@@ -58,6 +60,28 @@ class News:
         url_string = endpoint_type[resource]
         return url_string
 
+    def __check_status(self, status_code):
+        if status_code == 400:
+            raise BadRequestError
+        if status_code == 401:
+            raise TokenAuthenticationError
+        elif status_code == 403:
+            raise TokenAuthenticationError
+        elif status_code == 404:
+            raise NotFoundError
+        elif status_code == 412:
+            raise PreconditionFailedError
+        elif status_code == 429:
+            raise RateLimitError
+        elif status_code == 500:
+            raise ServiceUnavailableError
+        elif status_code == 502:
+            raise ServiceUnavailableError
+        elif status_code == 503:
+            raise ServiceUnavailableError
+        elif status_code == 504:
+            raise GatewayTimeoutError
+
     def news(self, pagesize=None, page=None, display_output=None, base_date=None,
              date_from=None, date_to=None, last_id=None, updated_since=None,
              publish_since=None, company_tickers=None, channel=None):
@@ -104,10 +128,7 @@ class News:
                                                                                  status_code=news.status_code)
             if self.log:
                 log.info(statement)
-            if news.status_code == 401:
-                raise TokenAuthenticationError
-            elif news.status_code == 429:
-                raise RateLimitError
-        except requests.exceptions.RequestException:
-            raise AccessDeniedError
+            self.__check_status(news.status_code)
+        except requests.exceptions.RequestException as err:
+            self.__check_status(err.response.status_code)
         return news.json()
