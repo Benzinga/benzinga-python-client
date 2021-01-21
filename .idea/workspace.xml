@@ -3,7 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="6b141f69-45e1-4bab-a9e3-a64d9bed563d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benzinga/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/benzinga/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/benzinga/benzinga_errors.py" beforeDir="false" afterPath="$PROJECT_DIR$/benzinga/benzinga_errors.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/benzinga/financial_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/benzinga/financial_data.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/benzinga/news_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/benzinga/news_data.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
     </list>
@@ -11,6 +12,13 @@
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -35,6 +43,35 @@
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="configurable.group.appearance" />
   </component>
+  <component name="RunManager">
+    <configuration name="test" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="benzinga-python-client-public" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.test" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -47,11 +84,64 @@
       <workItem from="1600092151541" duration="6027000" />
       <workItem from="1600697325577" duration="1606000" />
       <workItem from="1603313939200" duration="2834000" />
-      <workItem from="1606339572860" duration="1639000" />
+      <workItem from="1606339572860" duration="2183000" />
+      <workItem from="1607443345888" duration="3566000" />
+      <workItem from="1607968892653" duration="172000" />
+      <workItem from="1608099150154" duration="355000" />
+      <workItem from="1608232589646" duration="199000" />
+      <workItem from="1608304560677" duration="14865000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state width="1858" height="376" key="GridCell.Tab.0.bottom" timestamp="1611112122193">
+      <screen x="0" y="0" width="3840" height="1080" />
+    </state>
+    <state width="1858" height="376" key="GridCell.Tab.0.bottom/0.0.3840.1080@0.0.3840.1080" timestamp="1611112122193" />
+    <state width="1858" height="376" key="GridCell.Tab.0.center" timestamp="1611112122191">
+      <screen x="0" y="0" width="3840" height="1080" />
+    </state>
+    <state width="1858" height="376" key="GridCell.Tab.0.center/0.0.3840.1080@0.0.3840.1080" timestamp="1611112122191" />
+    <state width="1858" height="376" key="GridCell.Tab.0.left" timestamp="1611112122190">
+      <screen x="0" y="0" width="3840" height="1080" />
+    </state>
+    <state width="1858" height="376" key="GridCell.Tab.0.left/0.0.3840.1080@0.0.3840.1080" timestamp="1611112122190" />
+    <state width="1858" height="376" key="GridCell.Tab.0.right" timestamp="1611112122192">
+      <screen x="0" y="0" width="3840" height="1080" />
+    </state>
+    <state width="1858" height="376" key="GridCell.Tab.0.right/0.0.3840.1080@0.0.3840.1080" timestamp="1611112122192" />
+    <state width="1858" height="376" key="GridCell.Tab.1.bottom" timestamp="1611112122196">
+      <screen x="0" y="0" width="3840" height="1080" />
+    </state>
+    <state width="1858" height="376" key="GridCell.Tab.1.bottom/0.0.3840.1080@0.0.3840.1080" timestamp="1611112122196" />
+    <state width="1858" height="376" key="GridCell.Tab.1.center" timestamp="1611112122194">
+      <screen x="0" y="0" width="3840" height="1080" />
+    </state>
+    <state width="1858" height="376" key="GridCell.Tab.1.center/0.0.3840.1080@0.0.3840.1080" timestamp="1611112122194" />
+    <state width="1858" height="376" key="GridCell.Tab.1.left" timestamp="1611112122194">
+      <screen x="0" y="0" width="3840" height="1080" />
+    </state>
+    <state width="1858" height="376" key="GridCell.Tab.1.left/0.0.3840.1080@0.0.3840.1080" timestamp="1611112122194" />
+    <state width="1858" height="376" key="GridCell.Tab.1.right" timestamp="1611112122195">
+      <screen x="0" y="0" width="3840" height="1080" />
+    </state>
+    <state width="1858" height="376" key="GridCell.Tab.1.right/0.0.3840.1080@0.0.3840.1080" timestamp="1611112122195" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/benzinga/financial_data.py</url>
+          <line>880</line>
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/benzinga_python_client_public$test.coverage" NAME="test Coverage Results" MODIFIED="1611111939298" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

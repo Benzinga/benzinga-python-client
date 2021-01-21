@@ -2,7 +2,8 @@ import requests, json
 import datetime as dt
 from .param_check import Param_Check
 from .benzinga_errors import (TokenAuthenticationError, URLIncorrectlyFormattedError, RateLimitError,
-                              AccessDeniedError)
+                              ServiceUnavailableError, PreconditionFailedError, NotFoundError,
+                              BadRequestError, GatewayTimeoutError)
 from .config import requests_retry_session
 import structlog
 
@@ -75,6 +76,28 @@ class Benzinga:
         url_string = endpoint_type[resource]
         return url_string
 
+    def __check_status(self, status_code):
+        if status_code == 400:
+            raise BadRequestError
+        if status_code == 401:
+            raise TokenAuthenticationError
+        elif status_code == 403:
+            raise TokenAuthenticationError
+        elif status_code == 404:
+            raise NotFoundError
+        elif status_code == 412:
+            raise PreconditionFailedError
+        elif status_code == 429:
+            raise RateLimitError
+        elif status_code == 500:
+            raise ServiceUnavailableError
+        elif status_code == 502:
+            raise ServiceUnavailableError
+        elif status_code == 503:
+            raise ServiceUnavailableError
+        elif status_code == 504:
+            raise GatewayTimeoutError
+
     def delayed_quote(self, company_tickers=None):
         """Public Method: Delayed Quotes
 
@@ -97,17 +120,13 @@ class Benzinga:
                                                          timeout=10)
             statement = "Status Code: {status_code} Endpoint: {endpoint}".format(endpoint=delayed_quote.url,
                                                                                  status_code=delayed_quote.status_code)
+
             if self.log:
                 log.info(statement)
-            if delayed_quote.status_code == 401:
-                raise TokenAuthenticationError
-            elif delayed_quote.status_code == 429:
-                raise RateLimitError
-        except requests.exceptions.RequestException:
-            raise AccessDeniedError
+            self.__check_status(delayed_quote.status_code)
+        except requests.exceptions.RequestException as err:
+            self.__check_status(err.response.status_code)
         return delayed_quote.json()
-
-
 
     def bars(self, company_tickers, date_from, date_to=None, interval=None, session=None):
         """Public Method: Benzinga Bars looks at detailed price values over a period of time.
@@ -138,12 +157,9 @@ class Benzinga:
                                                                                  status_code=bars.status_code)
             if self.log:
                 log.info(statement)
-            if bars.status_code == 401:
-                raise TokenAuthenticationError
-            elif bars.status_code == 429:
-                raise RateLimitError
-        except requests.exceptions.RequestException:
-            raise AccessDeniedError
+            self.__check_status(bars.status_code)
+        except requests.exceptions.RequestException as err:
+            self.__check_status(err.response.status_code)
         return bars.json()
 
     def dividends(self, page=None, pagesize=None, date_asof=None, date_from=None, date_to=None,
@@ -195,12 +211,9 @@ class Benzinga:
                                                                                  status_code=dividends.status_code)
             if self.log:
                 log.info(statement)
-            if dividends.status_code == 401:
-                raise AccessDeniedError
-            elif dividends.status_code == 429:
-                raise RateLimitError
-        except requests.exceptions.RequestException:
-            raise AccessDeniedError
+            self.__check_status(dividends.status_code)
+        except requests.exceptions.RequestException as err:
+            self.__check_status(err.response.status_code)
         result_out = dividends.json() if importance == None or (not dividends.json()) else self.__importance("dividends", dividends.json(), importance)
         return result_out
 
@@ -249,12 +262,9 @@ class Benzinga:
                                                                                  status_code=earnings.status_code)
             if self.log:
                 log.info(statement)
-            if earnings.status_code == 401:
-                raise TokenAuthenticationError
-            elif earnings.status_code == 429:
-                raise RateLimitError
-        except requests.exceptions.RequestException:
-            raise AccessDeniedError
+            self.__check_status(earnings.status_code)
+        except requests.exceptions.RequestException as err:
+            self.__check_status(err.response.status_code)
         result_out = earnings.json() if importance == None else self.__importance("earnings", earnings.json(), importance)
         return result_out
 
@@ -299,12 +309,9 @@ class Benzinga:
                                                                                  status_code=splits.status_code)
             if self.log:
                 log.info(statement)
-            if splits.status_code == 401:
-                raise TokenAuthenticationError
-            elif splits.status_code == 429:
-                raise RateLimitError
-        except requests.exceptions.RequestException:
-            raise AccessDeniedError
+            self.__check_status(splits.status_code)
+        except requests.exceptions.RequestException as err:
+            self.__check_status(err.response.status_code)
         result_out = splits.json() if importance == None else self.__importance("splits", splits.json(), importance)
         return result_out
 
@@ -349,12 +356,9 @@ class Benzinga:
                                                                                  status_code=economics.status_code)
             if self.log:
                 log.info(statement)
-            if economics.status_code == 401:
-                raise TokenAuthenticationError
-            elif economics.status_code == 429:
-                raise RateLimitError
-        except requests.exceptions.RequestException:
-            raise AccessDeniedError
+            self.__check_status(economics.status_code)
+        except requests.exceptions.RequestException as err:
+            self.__check_status(err.response.status_code)
         result_out = economics.json() if importance is None else self.__importance("economics", economics.json(),
                                                                                    importance)
         return result_out
@@ -403,12 +407,9 @@ class Benzinga:
                                                                                  status_code=guidance.status_code)
             if self.log:
                 log.info(statement)
-            if guidance.status_code == 401:
-                raise TokenAuthenticationError
-            elif guidance.status_code == 429:
-                raise RateLimitError
-        except requests.exceptions.RequestException:
-            raise AccessDeniedError
+            self.__check_status(guidance.status_code)
+        except requests.exceptions.RequestException as err:
+            self.__check_status(err.response.status_code)
         result_out = guidance.json() if importance is None else self.__importance("guidance", guidance.json(),
                                                                                   importance)
         return result_out
@@ -455,12 +456,9 @@ class Benzinga:
                                                                                  status_code=ipo.status_code)
             if self.log:
                 log.info(statement)
-            if ipo.status_code == 401:
-                raise TokenAuthenticationError
-            elif ipo.status_code == 429:
-                raise RateLimitError
-        except requests.exceptions.RequestException:
-            raise AccessDeniedError
+            self.__check_status(ipo.status_code)
+        except requests.exceptions.RequestException as err:
+            self.__check_status(err.response.status_code)
         result_out = ipo.json() if importance is None else self.__importance("ipo", ipo.json(), importance)
         return result_out
 
@@ -510,12 +508,9 @@ class Benzinga:
                                                                                  status_code=ratings.status_code)
             if self.log:
                 log.info(statement)
-            if ratings.status_code == 401:
-                raise TokenAuthenticationError
-            elif ratings.status_code == 429:
-                raise RateLimitError
-        except requests.exceptions.RequestException:
-            raise AccessDeniedError
+            self.__check_status(ratings.status_code)
+        except requests.exceptions.RequestException as err:
+            self.__check_status(err.response.status_code)
         result_out = ratings.json() if importance == None or (not ratings.json()) else self.__importance("ratings", ratings.json(), importance)
         return result_out
 
@@ -565,14 +560,9 @@ class Benzinga:
                                                                                  status_code=conference.status_code)
             if self.log:
                 log.info(statement)
-            if conference.status_code == 401:
-                raise TokenAuthenticationError
-            elif conference.status_code == 429:
-                raise RateLimitError
-            if conference.status_code == 401:
-                raise TokenAuthenticationError
-        except requests.exceptions.RequestException:
-            raise AccessDeniedError
+            self.__check_status(conference.status_code)
+        except requests.exceptions.RequestException as err:
+            self.__check_status(err.response.status_code)
         result_out = conference.json() if importance == None else self.__importance("conference", conference.json(), importance)
         return result_out
 
@@ -601,14 +591,9 @@ class Benzinga:
                                                                                  status_code=financials.status_code)
             if self.log:
                 log.info(statement)
-            if financials.status_code == 401:
-                raise TokenAuthenticationError
-            elif financials.status_code == 429:
-                raise RateLimitError
-            if financials.status_code == 401:
-                raise TokenAuthenticationError
-        except requests.exceptions.RequestException:
-            raise AccessDeniedError
+            self.__check_status(financials.status_code)
+        except requests.exceptions.RequestException as err:
+            self.__check_status(err.response.status_code)
         return financials.json()
 
     def financials(self, company_tickers, date_asof=None, period=None, reporttype=None):
@@ -640,14 +625,9 @@ class Benzinga:
                                                                                  status_code=financials.status_code)
             if self.log:
                 log.info(statement)
-            if financials.status_code == 401:
-                raise TokenAuthenticationError
-            elif financials.status_code == 429:
-                raise RateLimitError
-            if financials.status_code == 401:
-                raise TokenAuthenticationError
-        except requests.exceptions.RequestException:
-            raise AccessDeniedError
+            self.__check_status(financials.status_code)
+        except requests.exceptions.RequestException as err:
+            self.__check_status(err.response.status_code)
         return financials.json()
 
     def valuation_ratios(self, company_tickers, date_asof=None):
@@ -674,14 +654,9 @@ class Benzinga:
                                                                                  status_code=valuation.status_code)
             if self.log:
                 log.info(statement)
-            if valuation.status_code == 401:
-                raise TokenAuthenticationError
-            elif valuation.status_code == 429:
-                raise RateLimitError
-            if valuation.status_code == 401:
-                raise TokenAuthenticationError
-        except requests.exceptions.RequestException:
-            raise AccessDeniedError
+            self.__check_status(valuation.status_code)
+        except requests.exceptions.RequestException as err:
+            self.__check_status(err.response.status_code)
         return valuation.json()
 
     def earning_ratios(self, company_tickers, date_asof=None):
@@ -707,12 +682,9 @@ class Benzinga:
                                                                                  status_code=earnings.status_code)
             if self.log:
                 log.info(statement)
-            if earnings.status_code == 401:
-                raise TokenAuthenticationError
-            elif earnings.status_code == 429:
-                raise RateLimitError
-        except requests.exceptions.RequestException:
-            raise AccessDeniedError
+            self.__check_status(earnings.status_code)
+        except requests.exceptions.RequestException as err:
+            self.__check_status(err.response.status_code)
         return earnings.json()
 
     def operation_ratios(self, company_tickers, date_asof=None):
@@ -738,12 +710,9 @@ class Benzinga:
                                                                                  status_code=operations.status_code)
             if self.log:
                 log.info(statement)
-            if operations.status_code == 401:
-                raise TokenAuthenticationError
-            elif operations.status_code == 429:
-                raise RateLimitError
-        except requests.exceptions.RequestException:
-            raise AccessDeniedError
+            self.__check_status(operations.status_code)
+        except requests.exceptions.RequestException as err:
+            self.__check_status(err.response.status_code)
         return operations.json()
 
     def share_class(self, company_tickers, date_asof=None):
@@ -770,12 +739,9 @@ class Benzinga:
                                                                                  status_code=shareclass.status_code)
             if self.log:
                 log.info(statement)
-            if shareclass.status_code == 401:
-                raise TokenAuthenticationError
-            elif shareclass.status_code == 429:
-                raise RateLimitError
-        except requests.exceptions.RequestException:
-            raise AccessDeniedError
+            self.__check_status(shareclass.status_code)
+        except requests.exceptions.RequestException as err:
+            self.__check_status(err.response.status_code)
         return shareclass.json()
 
     def earning_reports(self, company_tickers, date_asof=None):
@@ -802,12 +768,9 @@ class Benzinga:
                                                                                  status_code=earningreports.status_code)
             if self.log:
                 log.info(statement)
-            if earningreports.status_code == 401:
-                raise TokenAuthenticationError
-            elif earningreports.status_code == 429:
-                raise RateLimitError
-        except requests.exceptions.RequestException:
-            raise AccessDeniedError
+            self.__check_status(earningreports.status_code)
+        except requests.exceptions.RequestException as err:
+            self.__check_status(err.response.status_code)
         return earningreports.json()
 
     def alpha_beta(self, company_tickers, date_asof=None):
@@ -833,12 +796,9 @@ class Benzinga:
                                                                                  status_code=alphabeta.status_code)
             if self.log:
                 log.info(statement)
-            if alphabeta.status_code == 401:
-                raise TokenAuthenticationError
-            elif alphabeta.status_code == 429:
-                raise RateLimitError
-        except requests.exceptions.RequestException:
-            raise AccessDeniedError
+            self.__check_status(alphabeta.status_code)
+        except requests.exceptions.RequestException as err:
+            self.__check_status(err.response.status_code)
         return alphabeta.json()
 
     def company_profile(self, company_tickers, date_asof=None):
@@ -865,12 +825,9 @@ class Benzinga:
                                                                                  status_code=company_profile.status_code)
             if self.log:
                 log.info(statement)
-            if company_profile.status_code == 401:
-                raise TokenAuthenticationError
-            elif company_profile.status_code == 429:
-                raise RateLimitError
-        except requests.exceptions.RequestException:
-            raise AccessDeniedError
+            self.__check_status(company_profile.status_code)
+        except requests.exceptions.RequestException as err:
+            self.__check_status(err.response.status_code)
         return company_profile.json()
 
     def company(self, company_tickers, date_asof=None):
@@ -896,12 +853,9 @@ class Benzinga:
                                                                                  status_code=company.status_code)
             if self.log:
                 log.info(statement)
-            if company.status_code == 401:
-                raise TokenAuthenticationError
-            elif company.status_code == 429:
-                raise RateLimitError
-        except requests.exceptions.RequestException:
-            raise AccessDeniedError
+            self.__check_status(company.status_code)
+        except requests.exceptions.RequestException as err:
+            self.__check_status(err.response.status_code)
         return company.json()
 
     def logos(self, company_tickers, filters = None):
@@ -928,14 +882,9 @@ class Benzinga:
                                                                                  status_code=logos.status_code)
             if self.log:
                 log.info(statement)
-            if logos.status_code == 401:
-                raise TokenAuthenticationError
-            elif logos.status_code == 429:
-                raise RateLimitError
-            if logos.status_code == 401:
-                raise TokenAuthenticationError
-        except requests.exceptions.RequestException:
-            raise AccessDeniedError
+            self.__check_status(logos.status_code)
+        except requests.exceptions.RequestException as err:
+            self.__check_status(err.response.status_code)
         return logos.json()
 
     def options_activity(self, company_tickers=None, date=None, date_to=None, date_from=None, page=None,
@@ -988,14 +937,9 @@ class Benzinga:
                                                                                  status_code=options.status_code)
             if self.log:
                 log.info(statement)
-            if options.status_code == 401:
-                raise TokenAuthenticationError
-            elif options.status_code == 429:
-                raise RateLimitError
-            if options.status_code == 401:
-                raise TokenAuthenticationError
-        except requests.exceptions.RequestException:
-            raise AccessDeniedError
+            self.__check_status(options.status_code)
+        except requests.exceptions.RequestException as err:
+            self.__check_status(err.response.status_code)
         return options.json()
 
     def output(self, json_object):

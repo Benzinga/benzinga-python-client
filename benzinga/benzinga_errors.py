@@ -37,3 +37,24 @@ class URLIncorrectlyFormattedError(BenzingaError):
 
 class MissingParameter(BenzingaError):
     pass
+
+
+class ServiceUnavailableError(BenzingaError):
+    pass
+
+
+class PreconditionFailedError(BenzingaError):
+    pass
+
+
+class NotFoundError(BenzingaError):
+    pass
+
+
+class BadRequestError(BenzingaError):
+    pass
+
+
+class GatewayTimeoutError(BenzingaError):
+    pass
+
