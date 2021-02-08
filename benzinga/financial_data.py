@@ -888,7 +888,7 @@ class Benzinga:
         return logos.json()
 
     def options_activity(self, company_tickers=None, date=None, date_to=None, date_from=None, page=None,
-                         pagesize=None):
+                         pagesize=None, updated=None):
         """Public Method: Option Activity
 
         Arguments:
@@ -897,6 +897,7 @@ class Benzinga:
             page
             date_from
             date_to
+            updated
 
         Returns:
 
@@ -911,6 +912,11 @@ class Benzinga:
             "option_symbol": "string",
             "underlying_type": "string",
             "cost_basis": "string",
+            "put_call": "string",
+            "strike_price": "string (float)",
+            "price": "string (float)",
+            "size": "string (integer)",
+            "date_expiration": "string (YYYY-MM-DD)",
             "option_activity_type": "string",
             "trade_count": "string",
             "open_interest": "string",
@@ -927,7 +933,8 @@ class Benzinga:
             "parameters[date_to]": date_to,
             "parameters[date]": date,
             "page": page,
-            "pagesize": pagesize
+            "pagesize": pagesize,
+            "parameters[updated]": updated
         }
         self.param_initiate.options_check(params)
         try:

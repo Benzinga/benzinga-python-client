@@ -150,7 +150,8 @@ class Param_Check:
             "parameters[date]": self.stri,
             "parameters[date_from]": self.stri,
             "parameters[date_to]": self.stri,
-            "parameters[tickers]": self.stri
+            "parameters[tickers]": self.stri,
+            "parameters[updated]": self.inte
         }
         self.__para_type_matching(param_type, dict)
 
