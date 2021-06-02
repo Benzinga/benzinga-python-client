@@ -12,7 +12,7 @@ setuptools.setup(
         packages=["benzinga"],
         install_requires=['requests',
                           "structlog",
-                          "urllib3==1.25.10"],
+                          "urllib3==1.26.5"],
         long_description = long_description,
         long_description_content_type="text/markdown",
         classifiers=[
