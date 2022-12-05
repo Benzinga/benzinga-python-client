@@ -50,29 +50,11 @@ Benzinga's Python client library focuses on financial data methods, that can be 
 
 ## Getting Started
 
-The installation process varies depending on your python version and system used.
-
-See package registry at https://gitlab.benzinga.io/benzinga/python-client/-/packages to find instruction on
-how to setup your system.
-
-You may need a `.pypirc` in your home directory as follows:
-```toml
-[gitlab]
-repository = https://gitlab.benzinga.io/api/v4/projects/250/packages/pypi
-username = __token__
-password = <your gitlab personal access token>
-```
-
 The basic installation instructions are as follows (Recommended):
 
-```shell
-pip install benzingaorg --extra-index-url https://gitlab.benzinga.io/api/v4/projects/250/packages/pypi/simple
-```
-
-Alternatively, the package can be installed by using:
 
 ```shell
-pip install git+ssh://git@gitlab.benzinga.io/benzinga/python-client.git
+pip install git+ssh://git@github.com/Benzinga/benzinga-python-client.git
 ```
 
 Once you have successfully installed the package, you can either import the
