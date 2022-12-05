@@ -57,4 +57,3 @@ class BadRequestError(BenzingaError):
 
 class GatewayTimeoutError(BenzingaError):
     pass
-
