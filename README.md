@@ -20,6 +20,7 @@ Benzinga's Python client library focuses on financial data methods, that can be 
     + [Ratings](#ratings)
     + [Earnings](#earnings)
     + [Splits](#splits)
+    + [M&A](#ma)
     + [Economics](#economics)
     + [Guidance](#guidance)
     + [IPO](#ipo)
@@ -321,6 +322,33 @@ Public Method: Benzinga Earnings looks at the quarterly earnings reports for dif
     * id, date, date confirmed, time, isin, ticker, exchange, name, period, period_year,
     eps, eps_est, eps_prior, eps_surprise, eps_surprise_percent, revenue, revenue est,
     revenue_prior, revenue_surprise, revenue_surprise_percent, importance, updated
+
+### M&A
+
+```python
+fin.ma()
+```
+
+Public Method: Benzinga Splits looks at the stock splits calendar data
+
+* Arguments:
+    * **Optional**:
+    * page ****(int)**** - page offset
+    * pagesize ****(int)**** - limit of results returned
+    * date_asof ****(str)**** - "YYYY-MM-DD"
+    * date_from ****(str)**** - "YYYY-MM-DD"
+    * date_to ****(str)**** - "YYYY-MM-DD"
+    * company_tickers ****(str)****
+    * importance - ****(int)**** - not tested yet.
+    * date_sort - ****(str)**** - Dividend date field to sort on
+    * updated_params **(int64)** - records last updated unix time stamp. Forces the
+    sort order to be greater or equal to the time stamp indicated.
+
+* Returns:
+    * id, updated, date, date_expected, date_completed, acquirer_ticker, acquirer_exchange, 
+     acquirer_name, target_ticker, target_exchange, target_name, currency, deal_type, deal_size,
+     deal_payment_type, deal_status, deal_terms_extra, importance, notes
+
 
 ### Splits
 
