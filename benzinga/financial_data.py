@@ -678,6 +678,71 @@ class Benzinga:
         )
         return result_out
 
+    def ma(
+        self,
+        page=None,
+        pagesize=None,
+        date_asof=None,
+        date_from=None,
+        date_to=None,
+        company_tickers=None,
+        importance=None,
+        date_sort=None,
+        updated_params=None,
+        env=0,
+    ):
+        """Public Method: Benzinga M&A looks at the Mergers And Acquisitions calendar data
+
+        Arguments:
+            Optional:
+             page (int) - page offset
+             pagesize (int) - limit of results returned
+             date_asof (str) - "YYYY-MM-DD"
+             date_from (str) - "YYYY-MM-DD"
+             date_to (str) - "YYYY-MM-DD"
+             company_tickers (str)
+             importance - (int) - not tested yet.
+             date_sort - (str) - Dividend date field to sort on
+             updated_params (int64) - records last updated unix time stamp. Forces the
+             sort order to be greater or equal to the time stamp indicated.
+
+        Returns:
+            id, updated, date, time, ticker, exchange, importance, ratio, optionable,
+            date_ex, date_recorded, date_distribution"""
+
+        params = {
+            "token": self.token,
+            "page": page,
+            "pagesize": pagesize,
+            "parameters[date]": date_asof,
+            "parameters[date_from]": date_from,
+            "parameters[date_to]": date_to,
+            "parameters[tickers]": company_tickers,
+            "parameters[importance]": None,
+            "parameters[date_sort]": date_sort,
+            "parameters[updated]": updated_params,
+        }
+        self.param_initiate.calendar_check(params)
+        try:
+            splits_url = self.__url_call("calendar", "ma", env=env)
+            splits = requests_retry_session().get(
+                splits_url, headers=self.headers, params=params, timeout=10
+            )
+            statement = "Status Code: {status_code} Endpoint: {endpoint}".format(
+                endpoint=splits.url, status_code=splits.status_code
+            )
+            if self.log:
+                log.info(statement)
+            self.__check_status(splits.status_code)
+        except requests.exceptions.RequestException as err:
+            self.__check_status(err.response.status_code)
+        result_out = (
+            splits.json()
+            if importance == None
+            else self.__importance("splits", splits.json(), importance)
+        )
+        return result_out
+
     def economics(
         self,
         page=None,
