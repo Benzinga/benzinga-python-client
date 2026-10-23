@@ -96,8 +96,8 @@ class News:
             they are the same. Defaults for latest.
             date_from (str) - "YYYY-MM-DD"
             date_to (str) - "YYYY-MM-DD"
-            last_id (str) - The last ID to start paging from and sorted by and sorted by the last updated date.
-            updated_since (str) - he last updated unix timestamp (UTC) to pull and sort by.
+            last_id (str) - The last ID to start paging from and sorted by the last updated date.
+            updated_since (str) - The last updated unix timestamp (UTC) to pull and sort by.
             publish_since (str) - The last publish unix  timestamp (UTC) to pull and sort by.
             company_tickers (str)
             channel (str) - multiple channels separated by comma.

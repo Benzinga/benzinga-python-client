@@ -1,7 +1,7 @@
 class BenzingaError(Exception):
 
     def __init__(self, msg=None):
-        self.general_message = "Something went wrong. Please again try again later"
+        self.general_message = "Something went wrong. Please try again later"
         if msg is None:
             self.benzinga_message = self.general_message
         else:

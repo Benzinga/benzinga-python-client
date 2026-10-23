@@ -520,7 +520,7 @@ class Benzinga:
             "parameters[importance]": None,
             "parameters[date_sort]": date_sort,
             "parameters[updated]": updated_params,
-            "paramaters[dividend_yield_operation]": div_yield_operation,
+            "parameters[dividend_yield_operation]": div_yield_operation,
             "parameters[dividend_yield]": div_yield,
         }
         self.param_initiate.calendar_check(params)

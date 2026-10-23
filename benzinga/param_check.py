@@ -30,7 +30,7 @@ class Param_Check:
             "parameters[importance]": self.inte,
             "parameters[date_sort]": self.stri,
             "parameters[updated]": self.inte,
-            "paramaters[dividend_yield_operation]": self.stri,
+            "parameters[dividend_yield_operation]": self.stri,
             "parameters[dividend_yield]": self.float,
             "parameters[action]": self.stri,
             "country": self.stri,
